@@ -129,6 +129,40 @@ Bygg frontend for produksjon:
 npm run build --prefix client
 ```
 
+## Produksjonsdeploy med Render
+
+Applikasjonen er deployet som en web service på Render:
+
+```text
+https://eventmeeting-f3eu.onrender.com
+```
+
+Render bruker disse kommandoene fra prosjektroten:
+
+```text
+Build Command: npm run build
+Start Command: npm start
+```
+
+Build-kommandoen bygger frontend til `client/dist`, og startkommandoen installerer
+serveravhengighetene før Express-serveren starter.
+
+Følgende miljøvariabler må settes i Render, uten å committes til Git:
+
+```dotenv
+NODE_ENV=production
+PORT=10000
+JWT_SECRET=din-hemmelige-verdi
+MONGO_URI=din-mongodb-atlas-url
+CLIENT_URL=https://eventmeeting-f3eu.onrender.com
+GOOGLE_REDIRECT_URI=https://eventmeeting-f3eu.onrender.com/api/auth/google/callback
+GOOGLE_CLIENT_ID=din-google-client-id
+GOOGLE_CLIENT_SECRET=din-google-client-secret
+```
+
+Den samme `GOOGLE_REDIRECT_URI`-verdien må være registrert som en godkjent
+redirect URI i Google Cloud Console.
+
 ## Sikkerhet
 
 - Nye brukere får alltid rollen `user` ved registrering.

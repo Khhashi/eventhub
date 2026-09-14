@@ -1,5 +1,7 @@
 # Møteplass
 
+[Åpne den publiserte applikasjonen](https://eventmeeting-f3eu.onrender.com)
+
 Møteplass er en fullstack-applikasjon for å opprette, finne og delta på arrangementer. Applikasjonen er laget med React og Vite i frontend, Express og MongoDB i backend, og Google OAuth for innlogging.
 
 ## Hva kan brukeren gjøre?
@@ -130,12 +132,6 @@ npm run build --prefix client
 ```
 
 ## Produksjonsdeploy med Render
-
-Applikasjonen er deployet som en web service på Render:
-
-```text
-https://eventmeeting-f3eu.onrender.com
-```
 
 Render bruker disse kommandoene fra prosjektroten:
 

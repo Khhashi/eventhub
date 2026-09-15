@@ -85,6 +85,26 @@ router.get("/profile", protect, async (req, res) => {
   }
 })
 
+router.put("/profile/picture", protect, async (req, res) => {
+  const { picture } = req.body
+
+  if (!picture || !/^data:image\/(jpeg|png|webp);base64,/.test(picture)) {
+    return res.status(400).json({ message: "Last opp et gyldig bilde." })
+  }
+
+  if (picture.length > 3 * 1024 * 1024) {
+    return res.status(400).json({ message: "Bildet er for stort. Maks størrelse er 2 MB." })
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { picture },
+    { new: true, lean: true }
+  )
+
+  res.json({ picture: user.picture })
+})
+
 router.get("/google", (req, res) => {
   try {
     requireGoogleConfig()

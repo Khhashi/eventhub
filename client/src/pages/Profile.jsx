@@ -6,6 +6,8 @@ export default function Profile() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const [pictureMessage, setPictureMessage] = useState("")
+  const [pictureLoading, setPictureLoading] = useState(false)
 
   useEffect(() => {
     load()
@@ -45,16 +47,62 @@ export default function Profile() {
 
   const { user, createdEvents, registeredEvents } = data
 
+  const handlePictureUpload = (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
+      setPictureMessage("Velg et bilde på maks 2 MB.")
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = async () => {
+      setPictureLoading(true)
+      setPictureMessage("")
+      try {
+        const result = await request("/auth/profile/picture", {
+          method: "PUT",
+          body: JSON.stringify({ picture: reader.result }),
+        })
+        setData((current) => ({
+          ...current,
+          user: { ...current.user, picture: result.picture },
+        }))
+        setPictureMessage("Profilbildet er oppdatert.")
+      } catch {
+        setPictureMessage("Kunne ikke laste opp profilbildet.")
+      } finally {
+        setPictureLoading(false)
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
   return (
     <div className="center-page">
       <div className="profile-shell">
         <div className="profile-header">
           <div className="profile-avatar">
-            {user.name?.charAt(0)?.toUpperCase() || "U"}
+            {user.picture ? (
+              <img src={user.picture} alt="Profilbilde" />
+            ) : (
+              user.name?.charAt(0)?.toUpperCase() || "U"
+            )}
           </div>
           <div>
             <p className="eyebrow">Profil</p>
             <h1>{user.name}</h1>
+            <label className="profile-upload button-secondary">
+              {pictureLoading ? "Laster opp..." : "Bytt profilbilde"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handlePictureUpload}
+                disabled={pictureLoading}
+              />
+            </label>
+            {pictureMessage && <p className="profile-picture-message">{pictureMessage}</p>}
           </div>
         </div>
 

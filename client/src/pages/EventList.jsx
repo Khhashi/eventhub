@@ -188,6 +188,10 @@ export default function EventList() {
         </button>
       </div>
 
+      <p className="results-summary" aria-live="polite">
+        Viser {sortedEvents.length} av {events.length} arrangementer
+      </p>
+
       {message && (
         <div
           className={
@@ -226,7 +230,7 @@ export default function EventList() {
         )
 
         return (
-          <div key={ev._id} className="event-card">
+          <article key={ev._id} className="event-card">
             <div className="event-card__content">
               <div>
                 <div className="event-meta-row">
@@ -300,7 +304,7 @@ export default function EventList() {
                 </button>
               )}
             </div>
-          </div>
+          </article>
         )
       })}
     </div>

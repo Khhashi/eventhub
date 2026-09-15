@@ -593,6 +593,13 @@ button:disabled {
   color: #0f172a;
 }
 
+.results-summary {
+  margin: -12px 0 20px;
+  color: #64748b;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
 .empty-panel {
   padding: 42px 28px;
   border: 1px dashed #cbd5e1;

@@ -44,6 +44,7 @@ describe("EventList", () => {
     )
 
     expect(await screen.findByText("Test event")).toBeInTheDocument()
+    expect(screen.getByText("Viser 1 av 1 arrangementer")).toBeInTheDocument()
     expect(screen.getAllByText(/Oslo/i).length).toBeGreaterThan(0)
     expect(screen.getByRole("link", { name: /rediger/i })).toBeInTheDocument()
   })

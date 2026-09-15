@@ -105,6 +105,11 @@ router.put("/profile/picture", protect, async (req, res) => {
   res.json({ picture: user.picture })
 })
 
+router.delete("/profile/picture", protect, async (req, res) => {
+  await User.findByIdAndUpdate(req.user._id, { $unset: { picture: 1 } })
+  res.status(204).end()
+})
+
 router.get("/google", (req, res) => {
   try {
     requireGoogleConfig()

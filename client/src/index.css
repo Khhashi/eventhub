@@ -873,6 +873,29 @@ button:disabled {
   font-size: 1.7rem;
 }
 
+.profile-avatar-wrap {
+  position: relative;
+  flex: 0 0 72px;
+}
+
+.profile-picture-remove {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 23px;
+  height: 23px;
+  padding: 3px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #fff;
+}
+
+.profile-picture-remove svg {
+  width: 100%;
+  height: 100%;
+}
+
 .profile-avatar img {
   width: 100%;
   height: 100%;

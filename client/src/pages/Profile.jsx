@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { request } from "../api/http"
 import { Link } from "react-router-dom"
+import { XMarkIcon } from "@heroicons/react/24/outline"
 
 export default function Profile() {
   const [data, setData] = useState(null)
@@ -79,15 +80,46 @@ export default function Profile() {
     reader.readAsDataURL(file)
   }
 
+  const handlePictureRemove = async () => {
+    setPictureLoading(true)
+    setPictureMessage("")
+    try {
+      await request("/auth/profile/picture", { method: "DELETE" })
+      setData((current) => ({
+        ...current,
+        user: { ...current.user, picture: "" },
+      }))
+      setPictureMessage("Profilbildet er fjernet.")
+    } catch {
+      setPictureMessage("Kunne ikke fjerne profilbildet.")
+    } finally {
+      setPictureLoading(false)
+    }
+  }
+
   return (
     <div className="center-page">
       <div className="profile-shell">
         <div className="profile-header">
-          <div className="profile-avatar">
+          <div className="profile-avatar-wrap">
+            <div className="profile-avatar">
             {user.picture ? (
               <img src={user.picture} alt="Profilbilde" />
             ) : (
               user.name?.charAt(0)?.toUpperCase() || "U"
+            )}
+            </div>
+            {user.picture && (
+              <button
+                type="button"
+                className="profile-picture-remove"
+                onClick={handlePictureRemove}
+                disabled={pictureLoading}
+                aria-label="Fjern profilbilde"
+                title="Fjern profilbilde"
+              >
+                <XMarkIcon aria-hidden="true" />
+              </button>
             )}
           </div>
           <div>

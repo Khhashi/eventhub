@@ -28,14 +28,15 @@ export default function EventList() {
   const pageSize = 5
 
   useEffect(() => {
-    load()
+    loadEvents()
+    loadUser()
   }, [])
 
   useEffect(() => {
     if (!user) return undefined
 
     const socket = createSocket()
-    const refreshEvents = () => load()
+    const refreshEvents = () => loadEvents()
 
     socket.on("eventCreated", refreshEvents)
     socket.on("eventUpdated", refreshEvents)
@@ -51,7 +52,7 @@ export default function EventList() {
     }
   }, [user])
 
-  const load = async () => {
+  const loadEvents = async () => {
     setLoading(true)
 
     try {
@@ -60,18 +61,19 @@ export default function EventList() {
       setLoadError("")
     } catch (err) {
       console.error("Kunne ikke hente arrangementer", err)
-      setEvents([])
-      setLoadError("Arrangementene kunne ikke hentes akkurat nå. Prøv igjen.")
+      setLoadError("Arrangementene kunne ikke oppdateres akkurat nå. Viser tidligere data.")
     }
 
+    setLoading(false)
+  }
+
+  const loadUser = async () => {
     try {
       const me = await getMe()
       setUser(me)
     } catch {
       setUser(null)
     }
-
-    setLoading(false)
   }
 
   const handleRegisterToggle = async (ev) => {
@@ -88,7 +90,7 @@ export default function EventList() {
         setMessage({ type: "success", text: "Registrert" })
       }
 
-      load()
+      loadEvents()
     } catch {
       setMessage({ type: "error", text: "Noe gikk galt" })
     }
@@ -102,7 +104,7 @@ export default function EventList() {
     try {
       await deleteEvent(id)
       setMessage({ type: "success", text: "Arrangementet er slettet" })
-      load()
+      loadEvents()
     } catch {
       setMessage({ type: "error", text: "Kunne ikke slette" })
     }
@@ -214,7 +216,7 @@ export default function EventList() {
         <button
           type="button"
           className="button-secondary filter-action"
-          onClick={load}
+          onClick={loadEvents}
         >
           <ArrowPathIcon className="button-icon" aria-hidden="true" />
           Oppdater

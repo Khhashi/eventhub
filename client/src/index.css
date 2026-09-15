@@ -32,12 +32,13 @@ a {
 .app-background-video {
   z-index: 0;
   object-fit: cover;
-  opacity: 0.48;
+  opacity: 0.62;
+  filter: contrast(1.12) saturate(1.08);
 }
 
 .app-background-veil {
   z-index: 1;
-  background: rgba(248, 251, 255, 0.66);
+  background: rgba(248, 251, 255, 0.52);
 }
 
 .sidebar {

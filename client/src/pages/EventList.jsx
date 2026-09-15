@@ -18,6 +18,7 @@ export default function EventList() {
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("all")
   const [dateFilter, setDateFilter] = useState("all")
+  const [sortOrder, setSortOrder] = useState("soonest")
 
   useEffect(() => {
     load()
@@ -97,6 +98,20 @@ export default function EventList() {
     return matchesSearch && matchesCategory && matchesDate
   })
 
+  const sortedEvents = [...visibleEvents].sort((eventA, eventB) => {
+    const dateA = new Date(eventA.date).getTime()
+    const dateB = new Date(eventB.date).getTime()
+
+    return sortOrder === "soonest" ? dateA - dateB : dateB - dateA
+  })
+
+  const resetFilters = () => {
+    setSearch("")
+    setCategory("all")
+    setDateFilter("all")
+    setSortOrder("soonest")
+  }
+
   if (loading) {
     return (
       <div className="center-page">
@@ -156,6 +171,21 @@ export default function EventList() {
           <option value="upcoming">Kommende</option>
           <option value="past">Tidligere</option>
         </select>
+        <select
+          value={sortOrder}
+          onChange={(event) => setSortOrder(event.target.value)}
+          aria-label="Sorter arrangementer"
+        >
+          <option value="soonest">Tidligst først</option>
+          <option value="latest">Senest først</option>
+        </select>
+        <button
+          type="button"
+          className="button-secondary filter-reset"
+          onClick={resetFilters}
+        >
+          Tilbakestill filtre
+        </button>
       </div>
 
       {message && (
@@ -179,14 +209,14 @@ export default function EventList() {
         </div>
       )}
 
-      {!loadError && events.length > 0 && visibleEvents.length === 0 && (
+      {!loadError && events.length > 0 && sortedEvents.length === 0 && (
         <div className="empty-panel">
           <h2>Ingen treff</h2>
           <p>Prøv et annet søk eller endre filtrene.</p>
         </div>
       )}
 
-      {visibleEvents.map((ev) => {
+      {sortedEvents.map((ev) => {
         const isRegistered = ev.attendees?.some(
           (a) => a._id === user?._id || a === user?._id
         )

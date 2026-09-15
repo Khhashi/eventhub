@@ -571,6 +571,7 @@ button:disabled {
   gap: 14px;
   margin-bottom: 35px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .filter-bar input,
@@ -581,6 +582,15 @@ button:disabled {
   font-size: 14px;
   min-width: 220px;
   background: white;
+}
+
+.filter-reset {
+  min-width: 0;
+  padding: 12px 16px;
+  border: 1px solid #dbe4f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #0f172a;
 }
 
 .empty-panel {

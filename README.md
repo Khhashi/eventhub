@@ -1,7 +1,5 @@
 # Møteplass
 
-[Åpne den publiserte applikasjonen](https://eventmeeting-f3eu.onrender.com)
-
 Møteplass er en fullstack-applikasjon for å opprette, finne og delta på arrangementer. Applikasjonen er laget med React og Vite i frontend, Express og MongoDB i backend, og Google OAuth for innlogging.
 
 ## Hva kan brukeren gjøre?
@@ -130,34 +128,6 @@ Bygg frontend for produksjon:
 ```bash
 npm run build --prefix client
 ```
-
-## Produksjonsdeploy med Render
-
-Render bruker disse kommandoene fra prosjektroten:
-
-```text
-Build Command: npm run build
-Start Command: npm start
-```
-
-Build-kommandoen bygger frontend til `client/dist`, og startkommandoen installerer
-serveravhengighetene før Express-serveren starter.
-
-Følgende miljøvariabler må settes i Render, uten å committes til Git:
-
-```dotenv
-NODE_ENV=production
-PORT=10000
-JWT_SECRET=din-hemmelige-verdi
-MONGO_URI=din-mongodb-atlas-url
-CLIENT_URL=https://eventmeeting-f3eu.onrender.com
-GOOGLE_REDIRECT_URI=https://eventmeeting-f3eu.onrender.com/api/auth/google/callback
-GOOGLE_CLIENT_ID=din-google-client-id
-GOOGLE_CLIENT_SECRET=din-google-client-secret
-```
-
-Den samme `GOOGLE_REDIRECT_URI`-verdien må være registrert som en godkjent
-redirect URI i Google Cloud Console.
 
 ## Sikkerhet
 

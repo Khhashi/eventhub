@@ -7,6 +7,7 @@ import {
 } from "../api/events"
 import { getMe } from "../api/auth"
 import MapPreview from "../components/MapPreview.jsx"
+import { CalendarDaysIcon, ShareIcon } from "@heroicons/react/24/outline"
 
 export default function EventDetails() {
   const { id } = useParams()
@@ -77,6 +78,57 @@ const isRegistered = event.attendees?.some(
         text: "Noe gikk galt.",
       })
     }
+  }
+
+  const handleShare = async () => {
+    const shareData = {
+      title: event.title,
+      text: `Arrangement: ${event.title}`,
+      url: window.location.href,
+    }
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData)
+        setMessage({ type: "success", text: "Arrangementet er delt." })
+      } else {
+        await navigator.clipboard.writeText(window.location.href)
+        setMessage({ type: "success", text: "Lenken er kopiert. Du kan dele den med andre." })
+      }
+    } catch (shareError) {
+      if (shareError.name !== "AbortError") {
+        setMessage({ type: "error", text: "Kunne ikke dele arrangementet." })
+      }
+    }
+  }
+
+  const handleCalendar = () => {
+    const start = new Date(event.date)
+    const end = new Date(start.getTime() + 2 * 60 * 60 * 1000)
+    const formatDate = (date) => date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z"
+    const escapeText = (text) => String(text).replace(/[,;\\]/g, "\\$&").replace(/\n/g, "\\n")
+    const calendar = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Moteplass//Arrangement//NO",
+      "BEGIN:VEVENT",
+      `UID:${event._id}@moteplass`,
+      `DTSTAMP:${formatDate(new Date())}`,
+      `DTSTART:${formatDate(start)}`,
+      `DTEND:${formatDate(end)}`,
+      `SUMMARY:${escapeText(event.title)}`,
+      `DESCRIPTION:${escapeText(event.description)}`,
+      `LOCATION:${escapeText(event.location)}`,
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n")
+    const url = URL.createObjectURL(new Blob([calendar], { type: "text/calendar" }))
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `${event.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.ics`
+    link.click()
+    URL.revokeObjectURL(url)
+    setMessage({ type: "success", text: "Arrangementet er lagt til i kalenderen." })
   }
 
   return (
@@ -154,6 +206,16 @@ const isRegistered = event.attendees?.some(
               Logg inn for å delta
             </Link>
           )}
+          <div className="event-secondary-actions">
+            <button className="button-secondary" onClick={handleCalendar}>
+              <CalendarDaysIcon className="button-icon" aria-hidden="true" />
+              Legg i kalender
+            </button>
+            <button className="button-secondary" onClick={handleShare}>
+              <ShareIcon className="button-icon" aria-hidden="true" />
+              Del arrangement
+            </button>
+          </div>
         </div>
 
         <div className="detail-map-panel">

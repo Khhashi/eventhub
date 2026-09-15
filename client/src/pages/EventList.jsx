@@ -8,6 +8,12 @@ import {
 } from "../api/events"
 import { getMe } from "../api/auth"
 import MapPreview from "../components/MapPreview.jsx"
+import {
+  ArrowPathIcon,
+  PlusIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline"
+import { createSocket } from "../api/socket"
 
 export default function EventList() {
   const [events, setEvents] = useState([])
@@ -18,10 +24,32 @@ export default function EventList() {
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("all")
   const [dateFilter, setDateFilter] = useState("all")
+  const [page, setPage] = useState(1)
+  const pageSize = 5
 
   useEffect(() => {
     load()
   }, [])
+
+  useEffect(() => {
+    if (!user) return undefined
+
+    const socket = createSocket()
+    const refreshEvents = () => load()
+
+    socket.on("eventCreated", refreshEvents)
+    socket.on("eventUpdated", refreshEvents)
+    socket.on("eventDeleted", refreshEvents)
+    socket.on("eventRegistrationUpdated", refreshEvents)
+
+    return () => {
+      socket.off("eventCreated", refreshEvents)
+      socket.off("eventUpdated", refreshEvents)
+      socket.off("eventDeleted", refreshEvents)
+      socket.off("eventRegistrationUpdated", refreshEvents)
+      socket.disconnect()
+    }
+  }, [user])
 
   const load = async () => {
     setLoading(true)
@@ -97,6 +125,23 @@ export default function EventList() {
     return matchesSearch && matchesCategory && matchesDate
   })
 
+  const resetFilters = () => {
+    setSearch("")
+    setCategory("all")
+    setDateFilter("all")
+    setPage(1)
+  }
+
+  useEffect(() => {
+    setPage(1)
+  }, [search, category, dateFilter])
+
+  const pageCount = Math.max(1, Math.ceil(visibleEvents.length / pageSize))
+  const paginatedEvents = visibleEvents.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  )
+
   if (loading) {
     return (
       <div className="center-page">
@@ -113,7 +158,20 @@ export default function EventList() {
   }
 
   return (
-    <div className="center-page">
+    <div className="events-page">
+      <video
+        className="events-page__background"
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+      >
+        <source src="/event-background.webm" type="video/webm" />
+      </video>
+      <div className="events-page__veil" />
+
+      <div className="center-page events-page__content">
       <div className="events-hero">
         <div>
           <p className="eyebrow">Oversikt</p>
@@ -123,6 +181,7 @@ export default function EventList() {
           </p>
         </div>
         <Link to="/create" className="button-primary hero-action">
+          <PlusIcon className="button-icon" aria-hidden="true" />
           Nytt arrangement
         </Link>
       </div>
@@ -156,7 +215,27 @@ export default function EventList() {
           <option value="upcoming">Kommende</option>
           <option value="past">Tidligere</option>
         </select>
+        <button
+          type="button"
+          className="button-secondary filter-action"
+          onClick={resetFilters}
+        >
+          <XMarkIcon className="button-icon" aria-hidden="true" />
+          Nullstill
+        </button>
+        <button
+          type="button"
+          className="button-secondary filter-action"
+          onClick={load}
+        >
+          <ArrowPathIcon className="button-icon" aria-hidden="true" />
+          Oppdater
+        </button>
       </div>
+
+      <p className="results-summary" aria-live="polite">
+        Viser {visibleEvents.length} av {events.length} arrangementer
+      </p>
 
       {message && (
         <div
@@ -186,7 +265,7 @@ export default function EventList() {
         </div>
       )}
 
-      {visibleEvents.map((ev) => {
+      {paginatedEvents.map((ev) => {
         const isRegistered = ev.attendees?.some(
           (a) => a._id === user?._id || a === user?._id
         )
@@ -273,6 +352,27 @@ export default function EventList() {
           </div>
         )
       })}
+
+      {pageCount > 1 && (
+        <div className="pagination" aria-label="Sideinndeling">
+          <button
+            className="button-secondary"
+            disabled={page === 1}
+            onClick={() => setPage((current) => current - 1)}
+          >
+            Forrige
+          </button>
+          <span>Side {page} av {pageCount}</span>
+          <button
+            className="button-secondary"
+            disabled={page === pageCount}
+            onClick={() => setPage((current) => current + 1)}
+          >
+            Neste
+          </button>
+        </div>
+      )}
+      </div>
     </div>
   )
 }

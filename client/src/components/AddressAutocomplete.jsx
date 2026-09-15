@@ -17,6 +17,7 @@ const formatAddress = (suggestion) => {
 export default function AddressAutocomplete({ value, onChange, id = "location" }) {
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
+  const [lookupError, setLookupError] = useState("")
   const [focused, setFocused] = useState(false)
   const requestId = useRef(0)
 
@@ -26,12 +27,14 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
     if (query.length < 3) {
       setSuggestions([])
       setLoading(false)
+      setLookupError("")
       return undefined
     }
 
     const controller = new AbortController()
     const currentRequestId = ++requestId.current
     setSuggestions([])
+    setLookupError("")
     const timeout = window.setTimeout(async () => {
       setLoading(true)
 
@@ -54,10 +57,13 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
           if (currentRequestId === requestId.current) {
             setSuggestions(nextSuggestions)
           }
+        } else if (currentRequestId === requestId.current) {
+          setLookupError("Adresseforslag er midlertidig utilgjengelige.")
         }
       } catch (error) {
         if (error.name !== "AbortError" && currentRequestId === requestId.current) {
           setSuggestions([])
+          setLookupError("Kunne ikke hente adresseforslag akkurat nå.")
         }
       } finally {
         if (currentRequestId === requestId.current) {
@@ -99,9 +105,12 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
         required
       />
 
-      {focused && (loading || suggestions.length > 0) && (
+      {focused && (loading || suggestions.length > 0 || lookupError) && (
         <div id={`${id}-suggestions`} className="address-suggestions" role="listbox">
           {loading && <div className="address-suggestion-status">Søker etter adresser...</div>}
+          {!loading && lookupError && (
+            <div className="address-suggestion-status">{lookupError} Skriv adressen manuelt.</div>
+          )}
           {suggestions.map((suggestion) => (
             <button
               key={suggestion.place_id}

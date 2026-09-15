@@ -18,8 +18,12 @@ Etter innlogging kan brukeren:
 - Se egen profil
 - Se egne arrangementer og påmeldinger
 - Opprette nye arrangementer
+- Dele arrangementer med andre
+- Legge arrangementer til i kalenderen
 
 En arrangør kan redigere og slette egne arrangementer. Serveren kontrollerer eierskap, slik at en bruker ikke kan endre andres arrangementer ved å sende egne API-kall.
+
+Arrangementlisten oppdateres automatisk for innloggede brukere når andre oppretter, redigerer, sletter eller melder seg på et arrangement. Dette skjer gjennom Socket.IO uten at siden må lastes inn på nytt.
 
 ## Kart og adresser
 
@@ -37,6 +41,9 @@ Kartet geokoder adressen og viser et OpenStreetMap-kart med markør og riktig zo
 - httpOnly-cookie for OAuth-sesjonen
 - Vitest, Testing Library og Supertest
 - Socket.IO for oppdateringer ved event-endringer
+- Heroicons for tilgjengelige navigasjons- og handlingsikoner
+- Responsiv layout for desktop og mobil
+- Bakgrunnsvideo på arrangementssiden
 
 ## Prosjektstruktur
 
@@ -58,6 +65,7 @@ POST   /api/events/:id/unregister
 GET    /api/auth/me
 GET    /api/auth/profile
 GET    /api/auth/google
+POST   /api/auth/logout
 ```
 
 ## Lokal oppstart
@@ -128,6 +136,8 @@ Bygg frontend for produksjon:
 ```bash
 npm run build --prefix client
 ```
+
+Frontend-testene dekker blant annet innlasting av arrangementer, kartvisning, oppretting, redigering og routing. Backend-testene dekker autentisering, roller, tilgangskontroll, arrangementer, påmelding og helsesjekk.
 
 ## Sikkerhet
 

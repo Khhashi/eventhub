@@ -14,15 +14,18 @@ export default function Sidebar({ user, onLogout }) {
 
       <nav className="sidebar-nav" aria-label="Hovedmeny">
         <Link className={isActive("/events") ? "active" : ""} to="/events">
+          <span className="sidebar-nav__icon" aria-hidden="true">E</span>
           Arrangementer
         </Link>
         <Link className={isActive("/profile") ? "active" : ""} to="/profile">
+          <span className="sidebar-nav__icon" aria-hidden="true">P</span>
           Profil
         </Link>
         <Link
           className={`sidebar-create ${isActive("/create") ? "active" : ""}`}
           to="/create"
         >
+          <span className="sidebar-nav__icon" aria-hidden="true">+</span>
           Opprett arrangement
         </Link>
       </nav>

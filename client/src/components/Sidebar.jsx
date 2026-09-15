@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom"
 import {
+  ArrowLeftOnRectangleIcon,
   CalendarDaysIcon,
   PlusIcon,
   UserCircleIcon,
@@ -48,6 +49,7 @@ export default function Sidebar({ user, onLogout }) {
               </div>
             </div>
             <button className="sidebar-logout" onClick={onLogout}>
+              <ArrowLeftOnRectangleIcon className="button-icon" aria-hidden="true" />
               Logg ut
             </button>
           </>

@@ -164,6 +164,15 @@ a {
 
 .sidebar-logout {
   font-size: 0.85rem;
+  justify-content: center;
+  border: 1px solid #475569;
+  color: #cbd5e1;
+}
+
+.sidebar-logout:hover {
+  background: #3f1d26;
+  border-color: #7f1d1d;
+  color: #fecaca;
 }
 
 .sidebar-login {

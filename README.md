@@ -2,6 +2,10 @@
 
 Møteplass er en fullstack-applikasjon for å opprette, finne og delta på arrangementer. Applikasjonen er laget med React og Vite i frontend, Express og MongoDB i backend, og Google OAuth for innlogging.
 
+## Publisert applikasjon
+
+[Åpne Møteplass](https://eventmeeting-f3eu.onrender.com/events)
+
 ## Hva kan brukeren gjøre?
 
 Uten innlogging kan brukeren:

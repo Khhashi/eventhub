@@ -167,7 +167,7 @@ export default function EventList() {
         playsInline
         aria-hidden="true"
       >
-        <source src="/event-background.webm" type="video/webm" />
+        <source src="/football-background.mp4" type="video/mp4" />
       </video>
       <div className="events-page__veil" />
 

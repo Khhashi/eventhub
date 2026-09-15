@@ -10,6 +10,10 @@ export default function Sidebar({ user, onLogout }) {
   const location = useLocation()
 
   const isActive = (path) => location.pathname === path
+  const scrollToTop = () => {
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+  }
 
   return (
     <aside className="sidebar">
@@ -19,7 +23,11 @@ export default function Sidebar({ user, onLogout }) {
       </Link>
 
       <nav className="sidebar-nav" aria-label="Hovedmeny">
-        <Link className={isActive("/events") ? "active" : ""} to="/events">
+        <Link
+          className={isActive("/events") ? "active" : ""}
+          to="/events"
+          onClick={scrollToTop}
+        >
           <CalendarDaysIcon className="sidebar-nav__icon" aria-hidden="true" />
           Arrangementer
         </Link>

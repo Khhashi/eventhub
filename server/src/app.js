@@ -21,6 +21,7 @@ app.use(
         process.env.CLIENT_URL || "http://localhost:5173",
         "http://localhost:5173",
         "http://localhost:5174",
+        "https://eventmeeting-f3eu.onrender.com",
       ]
 
       if (!origin || allowedOrigins.includes(origin)) {

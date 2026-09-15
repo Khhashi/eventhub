@@ -50,6 +50,11 @@ export default function App() {
     checkAuth()
   }, [])
 
+  useEffect(() => {
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+  }, [location.pathname])
+
   const handleLogout = () => {
     localStorage.removeItem("token")
     fetch("/api/auth/logout", { method: "POST", credentials: "include" })

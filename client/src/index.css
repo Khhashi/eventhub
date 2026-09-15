@@ -482,9 +482,9 @@ a {
 
 .event-card {
   background: rgba(255, 255, 255, 0.96);
-  padding: 22px 24px;
+  padding: 16px 18px;
   border-radius: 10px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   box-shadow: 0 5px 16px rgba(15, 23, 42, 0.06);
   border: 1px solid #dbe2ea;
 }
@@ -492,13 +492,13 @@ a {
 .event-card__content {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(210px, 0.9fr);
-  gap: 18px;
+  gap: 14px;
   align-items: center;
 }
 
 .event-card h3,
 .event-card h2 {
-  margin: 12px 0 10px;
+  margin: 8px 0 7px;
   font-size: clamp(1.3rem, 2vw, 1.8rem);
 }
 
@@ -522,22 +522,22 @@ a {
 
 .event-description {
   color: #475569;
-  line-height: 1.6;
-  margin-bottom: 16px;
+  line-height: 1.45;
+  margin-bottom: 10px;
 }
 
 .event-details-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .event-info-item {
   min-width: 0;
-  padding: 12px 14px;
+  padding: 9px 12px;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  border-radius: 10px;
   background: #f8fafc;
 }
 
@@ -550,7 +550,7 @@ a {
 
 .event-info-label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   color: #64748b;
   font-size: 0.72rem;
   font-weight: 800;
@@ -565,7 +565,7 @@ a {
 }
 
 .map-preview__heading {
-  margin: 0 0 8px;
+  margin: 0 0 5px;
   color: #475569;
   font-size: 0.8rem;
   font-weight: 800;
@@ -575,8 +575,8 @@ a {
 
 .map-preview {
   width: 100%;
-  min-height: 190px;
-  border-radius: 20px;
+  min-height: 150px;
+  border-radius: 14px;
   overflow: hidden;
   position: relative;
   background: #dbeafe;
@@ -587,7 +587,7 @@ a {
 .map-preview iframe {
   display: block;
   width: 100%;
-  height: 190px;
+  height: 150px;
   border: 0;
 }
 
@@ -604,10 +604,10 @@ a {
 }
 
 .event-actions {
-  margin-top: 18px;
+  margin-top: 12px;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 

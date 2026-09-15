@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react"
 
+const locationCache = new Map()
+
 export default function MapPreview({ location }) {
   const safeLocation = location || "Oslo"
+  const locationKey = safeLocation.trim().toLowerCase()
   const query = encodeURIComponent(safeLocation)
   const mapUrl = `https://www.openstreetmap.org/search?query=${query}`
   const [coordinates, setCoordinates] = useState(null)
@@ -9,6 +12,22 @@ export default function MapPreview({ location }) {
 
   useEffect(() => {
     const controller = new AbortController()
+    const cachedCoordinates = locationCache.get(locationKey)
+
+    if (cachedCoordinates) {
+      setCoordinates(cachedCoordinates)
+      setMapStatus("")
+      return () => controller.abort()
+    }
+
+    if (locationCache.has(locationKey)) {
+      setCoordinates(null)
+      setMapStatus("Fant ikke en nøyaktig plassering")
+      return () => controller.abort()
+    }
+
+    setCoordinates(null)
+    setMapStatus("Laster kart...")
 
     const findLocation = async () => {
       try {
@@ -29,14 +48,17 @@ export default function MapPreview({ location }) {
         const result = results[0]
 
         if (!result) {
+          locationCache.set(locationKey, null)
           setMapStatus("Fant ikke en nøyaktig plassering")
           return
         }
 
-        setCoordinates({
+        const nextCoordinates = {
           latitude: Number(result.lat),
           longitude: Number(result.lon),
-        })
+        }
+        locationCache.set(locationKey, nextCoordinates)
+        setCoordinates(nextCoordinates)
         setMapStatus("")
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -47,7 +69,7 @@ export default function MapPreview({ location }) {
 
     findLocation()
     return () => controller.abort()
-  }, [safeLocation])
+  }, [locationKey, safeLocation])
 
   const fallbackCoordinates = { latitude: 59.9139, longitude: 10.7522 }
   const mapCoordinates = coordinates || fallbackCoordinates

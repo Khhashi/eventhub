@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react"
-import { CircleMarker, MapContainer, Popup, TileLayer } from "react-leaflet"
+import {
+  CircleMarker,
+  MapContainer,
+  Popup,
+  TileLayer,
+  Tooltip,
+} from "react-leaflet"
 
 const locationCache = new Map()
 
@@ -94,6 +100,9 @@ export default function MapPreview({ location }) {
           pathOptions={{ color: "#2563eb", fillColor: "#2563eb", fillOpacity: 0.8 }}
           radius={8}
         >
+          <Tooltip direction="top" offset={[0, -8]}>
+            {safeLocation}
+          </Tooltip>
           <Popup>{safeLocation}</Popup>
         </CircleMarker>
       </MapContainer>

@@ -158,22 +158,18 @@ export default function EventList() {
   }
 
   return (
-    <div className={`events-page ${user ? "events-page--private" : ""}`}>
-      {!user && (
-        <>
-          <video
-            className="events-page__background"
-            autoPlay
-            muted
-            loop
-            playsInline
-            aria-hidden="true"
-          >
-            <source src="/football-background.mp4" type="video/mp4" />
-          </video>
-          <div className="events-page__veil" />
-        </>
-      )}
+    <div className="events-page">
+      <video
+        className="events-page__background"
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+      >
+        <source src="/football-background.mp4" type="video/mp4" />
+      </video>
+      <div className="events-page__veil" />
 
       <div className="center-page events-page__content">
       <div className="events-hero">

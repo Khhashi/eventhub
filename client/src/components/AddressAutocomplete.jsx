@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react"
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
+const PHOTON_URL = "https://photon.komoot.io/api/"
 
 const formatAddress = (suggestion) => {
-  const address = suggestion.address || {}
-  const street = [address.road, address.house_number]
+  const address = suggestion.address || suggestion.properties || {}
+  const street = [address.road || address.street, address.house_number || address.housenumber]
     .filter(Boolean)
     .join(" ")
   const city = address.city || address.town || address.village || address.municipality
@@ -12,6 +13,33 @@ const formatAddress = (suggestion) => {
   const conciseAddress = [street, postal].filter(Boolean).join(", ")
 
   return conciseAddress || suggestion.display_name
+}
+
+const fetchPhotonSuggestions = async (query, signal) => {
+  const params = new URLSearchParams({
+    q: query,
+    limit: "5",
+    bbox: "4,58,32,71",
+  })
+  const response = await fetch(`${PHOTON_URL}?${params}`, { signal })
+
+  if (!response.ok) return []
+
+  const data = await response.json()
+  return data.features
+    .filter((feature) => feature.properties?.countrycode === "NO")
+    .map((feature) => ({
+      ...feature,
+      address: feature.properties,
+      display_name: [
+        feature.properties.name,
+        feature.properties.city,
+        feature.properties.postcode,
+      ]
+        .filter(Boolean)
+        .join(", "),
+      place_id: `${feature.properties.osm_type}-${feature.properties.osm_id}`,
+    }))
 }
 
 export default function AddressAutocomplete({ value, onChange, id = "location" }) {
@@ -52,13 +80,18 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
           headers: { Accept: "application/json" },
         })
 
+        let nextSuggestions = []
         if (response.ok) {
-          const nextSuggestions = await response.json()
-          if (currentRequestId === requestId.current) {
-            setSuggestions(nextSuggestions)
+          nextSuggestions = await response.json()
+        } else {
+          nextSuggestions = await fetchPhotonSuggestions(query, controller.signal)
+        }
+
+        if (currentRequestId === requestId.current) {
+          if (nextSuggestions.length === 0) {
+            setLookupError("Fant ingen norske adresseforslag.")
           }
-        } else if (currentRequestId === requestId.current) {
-          setLookupError("Adresseforslag er midlertidig utilgjengelige.")
+          setSuggestions(nextSuggestions)
         }
       } catch (error) {
         if (error.name !== "AbortError" && currentRequestId === requestId.current) {

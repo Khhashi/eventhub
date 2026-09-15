@@ -711,20 +711,22 @@ button:disabled {
 
 .auth-page {
   display: grid;
-  place-items: center;
-  min-height: 70vh;
+  align-items: start;
+  justify-items: center;
+  min-height: 58vh;
+  padding-top: 32px;
 }
 
 .auth-card {
   max-width: 560px;
   width: 100%;
-  padding: 42px 32px;
+  padding: 32px;
   text-align: center;
 }
 
 .auth-subtitle {
   color: #475569;
-  margin: 14px 0 28px;
+  margin: 10px 0 20px;
   line-height: 1.6;
 }
 

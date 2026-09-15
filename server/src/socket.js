@@ -9,18 +9,28 @@ export function initSocket(server) {
 
   io = new Server(server, {
     cors: {
-      origin: process.env.CLIENT_URL || "http://localhost:5173",
+      origin: [
+        process.env.CLIENT_URL || "http://localhost:5173",
+        "http://localhost:5173",
+        "http://localhost:5174",
+      ],
       credentials: true,
     },
   })
 
   io.use(async (socket, next) => {
     try {
+      const cookieHeader = socket.handshake.headers.cookie || ""
+      const cookieToken = cookieHeader
+        .split(";")
+        .map((cookie) => cookie.trim().split("="))
+        .find(([key]) => key === "eventflow_token")?.[1]
       const token =
         socket.handshake.auth?.token ||
-        socket.handshake.headers?.authorization?.split(" ")[1]
+        socket.handshake.headers?.authorization?.split(" ")[1] ||
+        cookieToken
 
-      if (!token) return next(new Error("Unauthorized"))
+      if (!token) return next(new Error("Du må logge inn først."))
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
@@ -30,7 +40,7 @@ export function initSocket(server) {
       socket.user = user
       next()
     } catch {
-      next(new Error("Unauthorized"))
+      next(new Error("Innloggingen kunne ikke bekreftes."))
     }
   })
 

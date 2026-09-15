@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react"
-import {
-  CircleMarker,
-  MapContainer,
-  Popup,
-  TileLayer,
-  Tooltip,
-} from "react-leaflet"
-
-const locationCache = new Map()
 
 export default function MapPreview({ location }) {
   const safeLocation = location || "Oslo"
-  const locationKey = safeLocation.trim().toLowerCase()
   const query = encodeURIComponent(safeLocation)
   const mapUrl = `https://www.openstreetmap.org/search?query=${query}`
   const [coordinates, setCoordinates] = useState(null)
@@ -19,22 +9,6 @@ export default function MapPreview({ location }) {
 
   useEffect(() => {
     const controller = new AbortController()
-    const cachedCoordinates = locationCache.get(locationKey)
-
-    if (cachedCoordinates) {
-      setCoordinates(cachedCoordinates)
-      setMapStatus("")
-      return () => controller.abort()
-    }
-
-    if (locationCache.has(locationKey)) {
-      setCoordinates(null)
-      setMapStatus("Fant ikke en nøyaktig plassering")
-      return () => controller.abort()
-    }
-
-    setCoordinates(null)
-    setMapStatus("Laster kart...")
 
     const findLocation = async () => {
       try {
@@ -55,17 +29,14 @@ export default function MapPreview({ location }) {
         const result = results[0]
 
         if (!result) {
-          locationCache.set(locationKey, null)
           setMapStatus("Fant ikke en nøyaktig plassering")
           return
         }
 
-        const nextCoordinates = {
+        setCoordinates({
           latitude: Number(result.lat),
           longitude: Number(result.lon),
-        }
-        locationCache.set(locationKey, nextCoordinates)
-        setCoordinates(nextCoordinates)
+        })
         setMapStatus("")
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -76,36 +47,29 @@ export default function MapPreview({ location }) {
 
     findLocation()
     return () => controller.abort()
-  }, [locationKey, safeLocation])
+  }, [safeLocation])
 
   const fallbackCoordinates = { latitude: 59.9139, longitude: 10.7522 }
   const mapCoordinates = coordinates || fallbackCoordinates
+  const delta = coordinates ? 0.008 : 0.04
+  const bbox = [
+    mapCoordinates.longitude - delta,
+    mapCoordinates.latitude - delta,
+    mapCoordinates.longitude + delta,
+    mapCoordinates.latitude + delta,
+  ].join(",")
+  const embedUrl =
+    `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}` +
+    `&layer=mapnik&marker=${mapCoordinates.latitude},${mapCoordinates.longitude}`
 
   return (
-    <div className="map-preview" title={`Kart for ${safeLocation}`}>
-      <MapContainer
-        key={`${mapCoordinates.latitude}-${mapCoordinates.longitude}`}
-        className="map-preview__canvas"
-        center={[mapCoordinates.latitude, mapCoordinates.longitude]}
-        zoom={coordinates ? 14 : 10}
-        scrollWheelZoom={false}
+    <div className="map-preview">
+      <iframe
         title={`Kart for ${safeLocation}`}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <CircleMarker
-          center={[mapCoordinates.latitude, mapCoordinates.longitude]}
-          pathOptions={{ color: "#2563eb", fillColor: "#2563eb", fillOpacity: 0.8 }}
-          radius={8}
-        >
-          <Tooltip direction="top" offset={[0, -8]}>
-            {safeLocation}
-          </Tooltip>
-          <Popup>{safeLocation}</Popup>
-        </CircleMarker>
-      </MapContainer>
+        src={embedUrl}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
       {mapStatus && <span className="map-preview__status">{mapStatus}</span>}
       <a
         href={mapUrl}

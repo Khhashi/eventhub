@@ -1,50 +1,43 @@
 import { Link, useLocation } from "react-router-dom"
 import {
-  ArrowLeftOnRectangleIcon,
   CalendarDaysIcon,
   PlusIcon,
   UserCircleIcon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline"
 
 export default function Sidebar({ user, onLogout }) {
   const location = useLocation()
 
   const isActive = (path) => location.pathname === path
-  const scrollToTop = () => {
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
-  }
 
   return (
     <aside className="sidebar">
       <Link to="/events" className="sidebar-brand">
-        <span className="brand-mark">E</span>
+        <span className="brand-mark">M</span>
         <span>Møteplass</span>
       </Link>
 
+      <div className="sidebar-section-label">Arbeidsområde</div>
       <nav className="sidebar-nav" aria-label="Hovedmeny">
-        <Link
-          className={isActive("/events") ? "active" : ""}
-          to="/events"
-          onClick={scrollToTop}
-        >
-          <CalendarDaysIcon className="sidebar-nav__icon" aria-hidden="true" />
+        <Link className={isActive("/events") ? "active" : ""} to="/events">
+          <CalendarDaysIcon className="nav-icon" aria-hidden="true" />
           Arrangementer
         </Link>
         <Link className={isActive("/profile") ? "active" : ""} to="/profile">
-          <UserCircleIcon className="sidebar-nav__icon" aria-hidden="true" />
+          <UserCircleIcon className="nav-icon" aria-hidden="true" />
           Profil
         </Link>
         <Link
           className={`sidebar-create ${isActive("/create") ? "active" : ""}`}
           to="/create"
         >
-          <PlusIcon className="sidebar-nav__icon" aria-hidden="true" />
+          <PlusIcon className="nav-icon" aria-hidden="true" />
           Opprett arrangement
         </Link>
       </nav>
 
-      <div className={`sidebar-footer ${user ? "" : "sidebar-footer--login"}`}>
+      <div className="sidebar-footer">
         {user ? (
           <>
             <div className="sidebar-user">
@@ -57,7 +50,7 @@ export default function Sidebar({ user, onLogout }) {
               </div>
             </div>
             <button className="sidebar-logout" onClick={onLogout}>
-              <ArrowLeftOnRectangleIcon className="button-icon" aria-hidden="true" />
+              <ArrowRightOnRectangleIcon className="nav-icon" aria-hidden="true" />
               Logg ut
             </button>
           </>

@@ -16,16 +16,9 @@ import Profile from "./pages/Profile"
 import NotFound from "./pages/NotFound"
 import { getMe } from "./api/auth"
 import Sidebar from "./components/Sidebar"
-import {
-  ArrowLeftIcon,
-  ArrowPathIcon,
-} from "@heroicons/react/24/outline"
+import { ArrowLeftIcon, ArrowPathIcon } from "@heroicons/react/24/outline"
 
-function ProtectedRoute({ user, loading, children }) {
-  if (loading) {
-    return <div className="center-page">Sjekker innlogging...</div>
-  }
-
+function ProtectedRoute({ user, children }) {
   return user ? children : <Navigate to="/login" replace />
 }
 
@@ -33,7 +26,6 @@ export default function App() {
   const navigate = useNavigate()
   const location = useLocation()
   const [user, setUser] = useState(null)
-  const [authLoading, setAuthLoading] = useState(true)
 
   const checkAuth = async () => {
     try {
@@ -41,19 +33,12 @@ export default function App() {
       setUser(me)
     } catch {
       setUser(null)
-    } finally {
-      setAuthLoading(false)
     }
   }
 
   useEffect(() => {
     checkAuth()
   }, [])
-
-  useEffect(() => {
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
-  }, [location.pathname])
 
   const handleLogout = () => {
     localStorage.removeItem("token")
@@ -80,13 +65,15 @@ export default function App() {
             </button>
           )}
 
-          <button
-            className="button-secondary"
-            onClick={() => navigate(0)}
-          >
-            <ArrowPathIcon className="button-icon" aria-hidden="true" />
-            Oppdater
-          </button>
+          {!isEventsPage && (
+            <button
+              className="button-secondary"
+              onClick={() => navigate(0)}
+            >
+              <ArrowPathIcon className="button-icon" aria-hidden="true" />
+              Oppdater
+            </button>
+          )}
         </div>
 
         <Routes>
@@ -95,19 +82,11 @@ export default function App() {
           <Route path="/events/:id" element={<EventDetails />} />
           <Route
             path="/events/:id/edit"
-            element={
-              <ProtectedRoute user={user} loading={authLoading}>
-                <EditEvent />
-              </ProtectedRoute>
-            }
+            element={<ProtectedRoute user={user}><EditEvent /></ProtectedRoute>}
           />
           <Route
             path="/create"
-            element={
-              <ProtectedRoute user={user} loading={authLoading}>
-                <CreateEvent />
-              </ProtectedRoute>
-            }
+            element={<ProtectedRoute user={user}><CreateEvent /></ProtectedRoute>}
           />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />

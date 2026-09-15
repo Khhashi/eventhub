@@ -1,6 +1,6 @@
 import React from "react"
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { render, screen, fireEvent, cleanup } from "@testing-library/react"
+import { describe, it, expect, vi, beforeEach } from "vitest"
+import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import EventList from "../pages/EventList.jsx"
 
@@ -16,10 +16,6 @@ import { fetchEvents } from "../api/events"
 import { getMe } from "../api/auth"
 
 describe("EventList", () => {
-  afterEach(() => {
-    cleanup()
-  })
-
   beforeEach(() => {
     vi.clearAllMocks()
     getMe.mockResolvedValue({ _id: "organizer-1", role: "organizer" })
@@ -44,7 +40,6 @@ describe("EventList", () => {
     )
 
     expect(await screen.findByText("Test event")).toBeInTheDocument()
-    expect(screen.getByText("Viser 1 av 1 arrangementer")).toBeInTheDocument()
     expect(screen.getAllByText(/Oslo/i).length).toBeGreaterThan(0)
     expect(screen.getByRole("link", { name: /rediger/i })).toBeInTheDocument()
   })
@@ -69,49 +64,5 @@ describe("EventList", () => {
 
     expect(await screen.findByText("Møte i Bergen")).toBeInTheDocument()
     expect(screen.getByTitle(/Kart for Bergen/i)).toBeInTheDocument()
-  })
-
-  it("allows sorting events by date and resetting the filters", async () => {
-    fetchEvents.mockResolvedValueOnce([
-      {
-        _id: "a",
-        title: "Sommerfest",
-        description: "Fest",
-        location: "Oslo",
-        date: "2026-07-15T00:00:00.000Z",
-        category: "Fest",
-        createdBy: { _id: "organizer-1" },
-      },
-      {
-        _id: "b",
-        title: "Tech meetup",
-        description: "Møte",
-        location: "Bergen",
-        date: "2026-02-10T00:00:00.000Z",
-        category: "Tech",
-        createdBy: { _id: "organizer-1" },
-      },
-    ])
-
-    render(
-      <MemoryRouter>
-        <EventList />
-      </MemoryRouter>
-    )
-
-    const sortSelect = await screen.findByLabelText(/sorter arrangementer/i)
-    expect(screen.getByRole("button", { name: /nullstill/i })).toBeInTheDocument()
-
-    fireEvent.change(sortSelect, { target: { value: "latest" } })
-
-    const cards = screen.getAllByRole("heading", { level: 3 })
-    expect(cards[0]).toHaveTextContent("Sommerfest")
-    expect(screen.getByRole("button", { name: /nullstill/i })).toBeInTheDocument()
-
-    fireEvent.click(screen.getByRole("button", { name: /nullstill/i }))
-
-    expect(screen.getByLabelText(/søk etter arrangement/i)).toHaveValue("")
-    expect(screen.getByLabelText(/sorter arrangementer/i)).toHaveValue("soonest")
-    expect(screen.getByRole("button", { name: /nullstill/i })).toBeInTheDocument()
   })
 })

@@ -11,10 +11,6 @@ import eventRoutes from "./routes/eventRoutes.js"
 dotenv.config()
 
 const app = express()
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-app.use(express.static(path.join(__dirname, "../../client/dist")))
 
 app.use(express.json())
 
@@ -51,6 +47,11 @@ if (process.env.NODE_ENV === "test") {
   app.use("/api/auth", authRoutes)
   app.use("/api/events", eventRoutes)
 }
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+app.use(express.static(path.join(__dirname, "../../client/dist")))
 
 app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "../../client/dist/index.html"))

@@ -131,6 +131,16 @@ export default function EventList() {
   return (
     <div className="center-page">
       <div className="events-hero">
+        <video
+          className="events-hero__video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+        >
+          <source src="/event-background.webm" type="video/webm" />
+        </video>
         <div>
           <p className="eyebrow">Oversikt</p>
           <h1>Arrangementer</h1>

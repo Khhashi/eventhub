@@ -12,7 +12,6 @@ export default function Sidebar({ user, onLogout }) {
         <span>Møteplass</span>
       </Link>
 
-      <div className="sidebar-section-label">Arbeidsområde</div>
       <nav className="sidebar-nav" aria-label="Hovedmeny">
         <Link className={isActive("/events") ? "active" : ""} to="/events">
           Arrangementer

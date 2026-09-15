@@ -1,4 +1,9 @@
 import { Link, useLocation } from "react-router-dom"
+import {
+  CalendarDaysIcon,
+  PlusIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline"
 
 export default function Sidebar({ user, onLogout }) {
   const location = useLocation()
@@ -14,18 +19,18 @@ export default function Sidebar({ user, onLogout }) {
 
       <nav className="sidebar-nav" aria-label="Hovedmeny">
         <Link className={isActive("/events") ? "active" : ""} to="/events">
-          <span className="sidebar-nav__icon" aria-hidden="true">E</span>
+          <CalendarDaysIcon className="sidebar-nav__icon" aria-hidden="true" />
           Arrangementer
         </Link>
         <Link className={isActive("/profile") ? "active" : ""} to="/profile">
-          <span className="sidebar-nav__icon" aria-hidden="true">P</span>
+          <UserCircleIcon className="sidebar-nav__icon" aria-hidden="true" />
           Profil
         </Link>
         <Link
           className={`sidebar-create ${isActive("/create") ? "active" : ""}`}
           to="/create"
         >
-          <span className="sidebar-nav__icon" aria-hidden="true">+</span>
+          <PlusIcon className="sidebar-nav__icon" aria-hidden="true" />
           Opprett arrangement
         </Link>
       </nav>

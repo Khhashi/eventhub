@@ -8,7 +8,7 @@ import {
 } from "../api/events"
 import { getMe } from "../api/auth"
 import MapPreview from "../components/MapPreview.jsx"
-import { ArrowPathIcon } from "@heroicons/react/24/outline"
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/outline"
 
 export default function EventList() {
   const [events, setEvents] = useState([])
@@ -185,7 +185,7 @@ export default function EventList() {
           className="button-secondary filter-reset"
           onClick={resetFilters}
         >
-          <ArrowPathIcon className="button-icon" aria-hidden="true" />
+          <ArrowUturnLeftIcon className="button-icon" aria-hidden="true" />
           Nullstill
         </button>
       </div>

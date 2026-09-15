@@ -100,12 +100,18 @@ describe("EventList", () => {
     )
 
     const sortSelect = await screen.findByLabelText(/sorter arrangementer/i)
-    fireEvent.change(sortSelect, { target: { value: "soonest" } })
+    expect(screen.getByRole("button", { name: /nullstill/i })).toBeInTheDocument()
+
+    fireEvent.change(sortSelect, { target: { value: "latest" } })
 
     const cards = screen.getAllByRole("heading", { level: 3 })
-    expect(cards[0]).toHaveTextContent("Tech meetup")
+    expect(cards[0]).toHaveTextContent("Sommerfest")
+    expect(screen.getByRole("button", { name: /nullstill/i })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole("button", { name: /nullstill/i }))
+
     expect(screen.getByLabelText(/søk etter arrangement/i)).toHaveValue("")
+    expect(screen.getByLabelText(/sorter arrangementer/i)).toHaveValue("soonest")
+    expect(screen.getByRole("button", { name: /nullstill/i })).toBeInTheDocument()
   })
 })

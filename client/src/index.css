@@ -168,6 +168,18 @@ a {
   width: 100%;
 }
 
+.sidebar-footer--login .sidebar-login {
+  background: transparent;
+  border: 1px solid #475569;
+  box-shadow: none;
+  color: #d7dee7;
+}
+
+.sidebar-footer--login .sidebar-login:hover {
+  background: #1e293b;
+  color: #fff;
+}
+
 .app-main {
   min-width: 0;
   flex: 1;

@@ -28,12 +28,7 @@ export default function Profile() {
 
   if (error) {
     return (
-      <div className="public-page">
-        <video className="public-page__background" autoPlay muted loop playsInline aria-hidden="true">
-          <source src="/football-background.mp4" type="video/mp4" />
-        </video>
-        <div className="public-page__veil" />
-        <div className="center-page auth-page public-page__content">
+      <div className="center-page auth-page">
         <div className="auth-card">
           <p className="eyebrow">Profil</p>
           <h2>Logg inn for å se profilen din</h2>
@@ -43,7 +38,6 @@ export default function Profile() {
           <Link to="/login" className="button-primary auth-button">
             Gå til innlogging
           </Link>
-        </div>
         </div>
       </div>
     )

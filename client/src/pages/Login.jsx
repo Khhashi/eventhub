@@ -4,12 +4,7 @@ export default function Login() {
   }
 
   return (
-    <div className="public-page">
-      <video className="public-page__background" autoPlay muted loop playsInline aria-hidden="true">
-        <source src="/football-background.mp4" type="video/mp4" />
-      </video>
-      <div className="public-page__veil" />
-      <div className="center-page auth-page public-page__content">
+    <div className="center-page auth-page">
       <div className="auth-card">
         <p className="eyebrow">Velkommen</p>
         <h2>Logg inn for å delta</h2>
@@ -21,7 +16,6 @@ export default function Login() {
         >
           Logg inn med Google
         </button>
-      </div>
       </div>
     </div>
   )

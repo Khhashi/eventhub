@@ -15,8 +15,29 @@ a {
 }
 
 .app-layout {
+  position: relative;
   min-height: 100vh;
   display: flex;
+}
+
+.app-background-video,
+.app-background-veil {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.app-background-video {
+  z-index: 0;
+  object-fit: cover;
+  opacity: 0.48;
+}
+
+.app-background-veil {
+  z-index: 1;
+  background: rgba(248, 251, 255, 0.66);
 }
 
 .sidebar {
@@ -172,6 +193,8 @@ a {
 }
 
 .app-main {
+  position: relative;
+  z-index: 2;
   min-width: 0;
   flex: 1;
 }

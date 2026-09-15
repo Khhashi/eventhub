@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 
@@ -18,16 +18,20 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
   const [focused, setFocused] = useState(false)
+  const requestId = useRef(0)
 
   useEffect(() => {
     const query = value.trim()
 
     if (query.length < 3) {
       setSuggestions([])
+      setLoading(false)
       return undefined
     }
 
     const controller = new AbortController()
+    const currentRequestId = ++requestId.current
+    setSuggestions([])
     const timeout = window.setTimeout(async () => {
       setLoading(true)
 
@@ -38,6 +42,7 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
           addressdetails: "1",
           limit: "5",
           countrycodes: "no",
+          "accept-language": "no",
         })
         const response = await fetch(`${NOMINATIM_URL}?${params}`, {
           signal: controller.signal,
@@ -45,14 +50,19 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
         })
 
         if (response.ok) {
-          setSuggestions(await response.json())
+          const nextSuggestions = await response.json()
+          if (currentRequestId === requestId.current) {
+            setSuggestions(nextSuggestions)
+          }
         }
       } catch (error) {
-        if (error.name !== "AbortError") {
+        if (error.name !== "AbortError" && currentRequestId === requestId.current) {
           setSuggestions([])
         }
       } finally {
-        setLoading(false)
+        if (currentRequestId === requestId.current) {
+          setLoading(false)
+        }
       }
     }, 450)
 

@@ -108,6 +108,11 @@ a {
   padding-top: 24px;
 }
 
+.sidebar-footer--login {
+  margin-top: 24px;
+  padding-top: 0;
+}
+
 .sidebar-user {
   display: flex;
   align-items: center;

@@ -28,7 +28,7 @@ export default function Sidebar({ user, onLogout }) {
         </Link>
       </nav>
 
-      <div className="sidebar-footer">
+      <div className={`sidebar-footer ${user ? "" : "sidebar-footer--login"}`}>
         {user ? (
           <>
             <div className="sidebar-user">

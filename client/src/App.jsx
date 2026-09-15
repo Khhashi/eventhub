@@ -21,7 +21,11 @@ import {
   ArrowPathIcon,
 } from "@heroicons/react/24/outline"
 
-function ProtectedRoute({ user, children }) {
+function ProtectedRoute({ user, loading, children }) {
+  if (loading) {
+    return <div className="center-page">Sjekker innlogging...</div>
+  }
+
   return user ? children : <Navigate to="/login" replace />
 }
 
@@ -29,6 +33,7 @@ export default function App() {
   const navigate = useNavigate()
   const location = useLocation()
   const [user, setUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
 
   const checkAuth = async () => {
     try {
@@ -36,6 +41,8 @@ export default function App() {
       setUser(me)
     } catch {
       setUser(null)
+    } finally {
+      setAuthLoading(false)
     }
   }
 
@@ -83,11 +90,19 @@ export default function App() {
           <Route path="/events/:id" element={<EventDetails />} />
           <Route
             path="/events/:id/edit"
-            element={<ProtectedRoute user={user}><EditEvent /></ProtectedRoute>}
+            element={
+              <ProtectedRoute user={user} loading={authLoading}>
+                <EditEvent />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/create"
-            element={<ProtectedRoute user={user}><CreateEvent /></ProtectedRoute>}
+            element={
+              <ProtectedRoute user={user} loading={authLoading}>
+                <CreateEvent />
+              </ProtectedRoute>
+            }
           />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />

@@ -887,8 +887,14 @@ button:disabled {
   padding: 3px;
   border: 2px solid #fff;
   border-radius: 50%;
-  background: #ef4444;
+  background: #475569;
   color: #fff;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.profile-picture-remove:hover:not(:disabled) {
+  background: #dc2626;
+  transform: scale(1.08);
 }
 
 .profile-picture-remove svg {

@@ -975,6 +975,10 @@ select {
     padding: 24px;
   }
 
+  .filter-reset {
+    width: 100%;
+  }
+
   .summary-grid,
   .loading-grid {
     grid-template-columns: 1fr;

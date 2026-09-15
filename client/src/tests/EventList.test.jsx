@@ -105,7 +105,7 @@ describe("EventList", () => {
     const cards = screen.getAllByRole("heading", { level: 3 })
     expect(cards[0]).toHaveTextContent("Tech meetup")
 
-    fireEvent.click(screen.getByRole("button", { name: /tilbakestill filtre/i }))
+    fireEvent.click(screen.getByRole("button", { name: /nullstill/i }))
     expect(screen.getByLabelText(/søk etter arrangement/i)).toHaveValue("")
   })
 })

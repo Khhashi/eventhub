@@ -95,8 +95,27 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
         }
       } catch (error) {
         if (error.name !== "AbortError" && currentRequestId === requestId.current) {
-          setSuggestions([])
-          setLookupError("Kunne ikke hente adresseforslag akkurat nå.")
+          try {
+            const fallbackSuggestions = await fetchPhotonSuggestions(
+              query,
+              controller.signal
+            )
+
+            if (currentRequestId === requestId.current) {
+              if (fallbackSuggestions.length === 0) {
+                setLookupError("Fant ingen norske adresseforslag.")
+              }
+              setSuggestions(fallbackSuggestions)
+            }
+          } catch (fallbackError) {
+            if (
+              fallbackError.name !== "AbortError" &&
+              currentRequestId === requestId.current
+            ) {
+              setSuggestions([])
+              setLookupError("Kunne ikke hente adresseforslag akkurat nå.")
+            }
+          }
         }
       } finally {
         if (currentRequestId === requestId.current) {

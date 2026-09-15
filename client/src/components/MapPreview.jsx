@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { CircleMarker, MapContainer, Popup, TileLayer } from "react-leaflet"
 
 const locationCache = new Map()
 
@@ -73,25 +74,29 @@ export default function MapPreview({ location }) {
 
   const fallbackCoordinates = { latitude: 59.9139, longitude: 10.7522 }
   const mapCoordinates = coordinates || fallbackCoordinates
-  const delta = coordinates ? 0.008 : 0.04
-  const bbox = [
-    mapCoordinates.longitude - delta,
-    mapCoordinates.latitude - delta,
-    mapCoordinates.longitude + delta,
-    mapCoordinates.latitude + delta,
-  ].join(",")
-  const embedUrl =
-    `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}` +
-    `&layer=mapnik&marker=${mapCoordinates.latitude},${mapCoordinates.longitude}`
 
   return (
-    <div className="map-preview">
-      <iframe
+    <div className="map-preview" title={`Kart for ${safeLocation}`}>
+      <MapContainer
+        key={`${mapCoordinates.latitude}-${mapCoordinates.longitude}`}
+        className="map-preview__canvas"
+        center={[mapCoordinates.latitude, mapCoordinates.longitude]}
+        zoom={coordinates ? 14 : 10}
+        scrollWheelZoom={false}
         title={`Kart for ${safeLocation}`}
-        src={embedUrl}
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      />
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <CircleMarker
+          center={[mapCoordinates.latitude, mapCoordinates.longitude]}
+          pathOptions={{ color: "#2563eb", fillColor: "#2563eb", fillOpacity: 0.8 }}
+          radius={8}
+        >
+          <Popup>{safeLocation}</Popup>
+        </CircleMarker>
+      </MapContainer>
       {mapStatus && <span className="map-preview__status">{mapStatus}</span>}
       <a
         href={mapUrl}

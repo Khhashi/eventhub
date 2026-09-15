@@ -507,11 +507,13 @@ a {
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
 }
 
-.map-preview iframe {
-  display: block;
+.map-preview__canvas {
   width: 100%;
   height: 190px;
-  border: 0;
+}
+
+.map-preview__canvas.leaflet-container {
+  font: inherit;
 }
 
 .map-preview__link {

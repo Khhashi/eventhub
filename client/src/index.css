@@ -102,6 +102,7 @@ a {
   color: #fff;
   justify-content: center;
   font-weight: 700;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.24);
 }
 
 .sidebar-nav a.sidebar-create:hover,

@@ -51,6 +51,17 @@ export default function App() {
 
   return (
     <div className="app-layout">
+      <video
+        className="app-background-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+      >
+        <source src="/football-background.mp4" type="video/mp4" />
+      </video>
+      <div className="app-background-veil" />
       <Sidebar user={user} onLogout={handleLogout} />
 
       <main className="app-main">

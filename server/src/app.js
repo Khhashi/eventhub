@@ -51,9 +51,20 @@ if (process.env.NODE_ENV === "test") {
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-app.use(express.static(path.join(__dirname, "../../client/dist")))
+app.use(
+  express.static(path.join(__dirname, "../../client/dist"), {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith("index.html")) {
+        res.setHeader("Cache-Control", "no-store")
+      } else {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
+      }
+    },
+  })
+)
 
 app.get(/.*/, (req, res) => {
+  res.setHeader("Cache-Control", "no-store")
   res.sendFile(path.join(__dirname, "../../client/dist/index.html"))
 })
 

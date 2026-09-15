@@ -7,6 +7,7 @@ import {
 } from "../api/events"
 import { getMe } from "../api/auth"
 import MapPreview from "../components/MapPreview.jsx"
+import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 
 export default function EventDetails() {
   const { id } = useParams()
@@ -40,7 +41,10 @@ export default function EventDetails() {
       <div className="center-page">
         <div className="empty-panel">
           <h2>{error}</h2>
-          <Link to="/events" className="button-secondary">Tilbake til arrangementer</Link>
+          <Link to="/events" className="button-secondary">
+            <ArrowLeftIcon className="button-icon" aria-hidden="true" />
+            Tilbake til arrangementer
+          </Link>
         </div>
       </div>
     )

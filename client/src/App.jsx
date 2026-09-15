@@ -16,7 +16,10 @@ import Profile from "./pages/Profile"
 import NotFound from "./pages/NotFound"
 import { getMe } from "./api/auth"
 import Sidebar from "./components/Sidebar"
-import { ArrowLeftIcon } from "@heroicons/react/24/outline"
+import {
+  ArrowLeftIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline"
 
 function ProtectedRoute({ user, children }) {
   return user ? children : <Navigate to="/login" replace />
@@ -69,6 +72,7 @@ export default function App() {
             className="button-secondary"
             onClick={() => navigate(0)}
           >
+            <ArrowPathIcon className="button-icon" aria-hidden="true" />
             Oppdater
           </button>
         </div>

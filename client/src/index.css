@@ -99,6 +99,7 @@ a {
 .sidebar-nav a.sidebar-create {
   margin-top: 12px;
   padding: 9px 12px;
+  border-radius: 999px;
   background: #2563eb;
   color: #fff;
   justify-content: center;

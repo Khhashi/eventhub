@@ -625,7 +625,8 @@ button:disabled {
   border-radius: 12px;
   border: 1px solid #dbe4f0;
   font-size: 14px;
-  min-width: 220px;
+  min-width: 0;
+  flex: 1 1 180px;
   background: white;
 }
 

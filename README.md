@@ -1,159 +1,92 @@
 # Møteplass
 
-Møteplass er en fullstack-applikasjon for å opprette, finne og delta på arrangementer. Applikasjonen er laget med React og Vite i frontend, Express og MongoDB i backend, og Google OAuth for innlogging.
+[![CI](https://github.com/Khhashi/eventhub/actions/workflows/ci.yml/badge.svg)](https://github.com/Khhashi/eventhub/actions/workflows/ci.yml)
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?logo=socketdotio&logoColor=white)
 
-## Publisert applikasjon
+Fullstack-applikasjon for å opprette, finne og delta på arrangementer. Bygget med React og Vite i frontend, Express og MongoDB i backend, innlogging med Google OAuth og sanntidsoppdateringer med Socket.IO.
 
-[Åpne Møteplass](https://eventmeeting-f3eu.onrender.com/events)
+**[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)**<br>
+Kan bruke opptil ett minutt på å starte (Render gratisnivå).
 
-## Hva kan brukeren gjøre?
+## Grensesnitt
 
-Uten innlogging kan brukeren:
+Her er grensesnittet til nettsiden, fra oversikten over arrangementer og detaljsiden med kart til skjemaet for nye arrangementer og profilsiden.
 
-- Se alle arrangementer
-- Søke etter arrangementer
-- Filtrere på kategori og dato
-- Se detaljer og adresse på et arrangement
-- Se arrangementet på kart
+<table>
+  <tr>
+    <td width="50%"><img src="https://github.com/user-attachments/assets/4f964660-76b5-4377-8cd2-a1496416da05" alt="Oversikt over arrangementer med søk, filtre og kart" /></td>
+    <td width="50%"><img src="https://github.com/user-attachments/assets/500ad7ab-1d2b-46f3-ad47-d7ef5f30019e" alt="Detaljside for et arrangement med kart, påmelding og deling" /></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="https://github.com/user-attachments/assets/e9299d04-965d-43da-90dc-54d154394664" alt="Skjema for å opprette et nytt arrangement" /></td>
+    <td width="50%"><img src="https://github.com/user-attachments/assets/d0fe9742-11d4-4c91-8cc0-51df48495a68" alt="Profilside med egne arrangementer og påmeldinger" /></td>
+  </tr>
+</table>
 
-Etter innlogging kan brukeren:
+## Funksjoner
 
+**Uten innlogging**
+- Se, søke i og filtrere arrangementer på kategori og dato
+- Se detaljer, adresse og kart for hvert arrangement
+
+**Med innlogging**
 - Melde seg på og av arrangementer
-- Se egen profil
-- Se egne arrangementer og påmeldinger
-- Opprette nye arrangementer
-- Dele arrangementer med andre
-- Legge arrangementer til i kalenderen
-
-En arrangør kan redigere og slette egne arrangementer. Serveren kontrollerer eierskap, slik at en bruker ikke kan endre andres arrangementer ved å sende egne API-kall.
-
-Arrangementlisten oppdateres automatisk for innloggede brukere når andre oppretter, redigerer, sletter eller melder seg på et arrangement. Dette skjer gjennom Socket.IO uten at siden må lastes inn på nytt.
-
-## Kart og adresser
-
-Når en bruker skriver inn et sted, søker applikasjonen etter adresser med OpenStreetMap Nominatim. Brukeren velger et forslag, og applikasjonen lagrer en kort adresse med gate, husnummer, postnummer og by.
-
-Kartet geokoder adressen og viser et OpenStreetMap-kart med markør og riktig zoom. Hvis adressen ikke kan finnes, vises en tydelig fallback i stedet for at siden krasjer.
+- Opprette arrangementer med adressesøk via OpenStreetMap
+- Redigere og slette egne arrangementer
+- Dele arrangementer og legge dem til i kalenderen
+- Profilside med egne arrangementer, påmeldinger og profilbilde
+- Listen oppdateres i sanntid når andre oppretter, endrer, sletter eller melder seg på
 
 ## Teknologi
 
-- React, React Router og Vite
-- Express 5 og Node.js
-- MongoDB med Mongoose
-- JWT for server-side identitet
-- Google OAuth 2.0
-- httpOnly-cookie for OAuth-sesjonen
-- Vitest, Testing Library og Supertest
-- Socket.IO for oppdateringer ved event-endringer
-- Heroicons for tilgjengelige navigasjons- og handlingsikoner
-- Responsiv layout for desktop og mobil
-- Bakgrunnsvideo på arrangementssiden
+**React, React Router, Vite · Node.js, Express 5 · MongoDB, Mongoose · Google OAuth 2.0, JWT · Socket.IO · Vitest, Testing Library, Supertest · GitHub Actions, Render**
 
-## Prosjektstruktur
+## Tekniske valg
 
-```text
-client/     React-frontend, sider, komponenter og frontend-tester
-server/     Express-API, modeller, middleware og backend-tester
-```
+- **Sikker innlogging:** Etter innlogging med Google utsteder serveren en JWT som lagres i en `httpOnly`-cookie. Tokenet sendes aldri i URL-en og kan ikke leses av JavaScript i nettleseren.
+- **Tilgangskontroll på serveren:** Serveren sjekker eierskap, så bare arrangøren eller en admin kan endre eller slette et arrangement, også ved direkte API-kall. Nye brukere får alltid rollen `user`, og bare redigerbare felt kan oppdateres.
+- **Sanntid med innlogging:** Socket.IO-tilkoblinger krever gyldig innlogging, så bare innloggede brukere får sanntidsoppdateringer.
+- **Robust kartvisning:** Hvis en adresse ikke kan finnes, vises en tydelig melding i stedet for at siden krasjer.
 
-Viktige API-ruter:
+## Tester og CI
 
-```text
-GET    /api/events
-GET    /api/events/:id
-POST   /api/events
-PUT    /api/events/:id
-DELETE /api/events/:id
-POST   /api/events/:id/register
-POST   /api/events/:id/unregister
-GET    /api/auth/me
-GET    /api/auth/profile
-GET    /api/auth/google
-POST   /api/auth/logout
-```
+21 automatiserte tester dekker innlogging, roller, tilgangskontroll, arrangementer, påmelding og profil i backend (Vitest og Supertest), og innlasting, kart, oppretting, redigering og routing i frontend (Vitest og Testing Library). GitHub Actions kjører testene på hver pull request og push til `main`.
 
-## Lokal oppstart
+## Arbeidsflyt
 
-### Forutsetninger
+Hver oppgave starter som et issue og utvikles på en egen feature-branch. Endringen går gjennom en pull request og merges til `main` når testene er grønne i GitHub Actions.
 
-- Node.js 20 eller nyere
-- MongoDB lokalt eller en tilgjengelig MongoDB-instans
-- Google OAuth-klient for innlogging
+## Kjør lokalt
 
-### 1. Installer avhengigheter
-
-Kjør kommandoen fra prosjektroten:
+Krever Node.js 20, MongoDB og en Google OAuth-klient.
 
 ```bash
 npm install
+npm install --prefix server
+npm install --prefix client
 ```
 
-### 2. Konfigurer miljøvariabler
-
-Kopier `server/.env.example` til `server/.env` og fyll inn verdiene:
+Opprett filen `server/.env`:
 
 ```dotenv
 PORT=3000
-JWT_SECRET=velg-en-lang-og-hemmelig-verdi
-MONGO_URI=mongodb://127.0.0.1:27017/pg6301
+MONGO_URI=mongodb://127.0.0.1:27017/moteplass
+JWT_SECRET=velg-en-lang-tilfeldig-verdi
 CLIENT_URL=http://localhost:5173
-GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 GOOGLE_CLIENT_ID=din-google-client-id
 GOOGLE_CLIENT_SECRET=din-google-client-secret
+GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 ```
 
-I Google Cloud Console må denne redirect URI-en være registrert nøyaktig:
-
-```text
-http://localhost:3000/api/auth/google/callback
-```
-
-### 3. Start applikasjonen
-
-Kjør frontend og backend samtidig fra prosjektroten:
+Registrer redirect-adressen over i Google Cloud Console, og start appen:
 
 ```bash
 npm run dev
 ```
 
-Frontend kjører normalt på `http://localhost:5173`, og backend kjører på `http://localhost:3000`.
-
-Hvis en av portene allerede er i bruk, kan Vite starte frontend på `5174`. Bruk da adressen som står i terminalen.
-
-## Tester og build
-
-Kjør alle tester:
-
-```bash
-npm test
-```
-
-Kjør bare frontend- eller backend-tester:
-
-```bash
-npm test --prefix client -- --run
-npm test --prefix server -- --run
-```
-
-Bygg frontend for produksjon:
-
-```bash
-npm run build --prefix client
-```
-
-Frontend-testene dekker blant annet innlasting av arrangementer, kartvisning, oppretting, redigering og routing. Backend-testene dekker autentisering, roller, tilgangskontroll, arrangementer, påmelding og helsesjekk.
-
-## Sikkerhet
-
-- Nye brukere får alltid rollen `user` ved registrering.
-- Oppdatering av arrangementer tillater bare redigerbare felt.
-- Bare eier eller admin kan redigere og slette et arrangement.
-- CORS bruker adressen fra `CLIENT_URL`.
-- OAuth-token lagres i en `httpOnly`-cookie og sendes ikke i URL-en.
-- `.env`-filer skal aldri committes til Git.
-
-## Før produksjonssetting
-
-Ved deploy må du sette produksjonsverdier for `CLIENT_URL`, `MONGO_URI`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` og `GOOGLE_REDIRECT_URI`.
-
-Produksjon bør bruke HTTPS. Da kan OAuth-cookie settes med `secure`-flagget, og Google OAuth må ha riktig produksjons-redirect URI registrert.
+Frontend kjører på `http://localhost:5173`, og backend på `http://localhost:3000`. Kjør testene med `npm test`.

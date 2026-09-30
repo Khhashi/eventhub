@@ -44,13 +44,13 @@ describe("Events", () => {
   })
 
   it("returns 401 without token", async () => {
-    const res = await request(app).get("/events")
+    const res = await request(app).get("/api/events")
     expect(res.status).toBe(401)
   })
 
   it("organizer can create event", async () => {
     const res = await request(app)
-      .post("/events")
+      .post("/api/events")
       .set("Authorization", `Bearer ${organizerToken}`)
       .send({
         title: "New Event",
@@ -68,7 +68,7 @@ describe("Events", () => {
 
   it("does not allow protected event fields to be changed", async () => {
     const res = await request(app)
-      .put(`/events/${eventId}`)
+      .put(`/api/events/${eventId}`)
       .set("Authorization", `Bearer ${organizerToken}`)
       .send({
         title: "Updated Event",
@@ -84,7 +84,7 @@ describe("Events", () => {
 
   it("user cannot create event", async () => {
     const res = await request(app)
-      .post("/events")
+      .post("/api/events")
       .set("Authorization", `Bearer ${userToken}`)
       .send({
         title: "Another Event",
@@ -99,7 +99,7 @@ describe("Events", () => {
 
   it("admin can delete event", async () => {
     const res = await request(app)
-      .delete(`/events/${eventId}`)
+      .delete(`/api/events/${eventId}`)
       .set("Authorization", `Bearer ${adminToken}`)
 
     expect(res.status).toBe(200)
@@ -116,7 +116,7 @@ describe("Events", () => {
     })
 
     const res = await request(app)
-      .post(`/events/${event._id}/register`)
+      .post(`/api/events/${event._id}/register`)
       .set("Authorization", `Bearer ${userToken}`)
 
     expect(res.status).toBe(200)
@@ -135,7 +135,7 @@ describe("Events", () => {
     })
 
     const res = await request(app)
-      .post(`/events/${event._id}/register`)
+      .post(`/api/events/${event._id}/register`)
       .set("Authorization", `Bearer ${userToken}`)
 
     expect(res.status).toBe(400)
@@ -145,7 +145,7 @@ describe("Events", () => {
     const fakeId = "507f1f77bcf86cd799439011"
 
     const res = await request(app)
-      .delete(`/events/${fakeId}`)
+      .delete(`/api/events/${fakeId}`)
       .set("Authorization", `Bearer ${adminToken}`)
 
     expect(res.status).toBe(404)

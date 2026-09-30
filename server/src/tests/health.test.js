@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest"
 import request from "supertest"
 import express from "express"
 import errorHandler from "../middleware/errorHandler.js"
+import app from "../app.js"
 
 describe("Error handler", () => {
   it("returns custom status and message", async () => {
@@ -34,5 +35,24 @@ describe("Error handler", () => {
 
     expect(res.status).toBe(500)
     expect(res.body.message).toBe("En intern serverfeil oppstod.")
+  })
+})
+
+describe("App", () => {
+  it("returns JSON 404 for unknown API routes", async () => {
+    const res = await request(app).get("/api/finnes-ikke")
+
+    expect(res.status).toBe(404)
+    expect(res.body.message).toBe("Fant ikke ressursen.")
+  })
+
+  it("uses errorHandler for invalid JSON bodies", async () => {
+    const res = await request(app)
+      .post("/api/auth/login")
+      .set("Content-Type", "application/json")
+      .send("{ ugyldig json")
+
+    expect(res.status).toBe(400)
+    expect(res.body).toHaveProperty("message")
   })
 })

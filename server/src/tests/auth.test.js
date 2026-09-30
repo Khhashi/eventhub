@@ -6,7 +6,7 @@ import { connectTestDB, disconnectTestDB } from "./setupTestDB.js"
 describe("Auth", () => {
   it("registers user", async () => {
     const res = await request(app)
-      .post("/auth/register")
+      .post("/api/auth/register")
       .send({
         name: "Test User",
         email: "test@example.com",
@@ -19,7 +19,7 @@ describe("Auth", () => {
 
   it("does not allow registration to assign an elevated role", async () => {
     const res = await request(app)
-      .post("/auth/register")
+      .post("/api/auth/register")
       .send({
         name: "Untrusted User",
         email: "untrusted@example.com",
@@ -42,7 +42,7 @@ describe("Auth", () => {
     })
 
     const res = await request(app)
-      .post("/auth/login")
+      .post("/api/auth/login")
       .send({
         email: "wrong@example.com",
         password: "wrongpass",

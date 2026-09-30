@@ -55,7 +55,7 @@ Her er grensesnittet til nettsiden, fra oversikten over arrangementer og detaljs
 
 ## Tester og CI
 
-21 automatiserte tester dekker innlogging, roller, tilgangskontroll, arrangementer, påmelding og profil i backend (Vitest og Supertest), og innlasting, kart, oppretting, redigering og routing i frontend (Vitest og Testing Library). GitHub Actions kjører testene på hver pull request og push til `main`.
+25 automatiserte tester dekker innlogging, roller, tilgangskontroll, arrangementer, påmelding, profil og feilhåndtering i backend (Vitest og Supertest), og innlasting, kart, oppretting, redigering, beskyttede ruter og 404 i frontend (Vitest og Testing Library). GitHub Actions kjører testene på hver pull request og push til `main`.
 
 ## Arbeidsflyt
 

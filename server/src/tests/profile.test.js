@@ -20,13 +20,13 @@ describe("Profile", () => {
   })
 
   it("returns 401 without token", async () => {
-    const res = await request(app).get("/profile")
+    const res = await request(app).get("/api/auth/profile")
     expect(res.status).toBe(401)
   })
 
   it("returns profile with valid token", async () => {
     const res = await request(app)
-      .get("/profile")
+      .get("/api/auth/profile")
       .set("Authorization", `Bearer ${token}`)
 
     expect(res.status).toBe(200)

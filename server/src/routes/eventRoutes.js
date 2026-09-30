@@ -15,13 +15,7 @@ import { protect, authorize } from "../middleware/authMiddleware.js"
 const router = express.Router()
 
 
-router.get(
-  "/",
-  process.env.NODE_ENV === "test"
-    ? protect
-    : (req, res, next) => next(),
-  getEvents
-)
+router.get("/", getEvents)
 
 router.get("/:id", getEventById)
 

@@ -49,7 +49,7 @@ Her er grensesnittet til nettsiden, fra oversikten over arrangementer og detaljs
 ## Tekniske valg
 
 - **Sikker innlogging:** Etter innlogging med Google utsteder serveren en JWT som lagres i en `httpOnly`-cookie. Tokenet sendes aldri i URL-en og kan ikke leses av JavaScript i nettleseren.
-- **Tilgangskontroll på serveren:** Serveren sjekker eierskap, så bare arrangøren eller en admin kan endre eller slette et arrangement, også ved direkte API-kall. Nye brukere får alltid rollen `user`, og bare redigerbare felt kan oppdateres.
+- **Tilgangskontroll på serveren:** Serveren sjekker eierskap, så bare arrangøren eller en admin kan endre eller slette et arrangement, også ved direkte API-kall. Rollen settes alltid på serveren: brukere som logger inn med Google får rollen `organizer` og kan opprette arrangementer, `admin` tildeles manuelt, og rollen kan aldri settes fra klienten. Bare redigerbare felt kan oppdateres.
 - **Sanntid med innlogging:** Socket.IO-tilkoblinger krever gyldig innlogging, så bare innloggede brukere får sanntidsoppdateringer.
 - **Robust kartvisning:** Hvis en adresse ikke kan finnes, vises en tydelig melding i stedet for at siden krasjer.
 

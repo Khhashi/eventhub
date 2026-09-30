@@ -7,6 +7,7 @@ import { fileURLToPath } from "url"
 
 import authRoutes from "./routes/authRoutes.js"
 import eventRoutes from "./routes/eventRoutes.js"
+import errorHandler from "./middleware/errorHandler.js"
 
 dotenv.config()
 
@@ -40,14 +41,12 @@ app.use(
   })
 )
 
-if (process.env.NODE_ENV === "test") {
-  app.use("/auth", authRoutes)
-  app.use("/events", eventRoutes)
-  app.use("/", authRoutes)
-} else {
-  app.use("/api/auth", authRoutes)
-  app.use("/api/events", eventRoutes)
-}
+app.use("/api/auth", authRoutes)
+app.use("/api/events", eventRoutes)
+
+app.use("/api", (req, res) => {
+  res.status(404).json({ message: "Fant ikke ressursen." })
+})
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -69,10 +68,6 @@ app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "../../client/dist/index.html"))
 })
 
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({
-    message: err.message || "En intern serverfeil oppstod.",
-  })
-})
+app.use(errorHandler)
 
 export default app

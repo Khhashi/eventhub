@@ -43,9 +43,10 @@ describe("Events", () => {
     adminToken = jwt.sign({ id: admin._id }, process.env.JWT_SECRET)
   })
 
-  it("returns 401 without token", async () => {
+  it("lists events without login", async () => {
     const res = await request(app).get("/api/events")
-    expect(res.status).toBe(401)
+    expect(res.status).toBe(200)
+    expect(Array.isArray(res.body)).toBe(true)
   })
 
   it("organizer can create event", async () => {

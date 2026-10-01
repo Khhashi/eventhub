@@ -42,11 +42,13 @@ a {
 }
 
 .sidebar {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 4;
   width: 236px;
   flex: 0 0 236px;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   padding: 26px 18px;
   box-sizing: border-box;
   background: #1f2933;
@@ -108,12 +110,6 @@ a {
   height: 17px;
   flex: 0 0 17px;
   margin-right: 7px;
-}
-
-.sidebar-nav a span {
-  width: 18px;
-  color: #64748b;
-  text-align: center;
 }
 
 .sidebar-nav a:hover,
@@ -191,6 +187,7 @@ a {
 
 .sidebar-login {
   width: 100%;
+  gap: 10px;
 }
 
 .app-main {
@@ -1058,51 +1055,38 @@ select {
   margin-bottom: 12px;
 }
 
-@media (max-width: 768px) {
-  .app-layout {
-    display: block;
-  }
-
+/* Smale skjermer: sidebaren blir en smal ikonmeny på venstre side */
+@media (max-width: 1024px) {
   .sidebar {
-    width: 100%;
-    min-height: auto;
-    padding: 14px 16px;
+    width: 72px;
+    flex: 0 0 72px;
+    padding: 18px 10px;
   }
 
   .sidebar-brand {
-    padding: 0 4px 14px;
+    justify-content: center;
+    padding: 0 0 22px;
   }
 
-  .sidebar-section-label,
-  .sidebar-user {
+  .sidebar .nav-label,
+  .sidebar-section-label {
     display: none;
   }
 
-  .sidebar-footer {
-    padding-top: 10px;
+  .sidebar-nav a,
+  .sidebar-logout,
+  .sidebar-login {
+    justify-content: center;
+    padding: 12px 0;
   }
 
-  .sidebar-login,
-  .sidebar-logout {
-    width: auto;
+  .sidebar-user {
+    justify-content: center;
+    padding: 8px 0;
   }
+}
 
-  .sidebar-nav a.sidebar-create {
-    margin-top: 0;
-  }
-
-  .sidebar-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .sidebar-nav a {
-    width: auto;
-    flex: 0 0 auto;
-    padding: 9px 11px;
-    white-space: nowrap;
-  }
-
+@media (max-width: 768px) {
   .page-toolbar {
     min-height: 58px;
     padding: 12px 18px;

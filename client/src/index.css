@@ -1065,6 +1065,7 @@ select {
 
   .sidebar {
     width: 100%;
+    min-height: auto;
     padding: 14px 16px;
   }
 
@@ -1073,13 +1074,26 @@ select {
   }
 
   .sidebar-section-label,
-  .sidebar-footer {
+  .sidebar-user {
     display: none;
+  }
+
+  .sidebar-footer {
+    padding-top: 10px;
+  }
+
+  .sidebar-login,
+  .sidebar-logout {
+    width: auto;
+  }
+
+  .sidebar-nav a.sidebar-create {
+    margin-top: 0;
   }
 
   .sidebar-nav {
     flex-direction: row;
-    overflow-x: auto;
+    flex-wrap: wrap;
   }
 
   .sidebar-nav a {
@@ -1092,6 +1106,10 @@ select {
   .page-toolbar {
     min-height: 58px;
     padding: 12px 18px;
+  }
+
+  .page-toolbar:empty {
+    display: none;
   }
 
   .topbar {

@@ -4,6 +4,7 @@ import {
   PlusIcon,
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
+  ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline"
 
 export default function Sidebar({ user, onLogout }) {
@@ -13,50 +14,60 @@ export default function Sidebar({ user, onLogout }) {
 
   return (
     <aside className="sidebar">
-      <Link to="/events" className="sidebar-brand">
+      <Link to="/events" className="sidebar-brand" aria-label="Møteplass">
         <span className="brand-mark">M</span>
-        <span>Møteplass</span>
+        <span className="nav-label">Møteplass</span>
       </Link>
 
       <div className="sidebar-section-label">Arbeidsområde</div>
       <nav className="sidebar-nav" aria-label="Hovedmeny">
-        <Link className={isActive("/events") ? "active" : ""} to="/events">
+        <Link
+          className={isActive("/events") ? "active" : ""}
+          to="/events"
+          title="Arrangementer"
+        >
           <CalendarDaysIcon className="nav-icon" aria-hidden="true" />
-          Arrangementer
+          <span className="nav-label">Arrangementer</span>
         </Link>
-        <Link className={isActive("/profile") ? "active" : ""} to="/profile">
+        <Link
+          className={isActive("/profile") ? "active" : ""}
+          to="/profile"
+          title="Profil"
+        >
           <UserCircleIcon className="nav-icon" aria-hidden="true" />
-          Profil
+          <span className="nav-label">Profil</span>
         </Link>
         <Link
           className={`sidebar-create ${isActive("/create") ? "active" : ""}`}
           to="/create"
+          title="Opprett arrangement"
         >
           <PlusIcon className="nav-icon" aria-hidden="true" />
-          Opprett arrangement
+          <span className="nav-label">Opprett arrangement</span>
         </Link>
       </nav>
 
       <div className="sidebar-footer">
         {user ? (
           <>
-            <div className="sidebar-user">
+            <div className="sidebar-user" title={user.name}>
               <div className="sidebar-avatar">
                 {user.name?.charAt(0)?.toUpperCase() || "U"}
               </div>
-              <div>
+              <div className="nav-label">
                 <strong>{user.name}</strong>
                 <span>Arrangør</span>
               </div>
             </div>
-            <button className="sidebar-logout" onClick={onLogout}>
+            <button className="sidebar-logout" onClick={onLogout} title="Logg ut">
               <ArrowRightOnRectangleIcon className="nav-icon" aria-hidden="true" />
-              Logg ut
+              <span className="nav-label">Logg ut</span>
             </button>
           </>
         ) : (
-          <Link to="/login" className="button-primary sidebar-login">
-            Logg inn
+          <Link to="/login" className="button-primary sidebar-login" title="Logg inn">
+            <ArrowLeftOnRectangleIcon className="nav-icon" aria-hidden="true" />
+            <span className="nav-label">Logg inn</span>
           </Link>
         )}
       </div>

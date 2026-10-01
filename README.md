@@ -11,7 +11,11 @@
 Fullstack-applikasjon for å opprette, finne og delta på arrangementer. Bygget med React og Vite i frontend, Express og MongoDB i backend, innlogging med Google OAuth og sanntidsoppdateringer med Socket.IO.
 
 **[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)**<br>
-Kan bruke opptil ett minutt på å starte (Render gratisnivå).
+<sub>Åpner med en gang på hverdager kl. 07–20. Ellers kan første besøk ta opptil ett minutt.</sub>
+
+## Hvorfor jeg bygde det
+
+Jeg ville lage et sted der folk kan finne hverandre og samles rundt noe de bryr seg om, enten det er en fotballkamp, en kodekveld eller en tur. Det krevde innlogging, tilgangskontroll og sanntidsoppdateringer, slik at alle ser med en gang når noen melder seg på. Jeg bygde det i React og Node for å bli bedre på fullstack i JavaScript.
 
 ## Grensesnitt
 

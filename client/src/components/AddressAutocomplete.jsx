@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 
@@ -18,6 +18,9 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
   const [focused, setFocused] = useState(false)
+  const blurTimeout = useRef(null)
+
+  useEffect(() => () => window.clearTimeout(blurTimeout.current), [])
 
   useEffect(() => {
     const query = value.trim()
@@ -81,7 +84,9 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
         value={value}
         onChange={onChange}
         onFocus={() => setFocused(true)}
-        onBlur={() => window.setTimeout(() => setFocused(false), 150)}
+        onBlur={() => {
+          blurTimeout.current = window.setTimeout(() => setFocused(false), 150)
+        }}
         placeholder="Skriv gate eller sted, f.eks. Karl Johans gate"
         autoComplete="street-address"
         aria-autocomplete="list"

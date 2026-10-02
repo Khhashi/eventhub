@@ -57,6 +57,8 @@ Her er grensesnittet til nettsiden, fra oversikten over arrangementer og detaljs
 - **Sanntid med innlogging:** Socket.IO-tilkoblinger krever gyldig innlogging, så bare innloggede brukere får sanntidsoppdateringer.
 - **Robust kartvisning:** Hvis en adresse ikke kan finnes, vises en tydelig melding i stedet for at siden krasjer.
 
+Se [arkitekturdokumentet](docs/ARCHITECTURE.md) for diagrammer, sanntidsflyt, tilgangsstyring og designbeslutninger.
+
 ## Tester og CI
 
 25 automatiserte tester dekker innlogging, roller, tilgangskontroll, arrangementer, påmelding, profil og feilhåndtering i backend (Vitest og Supertest), og innlasting, kart, oppretting, redigering, beskyttede ruter og 404 i frontend (Vitest og Testing Library). GitHub Actions kjører testene på hver pull request og push til `main`.

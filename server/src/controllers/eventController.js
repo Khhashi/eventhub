@@ -4,8 +4,8 @@ import { getIO } from "../socket.js"
 export const getEvents = async (req, res) => {
   try {
     const events = await Event.find()
-      .populate("createdBy", "name picture email")
-      .populate("attendees", "name picture email")
+      .populate("createdBy", "name picture")
+      .populate("attendees", "name picture")
       .sort({ date: 1 })
 
     res.status(200).json(events)
@@ -19,8 +19,8 @@ export const getEvents = async (req, res) => {
 export const getEventById = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id)
-      .populate("createdBy", "name picture email")
-      .populate("attendees", "name picture email")
+      .populate("createdBy", "name picture")
+      .populate("attendees", "name picture")
 
     if (!event) {
       return res.status(404).json({
@@ -63,10 +63,7 @@ export const createEvent = async (req, res) => {
       attendees: [],
     })
 
-    const populated = await event.populate(
-      "createdBy",
-      "name picture email"
-    )
+    const populated = await event.populate("createdBy", "name picture")
 
     const io = getIO()
     if (io) io.emit("eventCreated", populated)
@@ -114,10 +111,7 @@ export const updateEvent = async (req, res) => {
 
     await event.save()
 
-    const populated = await event.populate(
-      "createdBy",
-      "name picture email"
-    )
+    const populated = await event.populate("createdBy", "name picture")
 
     const io = getIO()
     if (io) io.emit("eventUpdated", populated)
@@ -189,8 +183,8 @@ export const registerForEvent = async (req, res) => {
     await event.save()
 
     const populated = await Event.findById(event._id)
-      .populate("createdBy", "name picture email")
-      .populate("attendees", "name picture email")
+      .populate("createdBy", "name picture")
+      .populate("attendees", "name picture")
 
     const io = getIO()
     if (io) io.emit("eventRegistrationUpdated", populated)
@@ -220,8 +214,8 @@ export const unregisterFromEvent = async (req, res) => {
     await event.save()
 
     const populated = await Event.findById(event._id)
-      .populate("createdBy", "name picture email")
-      .populate("attendees", "name picture email")
+      .populate("createdBy", "name picture")
+      .populate("attendees", "name picture")
 
     const io = getIO()
     if (io) io.emit("eventRegistrationUpdated", populated)

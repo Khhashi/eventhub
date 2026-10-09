@@ -6,7 +6,7 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import EventList from "./pages/EventList"
 import CreateEvent from "./pages/CreateEvent"
 import EditEvent from "./pages/EditEvent"
@@ -18,27 +18,51 @@ import { getMe } from "./api/auth"
 import Sidebar from "./components/Sidebar"
 import { ArrowLeftIcon, ArrowPathIcon } from "@heroicons/react/24/outline"
 
-function ProtectedRoute({ user, children }) {
-  return user ? children : <Navigate to="/login" replace />
+function ProtectedRoute({ user, authLoading, children }) {
+  const location = useLocation()
+
+  if (authLoading) {
+    return <div className="center-page" role="status">Kontrollerer innlogging...</div>
+  }
+
+  return user ? (
+    children
+  ) : (
+    <Navigate to="/login" state={{ from: location }} replace />
+  )
 }
 
 export default function App() {
   const navigate = useNavigate()
   const location = useLocation()
   const [user, setUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const me = await getMe()
       setUser(me)
     } catch {
       setUser(null)
+    } finally {
+      setAuthLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    checkAuth()
-  }, [])
+    void Promise.resolve().then(checkAuth)
+  }, [checkAuth])
+
+  useEffect(() => {
+    if (authLoading || !user) return
+
+    const returnTo = sessionStorage.getItem("eventhub:returnTo")
+    sessionStorage.removeItem("eventhub:returnTo")
+
+    if (returnTo?.startsWith("/") && !returnTo.startsWith("//")) {
+      navigate(returnTo, { replace: true })
+    }
+  }, [authLoading, navigate, user])
 
   const handleLogout = () => {
     localStorage.removeItem("token")
@@ -93,11 +117,11 @@ export default function App() {
           <Route path="/events/:id" element={<EventDetails />} />
           <Route
             path="/events/:id/edit"
-            element={<ProtectedRoute user={user}><EditEvent /></ProtectedRoute>}
+            element={<ProtectedRoute user={user} authLoading={authLoading}><EditEvent /></ProtectedRoute>}
           />
           <Route
             path="/create"
-            element={<ProtectedRoute user={user}><CreateEvent /></ProtectedRoute>}
+            element={<ProtectedRoute user={user} authLoading={authLoading}><CreateEvent /></ProtectedRoute>}
           />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />

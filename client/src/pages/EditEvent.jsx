@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import { fetchEvents, updateEvent } from "../api/events"
 import AddressAutocomplete from "../components/AddressAutocomplete"
@@ -11,11 +11,7 @@ export default function EditEvent() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    load()
-  }, [id])
-
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
       const events = await fetchEvents()
       const event = events.find((candidate) => candidate._id === id)
@@ -37,7 +33,11 @@ export default function EditEvent() {
     } catch {
       setError("Kunne ikke laste arrangementet.")
     }
-  }
+  }, [id])
+
+  useEffect(() => {
+    void Promise.resolve().then(load)
+  }, [load])
 
   const handleChange = (e) => {
     setForm({

@@ -36,3 +36,7 @@ jobs:
       - name: Run client tests
         working-directory: client
         run: npm test
+
+      - name: Run client lint
+        working-directory: client
+        run: npm run lint

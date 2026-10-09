@@ -63,8 +63,36 @@ describe("Events", () => {
 
     expect(res.status).toBe(201)
     expect(res.body.title).toBe("New Event")
+    expect(res.body.createdBy).not.toHaveProperty("email")
 
     eventId = res.body._id
+  })
+
+  it("public event responses omit organizer and attendee emails", async () => {
+    const event = await Event.create({
+      title: "Private Contact Event",
+      description: "Description",
+      date: new Date(),
+      category: "Tech",
+      location: "Oslo",
+      createdBy: organizer._id,
+      attendees: [user._id],
+    })
+
+    const [listResponse, detailResponse] = await Promise.all([
+      request(app).get("/api/events"),
+      request(app).get(`/api/events/${event._id}`),
+    ])
+
+    const listedEvent = listResponse.body.find((item) => item._id === event._id.toString())
+
+    expect(listResponse.status).toBe(200)
+    expect(listedEvent.createdBy).not.toHaveProperty("email")
+    expect(listedEvent.attendees[0]).not.toHaveProperty("email")
+
+    expect(detailResponse.status).toBe(200)
+    expect(detailResponse.body.createdBy).not.toHaveProperty("email")
+    expect(detailResponse.body.attendees[0]).not.toHaveProperty("email")
   })
 
   it("does not allow protected event fields to be changed", async () => {
@@ -80,6 +108,7 @@ describe("Events", () => {
     expect(res.status).toBe(200)
     expect(res.body.title).toBe("Updated Event")
     expect(res.body.createdBy._id).toBe(organizer._id.toString())
+    expect(res.body.createdBy).not.toHaveProperty("email")
     expect(res.body.attendees).toHaveLength(0)
   })
 
@@ -122,6 +151,8 @@ describe("Events", () => {
 
     expect(res.status).toBe(200)
     expect(res.body.attendees.length).toBe(1)
+    expect(res.body.createdBy).not.toHaveProperty("email")
+    expect(res.body.attendees[0]).not.toHaveProperty("email")
   })
 
   it("user cannot register twice", async () => {

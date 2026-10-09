@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import {
   fetchEventById,
@@ -16,11 +16,7 @@ export default function EventDetails() {
   const [message, setMessage] = useState(null)
   const [error, setError] = useState("")
 
-  useEffect(() => {
-    load()
-  }, [])
-
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
       const ev = await fetchEventById(id)
       setEvent(ev)
@@ -34,7 +30,11 @@ export default function EventDetails() {
     } catch {
       setUser(null)
     }
-  }
+  }, [id])
+
+  useEffect(() => {
+    void Promise.resolve().then(load)
+  }, [load])
 
   if (error) {
     return (
@@ -71,7 +71,7 @@ const isRegistered = event.attendees?.some(
         })
       }
 
-      load()
+      void load()
     } catch {
       setMessage({
         type: "error",

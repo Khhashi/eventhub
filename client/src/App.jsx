@@ -6,7 +6,7 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import EventList from "./pages/EventList"
 import CreateEvent from "./pages/CreateEvent"
 import EditEvent from "./pages/EditEvent"
@@ -27,18 +27,18 @@ export default function App() {
   const location = useLocation()
   const [user, setUser] = useState(null)
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const me = await getMe()
       setUser(me)
     } catch {
       setUser(null)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    checkAuth()
-  }, [])
+    void Promise.resolve().then(checkAuth)
+  }, [checkAuth])
 
   const handleLogout = () => {
     localStorage.removeItem("token")

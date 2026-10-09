@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import {
   fetchEvents,
@@ -27,16 +27,39 @@ export default function EventList() {
   const [page, setPage] = useState(1)
   const pageSize = 5
 
-  useEffect(() => {
-    loadEvents()
-    loadUser()
+  const loadEvents = useCallback(async () => {
+    setLoading(true)
+
+    try {
+      const data = await fetchEvents()
+      setEvents(data || [])
+      setLoadError("")
+    } catch (err) {
+      console.error("Kunne ikke hente arrangementer", err)
+      setLoadError("Arrangementene kunne ikke oppdateres akkurat nå. Viser tidligere data.")
+    }
+
+    setLoading(false)
   }, [])
+
+  const loadUser = useCallback(async () => {
+    try {
+      const me = await getMe()
+      setUser(me)
+    } catch {
+      setUser(null)
+    }
+  }, [])
+
+  useEffect(() => {
+    void Promise.resolve().then(() => Promise.all([loadEvents(), loadUser()]))
+  }, [loadEvents, loadUser])
 
   useEffect(() => {
     if (!user) return undefined
 
     const socket = createSocket()
-    const refreshEvents = () => loadEvents()
+    const refreshEvents = () => void loadEvents()
 
     socket.on("eventCreated", refreshEvents)
     socket.on("eventUpdated", refreshEvents)
@@ -50,31 +73,7 @@ export default function EventList() {
       socket.off("eventRegistrationUpdated", refreshEvents)
       socket.disconnect()
     }
-  }, [user])
-
-  const loadEvents = async () => {
-    setLoading(true)
-
-    try {
-      const data = await fetchEvents()
-      setEvents(data || [])
-      setLoadError("")
-    } catch (err) {
-      console.error("Kunne ikke hente arrangementer", err)
-      setLoadError("Arrangementene kunne ikke oppdateres akkurat nå. Viser tidligere data.")
-    }
-
-    setLoading(false)
-  }
-
-  const loadUser = async () => {
-    try {
-      const me = await getMe()
-      setUser(me)
-    } catch {
-      setUser(null)
-    }
-  }
+  }, [loadEvents, user])
 
   const handleRegisterToggle = async (ev) => {
     try {
@@ -134,10 +133,6 @@ export default function EventList() {
     setPage(1)
   }
 
-  useEffect(() => {
-    setPage(1)
-  }, [search, category, dateFilter])
-
   const pageCount = Math.max(1, Math.ceil(visibleEvents.length / pageSize))
   const paginatedEvents = visibleEvents.slice(
     (page - 1) * pageSize,
@@ -180,13 +175,19 @@ export default function EventList() {
         <input
           type="search"
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) => {
+            setSearch(event.target.value)
+            setPage(1)
+          }}
           placeholder="Søk etter arrangement..."
           aria-label="Søk etter arrangement"
         />
         <select
           value={category}
-          onChange={(event) => setCategory(event.target.value)}
+          onChange={(event) => {
+            setCategory(event.target.value)
+            setPage(1)
+          }}
           aria-label="Filtrer på kategori"
         >
           <option value="all">Alle kategorier</option>
@@ -198,7 +199,10 @@ export default function EventList() {
         </select>
         <select
           value={dateFilter}
-          onChange={(event) => setDateFilter(event.target.value)}
+          onChange={(event) => {
+            setDateFilter(event.target.value)
+            setPage(1)
+          }}
           aria-label="Filtrer på dato"
         >
           <option value="all">Alle datoer</option>

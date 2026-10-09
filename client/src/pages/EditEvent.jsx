@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
-import { fetchEvents, updateEvent } from "../api/events"
+import { fetchEventById, updateEvent } from "../api/events"
 import AddressAutocomplete from "../components/AddressAutocomplete"
 
 export default function EditEvent() {
@@ -9,35 +9,47 @@ export default function EditEvent() {
 
   const [form, setForm] = useState(null)
   const [error, setError] = useState("")
+  const [loadError, setLoadError] = useState("")
+  const [loadStatus, setLoadStatus] = useState("loading")
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    load()
+  const load = useCallback(async () => {
+    setLoadStatus("loading")
+    setLoadError("")
+    try {
+      const event = await fetchEventById(id)
+
+      if (!event) {
+        setLoadStatus("notFound")
+        return
+      }
+
+      const standardCategories = ["Music", "Tech", "Sports", "Annet"]
+      const hasCategory = Boolean(event.category)
+      setForm({
+        ...event,
+        category: !hasCategory || standardCategories.includes(event.category)
+          ? event.category || ""
+          : "Annet",
+        customCategory: hasCategory && !standardCategories.includes(event.category)
+          ? event.category
+          : "",
+        date: event.date?.split("T")[0] || "",
+      })
+      setLoadStatus("ready")
+    } catch (loadError) {
+      if (loadError.response?.status === 404) {
+        setLoadStatus("notFound")
+      } else {
+        setLoadError("Kunne ikke laste arrangementet.")
+        setLoadStatus("error")
+      }
+    }
   }, [id])
 
-  const load = async () => {
-    try {
-      const events = await fetchEvents()
-      const event = events.find((candidate) => candidate._id === id)
-
-      if (event) {
-        const standardCategories = ["Music", "Tech", "Sports", "Annet"]
-        const hasCategory = Boolean(event.category)
-        setForm({
-          ...event,
-          category: !hasCategory || standardCategories.includes(event.category)
-            ? event.category || ""
-            : "Annet",
-          customCategory: hasCategory && !standardCategories.includes(event.category)
-            ? event.category
-            : "",
-          date: event.date?.split("T")[0] || "",
-        })
-      }
-    } catch {
-      setError("Kunne ikke laste arrangementet.")
-    }
-  }
+  useEffect(() => {
+    void Promise.resolve().then(load)
+  }, [load])
 
   const handleChange = (e) => {
     setForm({
@@ -70,8 +82,33 @@ export default function EditEvent() {
     setLoading(false)
   }
 
-  if (!form) {
-    return <div className="center-page">Laster...</div>
+  if (loadStatus === "loading") {
+    return <div className="center-page" role="status">Laster arrangement...</div>
+  }
+
+  if (loadStatus === "notFound") {
+    return (
+      <div className="center-page">
+        <div className="empty-panel">
+          <h2>Arrangementet finnes ikke</h2>
+          <Link to="/events" className="button-secondary">Tilbake til arrangementer</Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (loadStatus === "error") {
+    return (
+      <div className="center-page">
+        <div className="empty-panel">
+          <h2>{loadError}</h2>
+          <button type="button" className="button-secondary" onClick={() => void load()}>
+            Prøv igjen
+          </button>
+          <Link to="/events" className="button-secondary">Tilbake til arrangementer</Link>
+        </div>
+      </div>
+    )
   }
 
   return (

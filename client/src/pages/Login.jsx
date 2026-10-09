@@ -1,6 +1,17 @@
+import { useLocation } from "react-router-dom"
+import { loginWithGoogle } from "../api/auth"
+
 export default function Login() {
+  const location = useLocation()
+
   const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google"
+    const from = location.state?.from
+    if (from?.pathname?.startsWith("/") && !from.pathname.startsWith("//")) {
+      const returnTo = `${from.pathname}${from.search || ""}${from.hash || ""}`
+      sessionStorage.setItem("eventhub:returnTo", returnTo)
+    }
+
+    loginWithGoogle()
   }
 
   return (

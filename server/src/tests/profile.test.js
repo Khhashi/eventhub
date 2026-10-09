@@ -30,6 +30,25 @@ describe("Profile", () => {
       .set("Authorization", `Bearer ${token}`)
 
     expect(res.status).toBe(200)
-    expect(res.body.email).toBe("profile@test.com")
+    expect(res.body.user.email).toBe("profile@test.com")
+    expect(res.body.user).not.toHaveProperty("password")
+    expect(res.body).not.toHaveProperty("password")
+    expect(res.body).not.toHaveProperty("email")
+  })
+
+  it("returns only safe user fields from the current-user endpoint", async () => {
+    const res = await request(app)
+      .get("/api/auth/me")
+      .set("Authorization", `Bearer ${token}`)
+
+    expect(res.status).toBe(200)
+    expect(res.body).toMatchObject({
+      _id: user._id.toString(),
+      name: "Profile User",
+      email: "profile@test.com",
+      role: "user",
+    })
+    expect(res.body).not.toHaveProperty("password")
+    expect(res.body).not.toHaveProperty("googleId")
   })
 })

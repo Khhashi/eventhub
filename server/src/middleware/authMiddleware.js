@@ -24,7 +24,9 @@ export const protect = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-    const user = await User.findById(decoded.id).lean()
+    const user = await User.findById(decoded.id)
+      .select("_id name email role picture")
+      .lean()
 
     if (!user) {
       return res.status(401).json({ message: "Du har ikke tilgang." })

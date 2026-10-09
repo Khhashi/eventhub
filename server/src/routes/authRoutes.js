@@ -69,11 +69,6 @@ router.get("/profile", protect, async (req, res) => {
     })
 
     const profile = {
-      id: req.user._id,
-      name: req.user.name,
-      email: req.user.email,
-      role: req.user.role,
-      picture: req.user.picture,
       user: req.user,
       createdEvents,
       registeredEvents,

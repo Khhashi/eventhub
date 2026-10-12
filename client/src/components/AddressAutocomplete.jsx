@@ -18,6 +18,7 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
   const [focused, setFocused] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
   const blurTimeout = useRef(null)
 
   useEffect(() => () => window.clearTimeout(blurTimeout.current), [])
@@ -82,8 +83,17 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
         id={id}
         name="location"
         value={value}
-        onChange={onChange}
-        onFocus={() => setFocused(true)}
+        onChange={(event) => {
+          setDismissed(false)
+          onChange(event)
+        }}
+        onFocus={() => {
+          setFocused(true)
+          setDismissed(false)
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") setDismissed(true)
+        }}
         onBlur={() => {
           blurTimeout.current = window.setTimeout(() => setFocused(false), 150)
         }}
@@ -94,7 +104,7 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
         required
       />
 
-      {focused && (loading || suggestions.length > 0) && (
+      {focused && !dismissed && (loading || suggestions.length > 0) && (
         <div id={`${id}-suggestions`} className="address-suggestions" role="listbox">
           {loading && <div className="address-suggestion-status">Søker etter adresser...</div>}
           {suggestions.map((suggestion) => (

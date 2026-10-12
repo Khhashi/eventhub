@@ -7,6 +7,12 @@ import {
   ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline"
 
+const ROLE_LABELS = {
+  admin: "Administrator",
+  organizer: "Arrangør",
+  user: "Bruker",
+}
+
 export default function Sidebar({ user, onLogout }) {
   const location = useLocation()
 
@@ -56,7 +62,7 @@ export default function Sidebar({ user, onLogout }) {
               </div>
               <div className="nav-label">
                 <strong>{user.name}</strong>
-                <span>Arrangør</span>
+                <span>{ROLE_LABELS[user.role] || ROLE_LABELS.user}</span>
               </div>
             </div>
             <button className="sidebar-logout" onClick={onLogout} title="Logg ut">

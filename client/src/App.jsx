@@ -16,7 +16,7 @@ import Profile from "./pages/Profile"
 import NotFound from "./pages/NotFound"
 import { getMe } from "./api/auth"
 import Sidebar from "./components/Sidebar"
-import { ArrowLeftIcon, ArrowPathIcon } from "@heroicons/react/24/outline"
+import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 
 function ProtectedRoute({ user, authLoading, children }) {
   const location = useLocation()
@@ -71,7 +71,7 @@ export default function App() {
     navigate("/events")
   }
 
-  const isEventsPage = location.pathname === "/events"
+  const isEventDetailsPage = /^\/events\/[^/]+$/.test(location.pathname)
 
   return (
     <div className="app-layout">
@@ -89,27 +89,14 @@ export default function App() {
       <Sidebar user={user} onLogout={handleLogout} />
 
       <main className="app-main">
-        <div className="page-toolbar">
-          {!isEventsPage && (
-            <button
-              className="button-secondary"
-              onClick={() => navigate(-1)}
-            >
+        {isEventDetailsPage && (
+          <div className="page-toolbar">
+            <Link to="/events" className="button-secondary">
               <ArrowLeftIcon className="button-icon" aria-hidden="true" />
-              Tilbake
-            </button>
-          )}
-
-          {!isEventsPage && (
-            <button
-              className="button-secondary"
-              onClick={() => navigate(0)}
-            >
-              <ArrowPathIcon className="button-icon" aria-hidden="true" />
-              Oppdater
-            </button>
-          )}
-        </div>
+              Til arrangementer
+            </Link>
+          </div>
+        )}
 
         <Routes>
           <Route path="/" element={<Navigate to="/events" replace />} />

@@ -27,4 +27,11 @@ describe("Sidebar", () => {
 
     expect(screen.getByText("Bruker")).toBeInTheDocument()
   })
+
+  it("shows login in the main navigation when signed out", () => {
+    renderSidebar(null)
+
+    const navigation = screen.getByRole("navigation", { name: "Hovedmeny" })
+    expect(navigation.querySelector('a[href="/login"]')).toBeInTheDocument()
+  })
 })

@@ -30,6 +30,7 @@ describe("Profile", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Velg et JPEG-, PNG- eller WebP-bilde."
     )
+    expect(input).toHaveValue("")
     expect(request).toHaveBeenCalledTimes(1)
   })
 })

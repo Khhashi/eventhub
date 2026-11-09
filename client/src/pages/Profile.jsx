@@ -51,7 +51,9 @@ export default function Profile() {
   const { user, createdEvents, registeredEvents } = data
 
   const handlePictureUpload = (event) => {
-    const file = event.target.files?.[0]
+    const input = event.currentTarget
+    const file = input.files?.[0]
+    input.value = ""
     if (!file) return
 
     if (!supportedPictureTypes.includes(file.type)) {

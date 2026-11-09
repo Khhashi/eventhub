@@ -614,12 +614,15 @@ a {
 }
 
 .map-preview__links {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
+  padding: 8px 10px;
+  background: #fff;
+}
+
+.map-preview__links:empty {
+  display: none;
 }
 
 .map-preview__link {

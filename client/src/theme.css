@@ -528,6 +528,27 @@ button,
   }
 }
 
+@media (max-width: 680px) {
+  .profile-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .profile-summary .summary-card {
+    min-width: 0;
+    padding: 15px 10px;
+  }
+
+  .profile-summary .summary-label {
+    letter-spacing: 0.08em;
+    overflow-wrap: anywhere;
+  }
+
+  .profile-summary .summary-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
 .event-details-page .organizer-box {
   gap: 13px;
   margin: 24px 0;

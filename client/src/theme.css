@@ -682,3 +682,12 @@ button,
   margin-bottom: 8px;
   padding: 13px 15px;
 }
+
+.sidebar-avatar {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+  border: 2px solid rgba(211, 236, 139, 0.32);
+  background: #356858;
+  color: var(--lime);
+}

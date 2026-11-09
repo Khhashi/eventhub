@@ -326,3 +326,40 @@ button,
 .auth-button {
   min-width: min(230px, 100%);
 }
+
+.profile-header {
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: clamp(16px, 4vw, 26px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+}
+
+.profile-header > div:last-child {
+  flex: 1 1 180px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.profile-header h1 {
+  margin-bottom: 12px;
+}
+
+.profile-avatar {
+  width: 82px;
+  height: 82px;
+  border: 4px solid #edf3eb;
+  background: var(--green);
+  color: var(--lime);
+  font-family: "Manrope", sans-serif;
+}
+
+.profile-avatar-wrap {
+  flex-basis: 82px;
+}
+
+.profile-picture-message {
+  color: var(--green);
+}

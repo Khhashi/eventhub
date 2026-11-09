@@ -432,3 +432,25 @@ button,
 .profile-card .mini-card a:hover {
   color: #39705c;
 }
+
+.map-preview__heading {
+  color: #60735f;
+}
+
+.map-preview {
+  border-color: #e6ebe2;
+  background: #edf1ed;
+  box-shadow: 0 5px 16px rgba(32, 43, 39, 0.045);
+}
+
+.map-preview__link {
+  color: var(--green);
+}
+
+.map-preview__link:hover {
+  color: #39705c;
+}
+
+.detail-map-panel h3 {
+  color: var(--ink);
+}

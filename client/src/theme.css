@@ -303,3 +303,26 @@ button,
   outline-color: #457d5e;
   outline-offset: -3px;
 }
+
+.auth-page {
+  min-height: calc(100vh - 68px);
+}
+
+.auth-card {
+  box-sizing: border-box;
+  max-width: 520px;
+  padding: clamp(24px, 5vw, 48px) clamp(20px, 4vw, 38px);
+}
+
+.auth-card h2 {
+  font-size: clamp(2rem, 5vw, 2.7rem);
+}
+
+.auth-subtitle {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.auth-button {
+  min-width: min(230px, 100%);
+}

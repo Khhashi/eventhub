@@ -588,10 +588,16 @@ a {
   border: 0;
 }
 
-.map-preview__link {
+.map-preview__links {
   position: absolute;
   right: 10px;
   bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.map-preview__link {
   padding: 7px 10px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.94);

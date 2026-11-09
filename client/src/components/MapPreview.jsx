@@ -51,6 +51,8 @@ export default function MapPreview({ location }) {
 
   const fallbackCoordinates = { latitude: 59.9139, longitude: 10.7522 }
   const mapCoordinates = coordinates || fallbackCoordinates
+  const directionsUrl =
+    `https://www.google.com/maps/dir/?api=1&destination=${query}`
   const delta = coordinates ? 0.008 : 0.04
   const bbox = [
     mapCoordinates.longitude - delta,
@@ -71,14 +73,16 @@ export default function MapPreview({ location }) {
         referrerPolicy="no-referrer-when-downgrade"
       />
       {mapStatus && <span className="map-preview__status">{mapStatus}</span>}
-      <a
-        href={mapUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="map-preview__link"
-      >
-        Åpne kart
-      </a>
+      <div className="map-preview__links">
+        {location?.trim() && (
+          <a href={directionsUrl} target="_blank" rel="noreferrer" className="map-preview__link">
+            Veibeskrivelse
+          </a>
+        )}
+        <a href={mapUrl} target="_blank" rel="noreferrer" className="map-preview__link">
+          Åpne kart
+        </a>
+      </div>
     </div>
   )
 }

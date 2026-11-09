@@ -353,12 +353,13 @@ a {
 
 .events-hero {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
   gap: 24px;
   margin-bottom: 24px;
   padding: 10px 0 24px;
   border-bottom: 1px solid #dbe2ea;
+  text-align: center;
 }
 
 .events-hero h1 {
@@ -369,7 +370,7 @@ a {
 
 .hero-description {
   max-width: 580px;
-  margin: 12px 0 0;
+  margin: 12px auto 0;
   color: #475569;
   line-height: 1.6;
 }
@@ -1114,7 +1115,7 @@ select {
   }
 
   .events-hero {
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
     padding: 24px;
   }

@@ -583,3 +583,38 @@ button,
   background: #fff4f0;
   color: #a84c38;
 }
+
+.events-page .event-card {
+  margin-bottom: 16px;
+  padding: 22px 24px;
+}
+
+.event-card__content {
+  gap: 26px;
+}
+
+.event-details-grid {
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.event-info-item {
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+@media (min-width: 801px) {
+  .event-card__content {
+    grid-template-columns: minmax(0, 1.45fr) minmax(220px, 0.75fr);
+  }
+
+  .event-details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .events-page .event-card {
+    padding: 17px;
+  }
+}

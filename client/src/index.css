@@ -587,6 +587,19 @@ a {
   z-index: 0;
 }
 
+.map-preview__status {
+  display: grid;
+  min-height: 190px;
+  padding: 16px;
+  place-items: center;
+  background: #edf1ed;
+  color: #435149;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
 .map-marker-wrap {
   border: 0;
   background: transparent;

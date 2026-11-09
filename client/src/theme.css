@@ -50,6 +50,17 @@ h4,
   box-shadow: 8px 0 30px rgba(25, 56, 47, 0.08);
 }
 
+.brand-mark {
+  width: 37px;
+  height: 37px;
+  border-radius: 12px;
+  background: var(--lime);
+  color: var(--green-dark);
+  font-family: "Manrope", sans-serif;
+  font-size: 1.1rem;
+  box-shadow: 0 5px 16px rgba(211, 236, 139, 0.14);
+}
+
 .sidebar-section-label,
 .sidebar-user span {
   color: #99b4a7;

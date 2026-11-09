@@ -40,7 +40,7 @@ Her er grensesnittet til nettsiden, fra oversikten over arrangementer og detaljs
 
 **Med innlogging**
 - Melde seg på og av arrangementer
-- Opprette arrangementer med adressesøk via OpenStreetMap
+- Opprette arrangementer med norske adresseforslag fra Kartverket eller manuelt angitt sted
 - Redigere og slette egne arrangementer
 - Dele arrangementer og legge dem til i kalenderen
 - Profilside med egne arrangementer, påmeldinger og profilbilde

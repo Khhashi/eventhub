@@ -363,3 +363,33 @@ button,
 .profile-picture-message {
   color: var(--green);
 }
+
+.profile-summary {
+  gap: 14px;
+}
+
+.profile-summary .summary-card {
+  min-height: 115px;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 22px;
+  border-color: var(--line);
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 5px 20px rgba(32, 43, 39, 0.025);
+}
+
+.profile-summary .summary-card strong {
+  color: var(--green);
+  font-family: "Manrope", sans-serif;
+}
+
+.profile-summary .summary-label {
+  color: #60735f;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+}
+
+.profile-summary .summary-card > span:last-child {
+  color: #69756e;
+}

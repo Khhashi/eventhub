@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { lazy, Suspense, useEffect, useState } from "react"
+
+const LeafletMap = lazy(() => import("./LeafletMap.jsx"))
 
 export default function MapPreview({ location }) {
   const safeLocation = location?.trim() || ""
@@ -59,20 +61,12 @@ export default function MapPreview({ location }) {
     : `https://www.openstreetmap.org/search?query=${query}`
   const directionsUrl =
     `https://www.google.com/maps/dir/?api=1&destination=${query}`
-  const bbox = resolvedCoordinates && [
-    resolvedCoordinates.longitude - 0.008,
-    resolvedCoordinates.latitude - 0.008,
-    resolvedCoordinates.longitude + 0.008,
-    resolvedCoordinates.latitude + 0.008,
-  ].join(",")
-  const embedUrl = bbox && `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}` +
-    `&layer=mapnik&marker=${resolvedCoordinates.latitude},${resolvedCoordinates.longitude}`
-
   return (
     <div className="map-preview">
-      {embedUrl && (
-        <iframe title={`Kart for ${safeLocation}`} src={embedUrl} loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade" />
+      {resolvedCoordinates && (
+        <Suspense fallback={<span role="status">Laster kart...</span>}>
+          <LeafletMap coordinates={resolvedCoordinates} location={safeLocation} />
+        </Suspense>
       )}
       {!resolvedCoordinates && (
         <span className="map-preview__status" role="status">

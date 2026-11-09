@@ -81,3 +81,47 @@ h4,
   background: #e0f3a5;
   color: var(--green-dark);
 }
+
+button,
+.button-secondary,
+.button-primary,
+.button-danger {
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.button-secondary {
+  border-color: #e4e9e1;
+  background: #fff;
+  color: #435149;
+}
+
+.button-secondary:hover {
+  border-color: #cad7cc;
+  background: #f7faf6;
+}
+
+.button-primary {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 5px 12px rgba(33, 72, 61, 0.14);
+}
+
+.button-primary:hover {
+  background: #2b5b4d;
+  box-shadow: 0 7px 16px rgba(33, 72, 61, 0.2);
+}
+
+.button-danger {
+  border-color: #f0d7d1;
+  background: #fff6f3;
+  color: #b94f39;
+}
+
+.button-danger:hover {
+  background: #ffebe5;
+}

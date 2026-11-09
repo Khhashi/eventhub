@@ -562,3 +562,24 @@ button,
   color: #59675f;
   font-size: 0.88rem;
 }
+
+.message-success,
+.message-error {
+  margin: 0 0 18px;
+  padding: 13px 16px;
+  border-radius: 11px;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
+.message-success {
+  border: 1px solid #cfe4d4;
+  background: #f0f8f0;
+  color: #2f6344;
+}
+
+.message-error {
+  border: 1px solid #f0d3ca;
+  background: #fff4f0;
+  color: #a84c38;
+}

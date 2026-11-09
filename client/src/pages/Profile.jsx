@@ -3,6 +3,8 @@ import { request } from "../api/http"
 import { Link } from "react-router-dom"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 
+const supportedPictureTypes = ["image/jpeg", "image/png", "image/webp"]
+
 export default function Profile() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -52,7 +54,15 @@ export default function Profile() {
     const file = event.target.files?.[0]
     if (!file) return
 
-    if (!file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
+    if (!supportedPictureTypes.includes(file.type)) {
+      setPictureMessage({
+        type: "error",
+        text: "Velg et JPEG-, PNG- eller WebP-bilde.",
+      })
+      return
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
       setPictureMessage({ type: "error", text: "Velg et bilde på maks 2 MB." })
       return
     }

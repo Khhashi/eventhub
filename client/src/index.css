@@ -1086,11 +1086,30 @@ select {
   }
 }
 
+@media (min-width: 681px) and (max-width: 1024px) {
+  .sidebar {
+    width: 204px;
+    flex-basis: 204px;
+  }
+
+  .sidebar .nav-label {
+    display: block;
+  }
+
+  .sidebar-nav a,
+  .sidebar-logout,
+  .sidebar-login {
+    justify-content: flex-start;
+    padding: 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .page-toolbar {
     min-height: 58px;
     padding: 12px 18px;
   }
+
 
   .page-toolbar:empty {
     display: none;

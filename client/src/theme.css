@@ -516,3 +516,49 @@ button,
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.event-details-page .organizer-box {
+  gap: 13px;
+  margin: 24px 0;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fafbf8;
+}
+
+.event-details-page .organizer-box > div,
+.event-details-page .attendee-item {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.event-details-page .organizer-box strong {
+  color: #59675f;
+  font-size: 0.82rem;
+}
+
+.event-details-page .avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.event-details-page .avatar-small {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.event-details-page .attendees-list {
+  margin-top: 26px;
+}
+
+.event-details-page .attendees-list h4 {
+  margin-bottom: 14px;
+}
+
+.event-details-page .attendee-item {
+  gap: 10px;
+  color: #59675f;
+  font-size: 0.88rem;
+}

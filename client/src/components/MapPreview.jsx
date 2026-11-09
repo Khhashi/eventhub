@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react"
 export default function MapPreview({ location }) {
   const safeLocation = location || "Oslo"
   const query = encodeURIComponent(safeLocation)
-  const mapUrl = `https://www.openstreetmap.org/search?query=${query}`
   const [coordinates, setCoordinates] = useState(null)
   const [mapStatus, setMapStatus] = useState("Laster kart...")
 
@@ -33,10 +32,13 @@ export default function MapPreview({ location }) {
           return
         }
 
-        setCoordinates({
-          latitude: Number(result.lat),
-          longitude: Number(result.lon),
-        })
+        const latitude = Number(result.lat)
+        const longitude = Number(result.lon)
+        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+          setMapStatus("Fant ikke en nøyaktig plassering")
+          return
+        }
+        setCoordinates({ latitude, longitude, location: safeLocation })
         setMapStatus("")
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -50,10 +52,14 @@ export default function MapPreview({ location }) {
   }, [safeLocation])
 
   const fallbackCoordinates = { latitude: 59.9139, longitude: 10.7522 }
-  const mapCoordinates = coordinates || fallbackCoordinates
+  const resolvedCoordinates = coordinates?.location === safeLocation ? coordinates : null
+  const mapCoordinates = resolvedCoordinates || fallbackCoordinates
+  const mapUrl = resolvedCoordinates
+    ? `https://www.openstreetmap.org/?mlat=${resolvedCoordinates.latitude}&mlon=${resolvedCoordinates.longitude}#map=16/${resolvedCoordinates.latitude}/${resolvedCoordinates.longitude}`
+    : `https://www.openstreetmap.org/search?query=${query}`
   const directionsUrl =
     `https://www.google.com/maps/dir/?api=1&destination=${query}`
-  const delta = coordinates ? 0.008 : 0.04
+  const delta = resolvedCoordinates ? 0.008 : 0.04
   const bbox = [
     mapCoordinates.longitude - delta,
     mapCoordinates.latitude - delta,

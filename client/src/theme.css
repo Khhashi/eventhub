@@ -469,3 +469,23 @@ button,
 .empty-panel p {
   color: #69756e;
 }
+
+.skeleton {
+  background: linear-gradient(90deg, #e8ebe4 25%, #f5f6f2 50%, #e8ebe4 75%);
+  background-size: 200% 100%;
+}
+
+.loading-grid {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.skeleton-card {
+  min-height: 190px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

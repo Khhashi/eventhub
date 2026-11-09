@@ -655,3 +655,30 @@ button,
   max-width: 100%;
   margin-top: 12px;
 }
+
+.profile-shell {
+  padding-top: clamp(24px, 4vw, 44px);
+  padding-bottom: 64px;
+}
+
+.profile-summary {
+  margin-bottom: 0;
+}
+
+.profile-card {
+  padding: clamp(18px, 3vw, 24px);
+}
+
+.profile-info-list {
+  gap: 12px;
+}
+
+.profile-info-list div {
+  gap: 5px;
+  padding-bottom: 12px;
+}
+
+.profile-card .mini-card {
+  margin-bottom: 8px;
+  padding: 13px 15px;
+}

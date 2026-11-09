@@ -393,3 +393,42 @@ button,
 .profile-summary .summary-card > span:last-child {
   color: #69756e;
 }
+
+.profile-grid {
+  gap: 16px;
+}
+
+.profile-card h3 {
+  color: var(--ink);
+  font-size: 1.03rem;
+  letter-spacing: -0.025em;
+}
+
+.profile-info-list div {
+  border-color: #edf0ea;
+}
+
+.profile-info-list span,
+.profile-card .empty-state {
+  color: #60735f;
+}
+
+.profile-info-list strong {
+  overflow-wrap: anywhere;
+}
+
+.profile-card .mini-card {
+  border-color: #edf0ea;
+  border-radius: 11px;
+  background: #fafbf8;
+}
+
+.profile-card .mini-card a {
+  color: var(--green);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.profile-card .mini-card a:hover {
+  color: #39705c;
+}

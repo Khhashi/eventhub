@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react"
 
 export default function MapPreview({ location }) {
-  const safeLocation = location || "Oslo"
+  const safeLocation = location?.trim() || ""
   const query = encodeURIComponent(safeLocation)
   const [coordinates, setCoordinates] = useState(null)
-  const [mapStatus, setMapStatus] = useState("Laster kart...")
+  const [mapStatus, setMapStatus] = useState(null)
 
   useEffect(() => {
+    if (!safeLocation) return undefined
     const controller = new AbortController()
 
     const findLocation = async () => {
@@ -24,25 +25,26 @@ export default function MapPreview({ location }) {
             headers: { Accept: "application/json" },
           }
         )
-        const results = response.ok ? await response.json() : []
+        if (!response.ok) throw new Error(`Kartoppslag feilet: ${response.status}`)
+        const results = await response.json()
         const result = results[0]
 
         if (!result) {
-          setMapStatus("Fant ikke en nøyaktig plassering")
+          setMapStatus({ location: safeLocation, message: "Fant ikke en nøyaktig plassering" })
           return
         }
 
         const latitude = Number(result.lat)
         const longitude = Number(result.lon)
         if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-          setMapStatus("Fant ikke en nøyaktig plassering")
+          setMapStatus({ location: safeLocation, message: "Fant ikke en nøyaktig plassering" })
           return
         }
         setCoordinates({ latitude, longitude, location: safeLocation })
-        setMapStatus("")
+        setMapStatus(null)
       } catch (error) {
         if (error.name !== "AbortError") {
-          setMapStatus("Kartet kunne ikke lastes")
+          setMapStatus({ location: safeLocation, message: "Kartet kunne ikke lastes" })
         }
       }
     }
@@ -51,43 +53,44 @@ export default function MapPreview({ location }) {
     return () => controller.abort()
   }, [safeLocation])
 
-  const fallbackCoordinates = { latitude: 59.9139, longitude: 10.7522 }
   const resolvedCoordinates = coordinates?.location === safeLocation ? coordinates : null
-  const mapCoordinates = resolvedCoordinates || fallbackCoordinates
   const mapUrl = resolvedCoordinates
     ? `https://www.openstreetmap.org/?mlat=${resolvedCoordinates.latitude}&mlon=${resolvedCoordinates.longitude}#map=16/${resolvedCoordinates.latitude}/${resolvedCoordinates.longitude}`
     : `https://www.openstreetmap.org/search?query=${query}`
   const directionsUrl =
     `https://www.google.com/maps/dir/?api=1&destination=${query}`
-  const delta = resolvedCoordinates ? 0.008 : 0.04
-  const bbox = [
-    mapCoordinates.longitude - delta,
-    mapCoordinates.latitude - delta,
-    mapCoordinates.longitude + delta,
-    mapCoordinates.latitude + delta,
+  const bbox = resolvedCoordinates && [
+    resolvedCoordinates.longitude - 0.008,
+    resolvedCoordinates.latitude - 0.008,
+    resolvedCoordinates.longitude + 0.008,
+    resolvedCoordinates.latitude + 0.008,
   ].join(",")
-  const embedUrl =
-    `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}` +
-    `&layer=mapnik&marker=${mapCoordinates.latitude},${mapCoordinates.longitude}`
+  const embedUrl = bbox && `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}` +
+    `&layer=mapnik&marker=${resolvedCoordinates.latitude},${resolvedCoordinates.longitude}`
 
   return (
     <div className="map-preview">
-      <iframe
-        title={`Kart for ${safeLocation}`}
-        src={embedUrl}
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      />
-      {mapStatus && <span className="map-preview__status">{mapStatus}</span>}
+      {embedUrl && (
+        <iframe title={`Kart for ${safeLocation}`} src={embedUrl} loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade" />
+      )}
+      {!resolvedCoordinates && (
+        <span className="map-preview__status" role="status">
+          {!safeLocation ? "Ingen adresse er oppgitt" :
+            mapStatus?.location === safeLocation ? mapStatus.message : "Laster kart..."}
+        </span>
+      )}
       <div className="map-preview__links">
         {location?.trim() && (
           <a href={directionsUrl} target="_blank" rel="noreferrer" className="map-preview__link">
             Veibeskrivelse
           </a>
         )}
-        <a href={mapUrl} target="_blank" rel="noreferrer" className="map-preview__link">
-          Åpne kart
-        </a>
+        {safeLocation && (
+          <a href={mapUrl} target="_blank" rel="noreferrer" className="map-preview__link">
+            Åpne kart
+          </a>
+        )}
       </div>
     </div>
   )

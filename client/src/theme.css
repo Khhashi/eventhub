@@ -43,3 +43,41 @@ h4,
 .sidebar-brand {
   font-family: "Manrope", "DM Sans", sans-serif;
 }
+
+.sidebar {
+  background: var(--green-dark);
+  color: #eaf2ed;
+  box-shadow: 8px 0 30px rgba(25, 56, 47, 0.08);
+}
+
+.sidebar-section-label,
+.sidebar-user span {
+  color: #99b4a7;
+}
+
+.sidebar-nav a,
+.sidebar-logout {
+  color: #c1d0c8;
+}
+
+.sidebar-nav a:hover,
+.sidebar-logout:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.sidebar-nav a.active {
+  background: rgba(211, 236, 139, 0.14);
+  color: var(--lime);
+}
+
+.sidebar-nav a.sidebar-create {
+  background: var(--lime);
+  color: var(--green-dark);
+}
+
+.sidebar-nav a.sidebar-create:hover,
+.sidebar-nav a.sidebar-create.active {
+  background: #e0f3a5;
+  color: var(--green-dark);
+}

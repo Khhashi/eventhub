@@ -417,6 +417,17 @@ button,
   overflow-wrap: anywhere;
 }
 
+.profile-picture-remove {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  background: #b94f39;
+}
+
+.profile-picture-remove:hover:not(:disabled) {
+  background: #963b2b;
+}
+
 .profile-card .mini-card {
   border-color: #edf0ea;
   border-radius: 11px;

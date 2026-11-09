@@ -7,7 +7,7 @@ export default function Profile() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  const [pictureMessage, setPictureMessage] = useState("")
+  const [pictureMessage, setPictureMessage] = useState(null)
   const [pictureLoading, setPictureLoading] = useState(false)
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function Profile() {
     if (!file) return
 
     if (!file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
-      setPictureMessage("Velg et bilde på maks 2 MB.")
+      setPictureMessage({ type: "error", text: "Velg et bilde på maks 2 MB." })
       return
     }
 
@@ -70,9 +70,9 @@ export default function Profile() {
           ...current,
           user: { ...current.user, picture: result.picture },
         }))
-        setPictureMessage("Profilbildet er oppdatert.")
+        setPictureMessage({ type: "success", text: "Profilbildet er oppdatert." })
       } catch {
-        setPictureMessage("Kunne ikke laste opp profilbildet.")
+        setPictureMessage({ type: "error", text: "Kunne ikke laste opp profilbildet." })
       } finally {
         setPictureLoading(false)
       }
@@ -89,9 +89,9 @@ export default function Profile() {
         ...current,
         user: { ...current.user, picture: "" },
       }))
-      setPictureMessage("Profilbildet er fjernet.")
+      setPictureMessage({ type: "success", text: "Profilbildet er fjernet." })
     } catch {
-      setPictureMessage("Kunne ikke fjerne profilbildet.")
+      setPictureMessage({ type: "error", text: "Kunne ikke fjerne profilbildet." })
     } finally {
       setPictureLoading(false)
     }
@@ -134,7 +134,14 @@ export default function Profile() {
                 disabled={pictureLoading}
               />
             </label>
-            {pictureMessage && <p className="profile-picture-message">{pictureMessage}</p>}
+            {pictureMessage && (
+              <p
+                className={`profile-picture-message profile-picture-message--${pictureMessage.type}`}
+                role={pictureMessage.type === "error" ? "alert" : "status"}
+              >
+                {pictureMessage.text}
+              </p>
+            )}
           </div>
         </div>
 

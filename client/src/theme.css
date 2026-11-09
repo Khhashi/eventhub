@@ -157,3 +157,33 @@ button,
   border-color: #edf0ea;
   background: #fafbf8;
 }
+
+.filter-bar {
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 5px 20px rgba(32, 43, 39, 0.025);
+}
+
+.filter-bar input,
+.filter-bar select {
+  flex: 1 1 150px;
+  min-width: 0;
+  min-height: 43px;
+  padding: 10px 13px;
+  border: 1px solid #e7ebe4;
+  border-radius: 10px;
+  background: #fafbf9;
+  color: var(--ink);
+  font-size: 0.84rem;
+}
+
+.filter-action {
+  min-height: 43px;
+}
+
+.results-summary {
+  color: #748079;
+}

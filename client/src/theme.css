@@ -182,6 +182,39 @@ button,
   background: #fafbf8;
 }
 
+.event-meta-row {
+  gap: 8px;
+}
+
+.event-card .badge {
+  padding: 6px 10px;
+  background: #f5f2e9;
+  color: #77704e;
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+}
+
+.event-card h3,
+.event-card h2 {
+  color: var(--ink);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+}
+
+.event-description {
+  color: #69756e;
+  line-height: 1.65;
+}
+
+.event-info-item strong {
+  color: #38463f;
+  font-weight: 600;
+}
+
+.event-info-label {
+  color: #69756e;
+}
+
 .filter-bar {
   gap: 10px;
   padding: 13px;

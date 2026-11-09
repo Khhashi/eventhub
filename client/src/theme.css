@@ -125,3 +125,35 @@ button,
 .button-danger:hover {
   background: #ffebe5;
 }
+
+.event-card,
+.detail-map-panel,
+.form-card,
+.auth-card,
+.profile-card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+}
+
+.event-card {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 17px 38px rgba(32, 43, 39, 0.09);
+}
+
+.event-category {
+  background: var(--green-soft);
+  color: var(--green);
+  border-radius: 999px;
+  text-transform: none;
+}
+
+.event-info-item {
+  border-color: #edf0ea;
+  background: #fafbf8;
+}

@@ -1,6 +1,43 @@
 import React, { lazy, Suspense, useEffect, useState } from "react"
 
 const LeafletMap = lazy(() => import("./LeafletMap.jsx"))
+const coordinateCache = new Map()
+const pendingLookups = new Map()
+
+async function lookupCoordinates(location) {
+  const cached = coordinateCache.get(location)
+  if (cached && cached.expiresAt > Date.now()) return cached.coordinates
+  coordinateCache.delete(location)
+  if (pendingLookups.has(location)) return pendingLookups.get(location)
+
+  const request = (async () => {
+    const params = new URLSearchParams({
+      q: location,
+      format: "jsonv2",
+      limit: "1",
+      countrycodes: "no",
+    })
+    const response = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
+      headers: { Accept: "application/json" },
+    })
+    if (!response.ok) throw new Error(`Kartoppslag feilet: ${response.status}`)
+    const [result] = await response.json()
+    if (!result) return null
+    const latitude = Number(result.lat)
+    const longitude = Number(result.lon)
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null
+    const coordinates = { latitude, longitude }
+    if (coordinateCache.size >= 100) coordinateCache.delete(coordinateCache.keys().next().value)
+    coordinateCache.set(location, { coordinates, expiresAt: Date.now() + 30 * 60 * 1000 })
+    return coordinates
+  })()
+  pendingLookups.set(location, request)
+  try {
+    return await request
+  } finally {
+    pendingLookups.delete(location)
+  }
+}
 
 export default function MapPreview({ location }) {
   const safeLocation = location?.trim() || ""
@@ -10,49 +47,27 @@ export default function MapPreview({ location }) {
 
   useEffect(() => {
     if (!safeLocation) return undefined
-    const controller = new AbortController()
+    let active = true
 
     const findLocation = async () => {
       try {
-        const params = new URLSearchParams({
-          q: safeLocation,
-          format: "jsonv2",
-          limit: "1",
-          countrycodes: "no",
-        })
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?${params}`,
-          {
-            signal: controller.signal,
-            headers: { Accept: "application/json" },
-          }
-        )
-        if (!response.ok) throw new Error(`Kartoppslag feilet: ${response.status}`)
-        const results = await response.json()
-        const result = results[0]
-
+        const result = await lookupCoordinates(safeLocation)
+        if (!active) return
         if (!result) {
           setMapStatus({ location: safeLocation, message: "Fant ikke en nøyaktig plassering" })
           return
         }
-
-        const latitude = Number(result.lat)
-        const longitude = Number(result.lon)
-        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-          setMapStatus({ location: safeLocation, message: "Fant ikke en nøyaktig plassering" })
-          return
-        }
-        setCoordinates({ latitude, longitude, location: safeLocation })
+        setCoordinates({ ...result, location: safeLocation })
         setMapStatus(null)
-      } catch (error) {
-        if (error.name !== "AbortError") {
+      } catch {
+        if (active) {
           setMapStatus({ location: safeLocation, message: "Kartet kunne ikke lastes" })
         }
       }
     }
 
     findLocation()
-    return () => controller.abort()
+    return () => { active = false }
   }, [safeLocation])
 
   const resolvedCoordinates = coordinates?.location === safeLocation ? coordinates : null

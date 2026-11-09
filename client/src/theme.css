@@ -489,3 +489,10 @@ button,
     animation: none;
   }
 }
+
+.pagination {
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 30px 0 0;
+  color: #60735f;
+}

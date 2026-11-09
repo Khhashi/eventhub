@@ -1,6 +1,7 @@
 import React from "react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { MemoryRouter } from "react-router-dom"
 import EventList from "../pages/EventList.jsx"
 
@@ -19,6 +20,27 @@ describe("EventList", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     getMe.mockResolvedValue({ _id: "organizer-1", role: "organizer" })
+  })
+
+  it("shows a clear message when there are no events", async () => {
+    fetchEvents.mockResolvedValueOnce([])
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    expect(await screen.findByRole("heading", { name: "Ingen arrangementer ennå" })).toBeInTheDocument()
+  })
+
+  it("shows no results for a search and restores events after reset", async () => {
+    fetchEvents.mockResolvedValueOnce([
+      { _id: "3", title: "Konsert", description: "", location: "", date: "2026-02-14" },
+    ])
+    const user = userEvent.setup()
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    await screen.findByText("Konsert")
+    await user.type(screen.getByRole("searchbox", { name: "Søk etter arrangement" }), "teater")
+    expect(screen.getByRole("heading", { name: "Ingen treff" })).toBeInTheDocument()
+    await user.click(screen.getByRole("button", { name: "Nullstill" }))
+    expect(screen.getByText("Konsert")).toBeInTheDocument()
   })
 
   it("renders events from API and shows edit link", async () => {

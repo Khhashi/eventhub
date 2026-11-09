@@ -691,3 +691,27 @@ button,
   background: #356858;
   color: var(--lime);
 }
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid #356858;
+  outline-offset: 2px;
+}
+
+.profile-upload:focus-within {
+  outline: 3px solid #356858;
+  outline-offset: 2px;
+}
+
+.sidebar a:focus-visible,
+.sidebar button:focus-visible {
+  outline-color: #d3ec8b;
+  outline-offset: -3px;
+}
+
+.form-card .address-suggestion:focus-visible {
+  outline-offset: -3px;
+}

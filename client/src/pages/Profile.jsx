@@ -17,6 +17,8 @@ export default function Profile() {
   }, [])
 
   const load = async () => {
+    setLoading(true)
+    setError("")
     try {
       const res = await request("/auth/profile")
       setData(res)
@@ -36,10 +38,17 @@ export default function Profile() {
       <div className="center-page auth-page">
         <div className="auth-card">
           <p className="eyebrow">Profil</p>
-          <h2>Logg inn for å se profilen din</h2>
+          <h2>Kunne ikke hente profilen</h2>
           <p className="auth-subtitle">
-            Her finner du dine arrangementer og påmeldinger.
+            Sjekk tilkoblingen og prøv igjen, eller logg inn på nytt.
           </p>
+          <button
+            type="button"
+            className="button-secondary auth-button"
+            onClick={load}
+          >
+            Prøv igjen
+          </button>
           <Link to="/login" className="button-primary auth-button">
             Gå til innlogging
           </Link>

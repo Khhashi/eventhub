@@ -1,6 +1,7 @@
 import React from "react"
 import { afterEach, beforeEach, describe, it, expect, vi } from "vitest"
 import { fireEvent, render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { MemoryRouter } from "react-router-dom"
 import Profile from "../pages/Profile.jsx"
 
@@ -21,6 +22,30 @@ describe("Profile", () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
+  })
+
+  it("offers a retry instead of treating every profile load error as logout", async () => {
+    request.mockRejectedValueOnce(new Error("Serveren er utilgjengelig"))
+    request.mockResolvedValueOnce({
+      user: { name: "Testbruker", picture: "" },
+      createdEvents: [],
+      registeredEvents: [],
+    })
+    const user = userEvent.setup()
+
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    )
+
+    expect(
+      await screen.findByRole("heading", { name: "Kunne ikke hente profilen" })
+    ).toBeInTheDocument()
+    await user.click(screen.getByRole("button", { name: "Prøv igjen" }))
+
+    expect(await screen.findByRole("heading", { name: "Testbruker" })).toBeInTheDocument()
+    expect(request).toHaveBeenCalledTimes(2)
   })
 
   it("explains unsupported profile image formats without uploading them", async () => {

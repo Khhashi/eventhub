@@ -1,32 +1,27 @@
 import React, { useEffect, useRef, useState } from "react"
 
-const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
+const ADDRESS_URL = "https://ws.geonorge.no/adresser/v1/sok"
 
 const formatAddress = (suggestion) => {
-  const address = suggestion.address || {}
-  const street = [address.road, address.house_number]
-    .filter(Boolean)
-    .join(" ")
-  const city = address.city || address.town || address.village || address.municipality
-  const postal = [address.postcode, city].filter(Boolean).join(" ")
-  const conciseAddress = [street, postal].filter(Boolean).join(", ")
-
-  return conciseAddress || suggestion.display_name
+  const postal = [suggestion.postnummer, suggestion.poststed].filter(Boolean).join(" ")
+  return [suggestion.adressetekst, postal].filter(Boolean).join(", ")
 }
 
 export default function AddressAutocomplete({ value, onChange, id = "location" }) {
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
   const [focused, setFocused] = useState(false)
   const [dismissed, setDismissed] = useState(false)
   const blurTimeout = useRef(null)
+  const selectedAddress = useRef(null)
 
   useEffect(() => () => window.clearTimeout(blurTimeout.current), [])
 
   useEffect(() => {
     const query = value.trim()
 
-    if (query.length < 3) {
+    if (query.length < 3 || query === selectedAddress.current) {
       setSuggestions([])
       return undefined
     }
@@ -37,26 +32,26 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
 
       try {
         const params = new URLSearchParams({
-          q: query,
-          format: "jsonv2",
-          addressdetails: "1",
-          limit: "5",
-          countrycodes: "no",
+          sok: `${query}*`,
+          treffPerSide: "5",
         })
-        const response = await fetch(`${NOMINATIM_URL}?${params}`, {
+        const response = await fetch(`${ADDRESS_URL}?${params}`, {
           signal: controller.signal,
           headers: { Accept: "application/json" },
         })
-
-        if (response.ok) {
-          setSuggestions(await response.json())
+        if (!response.ok) throw new Error(`Adresseoppslag feilet: ${response.status}`)
+        const data = await response.json()
+        if (!Array.isArray(data.adresser)) throw new Error("Ugyldig svar fra adresseoppslag")
+        if (!controller.signal.aborted) {
+          setSuggestions(data.adresser.filter((address) => address.adresseid && address.adressetekst))
         }
-      } catch (error) {
-        if (error.name !== "AbortError") {
+      } catch {
+        if (!controller.signal.aborted) {
           setSuggestions([])
+          setError("Adresseforslag er utilgjengelige. Du kan skrive inn adressen selv.")
         }
       } finally {
-        setLoading(false)
+        if (!controller.signal.aborted) setLoading(false)
       }
     }, 450)
 
@@ -67,10 +62,12 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
   }, [value])
 
   const handleSelect = (suggestion) => {
+    const address = formatAddress(suggestion)
+    selectedAddress.current = address
     onChange({
       target: {
         name: "location",
-        value: formatAddress(suggestion),
+        value: address,
       },
     })
     setSuggestions([])
@@ -84,7 +81,11 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
         name="location"
         value={value}
         onChange={(event) => {
+          selectedAddress.current = null
           setDismissed(false)
+          setSuggestions([])
+          setLoading(false)
+          setError("")
           onChange(event)
         }}
         onFocus={() => {
@@ -104,12 +105,13 @@ export default function AddressAutocomplete({ value, onChange, id = "location" }
         required
       />
 
+      {error && <div className="address-suggestion-status" role="status">{error}</div>}
       {focused && !dismissed && (loading || suggestions.length > 0) && (
         <div id={`${id}-suggestions`} className="address-suggestions" role="listbox">
           {loading && <div className="address-suggestion-status">Søker etter adresser...</div>}
           {suggestions.map((suggestion) => (
             <button
-              key={suggestion.place_id}
+              key={suggestion.adresseid}
               type="button"
               className="address-suggestion"
               onMouseDown={(event) => event.preventDefault()}

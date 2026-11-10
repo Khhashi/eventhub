@@ -1,5 +1,5 @@
 import React from "react"
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom"
 import EventList from "../pages/EventList.jsx"
@@ -20,6 +20,8 @@ describe("EventList", () => {
     vi.clearAllMocks()
     getMe.mockResolvedValue({ _id: "organizer-1", role: "organizer" })
   })
+
+  afterEach(() => vi.unstubAllGlobals())
 
   it("renders events from API and shows edit link", async () => {
     fetchEvents.mockResolvedValueOnce([
@@ -45,6 +47,7 @@ describe("EventList", () => {
   })
 
   it("renders a location map preview for the event", async () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise(() => {})))
     fetchEvents.mockResolvedValueOnce([
       {
         _id: "2",
@@ -64,5 +67,9 @@ describe("EventList", () => {
 
     expect(await screen.findByText("Møte i Bergen")).toBeInTheDocument()
     expect(screen.getByTitle(/Kart for Bergen/i)).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "Veibeskrivelse" })).toHaveAttribute(
+      "href",
+      expect.stringContaining("google.com/maps/dir/?api=1&destination=Bergen")
+    )
   })
 })

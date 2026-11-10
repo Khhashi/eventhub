@@ -7,13 +7,14 @@ import EventList from "../pages/EventList.jsx"
 
 vi.mock("../api/events", () => ({
   fetchEvents: vi.fn(),
+  registerForEvent: vi.fn(),
 }))
 
 vi.mock("../api/auth", () => ({
   getMe: vi.fn(),
 }))
 
-import { fetchEvents } from "../api/events"
+import { fetchEvents, registerForEvent } from "../api/events"
 import { getMe } from "../api/auth"
 
 describe("EventList", () => {
@@ -98,6 +99,37 @@ describe("EventList", () => {
 
     expect(await screen.findByText("Nytt arrangement")).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "Oppdater" })).toBeEnabled()
+  })
+
+  it("prevents duplicate registration requests while a registration is pending", async () => {
+    const event = {
+      _id: "registration-1",
+      title: "Testarrangement",
+      description: "",
+      location: "Oslo",
+      date: "2026-02-14",
+      attendees: [],
+    }
+    fetchEvents.mockResolvedValueOnce([event])
+    let resolveRegistration
+    registerForEvent.mockReturnValueOnce(new Promise((resolve) => {
+      resolveRegistration = resolve
+    }))
+    fetchEvents.mockResolvedValueOnce([{ ...event, attendees: ["organizer-1"] }])
+    const user = userEvent.setup()
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    await screen.findByText("Testarrangement")
+    const registerButton = screen.getByRole("button", { name: "Registrer" })
+    await user.click(registerButton)
+
+    expect(screen.getByRole("button", { name: "Behandler..." })).toBeDisabled()
+    expect(registerForEvent).toHaveBeenCalledTimes(1)
+
+    resolveRegistration()
+    expect(await screen.findByRole("status")).toHaveTextContent("Registrert")
+    expect(registerForEvent).toHaveBeenCalledTimes(1)
+    expect(await screen.findByRole("button", { name: "Avregistrer" })).toBeEnabled()
   })
 
   it("shows no results for a search and restores events after reset", async () => {

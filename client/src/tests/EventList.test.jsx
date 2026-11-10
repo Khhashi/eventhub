@@ -43,6 +43,39 @@ describe("EventList", () => {
     )
   })
 
+  it("keeps the current list visible and disables refresh while updating", async () => {
+    const event = {
+      _id: "refresh-1",
+      title: "Eksisterende arrangement",
+      description: "",
+      location: "Oslo",
+      date: "2026-02-14",
+    }
+    fetchEvents.mockResolvedValueOnce([event])
+    let resolveRefresh
+    fetchEvents.mockReturnValueOnce(new Promise((resolve) => {
+      resolveRefresh = resolve
+    }))
+    const user = userEvent.setup()
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    expect(await screen.findByText("Eksisterende arrangement")).toBeInTheDocument()
+    await user.click(screen.getByRole("button", { name: "Oppdater" }))
+
+    const refreshButton = screen.getByRole("button", { name: "Oppdaterer..." })
+    expect(refreshButton).toBeDisabled()
+    expect(screen.getByText("Eksisterende arrangement")).toBeInTheDocument()
+
+    resolveRefresh([event, {
+      ...event,
+      _id: "refresh-2",
+      title: "Nytt arrangement",
+    }])
+
+    expect(await screen.findByText("Nytt arrangement")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Oppdater" })).toBeEnabled()
+  })
+
   it("shows no results for a search and restores events after reset", async () => {
     fetchEvents.mockResolvedValueOnce([
       { _id: "3", title: "Konsert", description: "", location: "", date: "2026-02-14" },

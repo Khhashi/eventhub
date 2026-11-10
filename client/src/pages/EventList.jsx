@@ -139,7 +139,7 @@ export default function EventList() {
     page * pageSize
   )
 
-  if (loading) {
+  if (loading && events.length === 0) {
     return (
       <div className="center-page">
         <div className="loading-header">
@@ -221,9 +221,10 @@ export default function EventList() {
           type="button"
           className="button-secondary filter-action"
           onClick={loadEvents}
+          disabled={loading}
         >
           <ArrowPathIcon className="button-icon" aria-hidden="true" />
-          Oppdater
+          {loading ? "Oppdaterer..." : "Oppdater"}
         </button>
       </div>
 

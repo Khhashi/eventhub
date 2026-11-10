@@ -238,12 +238,13 @@ export default function EventList() {
               ? "message-success"
               : "message-error"
           }
+          role={message.type === "success" ? "status" : "alert"}
         >
           {message.text}
         </div>
       )}
 
-      {loadError && <div className="message-error">{loadError}</div>}
+      {loadError && <div className="message-error" role="alert">{loadError}</div>}
 
       {!loadError && events.length === 0 && (
         <div className="empty-panel">

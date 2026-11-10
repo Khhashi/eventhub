@@ -1,5 +1,5 @@
 import React from "react"
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { MemoryRouter } from "react-router-dom"
@@ -22,11 +22,25 @@ describe("EventList", () => {
     getMe.mockResolvedValue({ _id: "organizer-1", role: "organizer" })
   })
 
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it("shows a clear message when there are no events", async () => {
     fetchEvents.mockResolvedValueOnce([])
     render(<MemoryRouter><EventList /></MemoryRouter>)
 
     expect(await screen.findByRole("heading", { name: "Ingen arrangementer ennå" })).toBeInTheDocument()
+  })
+
+  it("announces event loading errors to screen readers", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {})
+    fetchEvents.mockRejectedValueOnce(new Error("Nettverksfeil"))
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Arrangementene kunne ikke oppdateres akkurat nå. Viser tidligere data."
+    )
   })
 
   it("shows no results for a search and restores events after reset", async () => {

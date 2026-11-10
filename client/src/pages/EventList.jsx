@@ -23,6 +23,8 @@ export default function EventList() {
   const [message, setMessage] = useState(null)
   const [pendingRegistrations, setPendingRegistrations] = useState(() => new Set())
   const pendingRegistrationsRef = useRef(new Set())
+  const [pendingDeletes, setPendingDeletes] = useState(() => new Set())
+  const pendingDeletesRef = useRef(new Set())
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("all")
   const [dateFilter, setDateFilter] = useState("all")
@@ -109,16 +111,27 @@ export default function EventList() {
   }
 
   const handleDelete = async (id) => {
+    if (pendingDeletesRef.current.has(id)) return
+
     if (!window.confirm("Er du sikker på at du vil slette dette arrangementet?")) {
       return
     }
 
+    pendingDeletesRef.current.add(id)
+    setPendingDeletes((current) => new Set(current).add(id))
     try {
       await deleteEvent(id)
       setMessage({ type: "success", text: "Arrangementet er slettet" })
-      loadEvents()
+      await loadEvents()
     } catch {
       setMessage({ type: "error", text: "Kunne ikke slette" })
+    } finally {
+      pendingDeletesRef.current.delete(id)
+      setPendingDeletes((current) => {
+        const next = new Set(current)
+        next.delete(id)
+        return next
+      })
     }
   }
 
@@ -356,8 +369,9 @@ export default function EventList() {
                 <button
                   className="button-danger"
                   onClick={() => handleDelete(ev._id)}
+                  disabled={pendingDeletes.has(ev._id)}
                 >
-                  Slett
+                  {pendingDeletes.has(ev._id) ? "Sletter..." : "Slett"}
                 </button>
               )}
             </div>

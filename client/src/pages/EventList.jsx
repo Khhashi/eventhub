@@ -35,8 +35,8 @@ export default function EventList() {
       setEvents(data || [])
       setLoadError("")
     } catch (err) {
-      console.error("Kunne ikke hente arrangementer", err)
       setLoadError("Arrangementene kunne ikke oppdateres akkurat nå. Viser tidligere data.")
+      console.error("Kunne ikke hente arrangementer", err)
     }
 
     setLoading(false)

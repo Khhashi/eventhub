@@ -43,6 +43,30 @@ describe("EventList", () => {
     )
   })
 
+  it("keeps previously loaded events and announces refresh errors", async () => {
+    const event = {
+      _id: "stale-1",
+      title: "Beholdt arrangement",
+      description: "",
+      location: "Oslo",
+      date: "2026-02-14",
+    }
+    fetchEvents.mockResolvedValueOnce([event])
+    fetchEvents.mockRejectedValueOnce(new Error("Nettverksfeil"))
+    vi.spyOn(console, "error").mockImplementation(() => {})
+    const user = userEvent.setup()
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    expect(await screen.findByText("Beholdt arrangement")).toBeInTheDocument()
+    await user.click(screen.getByRole("button", { name: "Oppdater" }))
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Arrangementene kunne ikke oppdateres akkurat nå. Viser tidligere data."
+    )
+    expect(screen.getByText("Beholdt arrangement")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Oppdater" })).toBeEnabled()
+  })
+
   it("keeps the current list visible and disables refresh while updating", async () => {
     const event = {
       _id: "refresh-1",

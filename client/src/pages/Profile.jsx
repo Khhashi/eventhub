@@ -89,6 +89,12 @@ export default function Profile() {
         setPictureLoading(false)
       }
     }
+    reader.onerror = () => {
+      setPictureMessage({
+        type: "error",
+        text: "Kunne ikke lese bildefilen. Prøv en annen fil.",
+      })
+    }
     reader.readAsDataURL(file)
   }
 

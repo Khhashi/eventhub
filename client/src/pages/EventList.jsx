@@ -386,7 +386,7 @@ export default function EventList() {
       })}
 
       {pageCount > 1 && (
-        <div className="pagination" aria-label="Sideinndeling">
+        <nav className="pagination" aria-label="Sideinndeling">
           <button
             className="button-secondary"
             disabled={page === 1}
@@ -394,7 +394,7 @@ export default function EventList() {
           >
             Forrige
           </button>
-          <span>Side {page} av {pageCount}</span>
+          <span aria-current="page">Side {page} av {pageCount}</span>
           <button
             className="button-secondary"
             disabled={page === pageCount}
@@ -402,7 +402,7 @@ export default function EventList() {
           >
             Neste
           </button>
-        </div>
+        </nav>
       )}
       </div>
     </div>

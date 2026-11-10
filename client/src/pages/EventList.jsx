@@ -165,6 +165,12 @@ export default function EventList() {
     page * pageSize
   )
 
+  useEffect(() => {
+    if (page > pageCount) {
+      setPage(pageCount)
+    }
+  }, [page, pageCount])
+
   if (loading && events.length === 0) {
     return (
       <div className="center-page">

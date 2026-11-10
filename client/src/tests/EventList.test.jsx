@@ -172,6 +172,38 @@ describe("EventList", () => {
     expect(screen.getByRole("button", { name: "Oppdater" })).toBeEnabled()
   })
 
+  it("returns to the last available page when deleting its only event", async () => {
+    getMe.mockResolvedValueOnce({ _id: "admin-1", role: "admin" })
+    const events = Array.from({ length: 6 }, (_, index) => ({
+      _id: `event-${index}`,
+      title: `Arrangement ${index + 1}`,
+      description: "",
+      location: "Oslo",
+      date: "2026-02-14",
+      createdBy: "organizer-1",
+    }))
+    fetchEvents.mockResolvedValueOnce(events)
+    fetchEvents.mockResolvedValueOnce(events.slice(0, -1))
+    deleteEvent.mockResolvedValueOnce({})
+    vi.spyOn(window, "confirm").mockReturnValue(true)
+    const user = userEvent.setup()
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    await screen.findByText("Arrangement 1")
+    await user.click(screen.getByRole("button", { name: "Neste" }))
+    expect(screen.getByText("Arrangement 6")).toBeInTheDocument()
+
+    await user.click(screen.getByRole("button", { name: "Slett" }))
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Arrangementet er slettet"
+    )
+    expect(await screen.findByText("Arrangement 1")).toBeInTheDocument()
+    expect(screen.getByText("Arrangement 5")).toBeInTheDocument()
+    expect(screen.queryByText("Arrangement 6")).not.toBeInTheDocument()
+    expect(screen.queryByRole("navigation", { name: "Sideinndeling" })).not.toBeInTheDocument()
+  })
+
   it("shows no results for a search and restores events after reset", async () => {
     fetchEvents.mockResolvedValueOnce([
       { _id: "3", title: "Konsert", description: "", location: "", date: "2026-02-14" },

@@ -364,6 +364,10 @@ button,
   color: var(--green);
 }
 
+.profile-picture-message--error {
+  color: #a84c38;
+}
+
 .profile-summary {
   gap: 14px;
 }
@@ -392,4 +396,358 @@ button,
 
 .profile-summary .summary-card > span:last-child {
   color: #69756e;
+}
+
+.profile-grid {
+  gap: 16px;
+}
+
+.profile-card h3 {
+  color: var(--ink);
+  font-size: 1.03rem;
+  letter-spacing: -0.025em;
+}
+
+.profile-info-list div {
+  border-color: #edf0ea;
+}
+
+.profile-info-list span,
+.profile-card .empty-state {
+  color: #60735f;
+}
+
+.profile-info-list strong {
+  overflow-wrap: anywhere;
+}
+
+.profile-picture-remove {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  background: #b94f39;
+}
+
+.profile-picture-remove:hover:not(:disabled) {
+  background: #963b2b;
+}
+
+.profile-card .mini-card {
+  border-color: #edf0ea;
+  border-radius: 11px;
+  background: #fafbf8;
+}
+
+.profile-card .mini-card a {
+  color: var(--green);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.profile-card .mini-card a:hover {
+  color: #39705c;
+}
+
+.map-preview__heading {
+  color: #60735f;
+}
+
+.map-preview {
+  border-color: #e6ebe2;
+  background: #edf1ed;
+  box-shadow: 0 5px 16px rgba(32, 43, 39, 0.045);
+}
+
+.map-preview__link {
+  color: var(--green);
+}
+
+.map-preview__link:hover {
+  color: #39705c;
+}
+
+.detail-map-panel h3 {
+  color: var(--ink);
+}
+
+.empty-panel {
+  padding: 48px 28px;
+  border-color: #cbd6cc;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.empty-panel h2 {
+  color: var(--ink);
+}
+
+.empty-panel p {
+  color: #69756e;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e8ebe4 25%, #f5f6f2 50%, #e8ebe4 75%);
+  background-size: 200% 100%;
+}
+
+.loading-grid {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.skeleton-card {
+  min-height: 190px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+.pagination {
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 30px 0 0;
+  color: #60735f;
+}
+
+.event-detail-grid {
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: 20px;
+}
+
+.event-details-page .event-card {
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.detail-map-panel h3 {
+  margin-bottom: 15px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 800px) {
+  .event-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .profile-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .profile-summary .summary-card {
+    min-width: 0;
+    padding: 15px 10px;
+  }
+
+  .profile-summary .summary-label {
+    letter-spacing: 0.08em;
+    overflow-wrap: anywhere;
+  }
+
+  .profile-summary .summary-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.event-details-page .organizer-box {
+  gap: 13px;
+  margin: 24px 0;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fafbf8;
+}
+
+.event-details-page .organizer-box > div,
+.event-details-page .attendee-item {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.event-details-page .organizer-box strong {
+  color: #59675f;
+  font-size: 0.82rem;
+}
+
+.event-details-page .avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.event-details-page .avatar-small {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.event-details-page .attendees-list {
+  margin-top: 26px;
+}
+
+.event-details-page .attendees-list h4 {
+  margin-bottom: 14px;
+}
+
+.event-details-page .attendee-item {
+  gap: 10px;
+  color: #59675f;
+  font-size: 0.88rem;
+}
+
+.message-success,
+.message-error {
+  margin: 0 0 18px;
+  padding: 13px 16px;
+  border-radius: 11px;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
+.message-success {
+  border: 1px solid #cfe4d4;
+  background: #f0f8f0;
+  color: #2f6344;
+}
+
+.message-error {
+  border: 1px solid #f0d3ca;
+  background: #fff4f0;
+  color: #a84c38;
+}
+
+.events-page .event-card {
+  margin-bottom: 16px;
+  padding: 22px 24px;
+}
+
+.event-card__content {
+  gap: 26px;
+}
+
+.event-details-grid {
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.event-info-item {
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+@media (min-width: 801px) {
+  .event-card__content {
+    grid-template-columns: minmax(0, 1.45fr) minmax(220px, 0.75fr);
+  }
+
+  .event-details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .events-page .event-card {
+    padding: 17px;
+  }
+}
+
+.page-toolbar {
+  min-height: 68px;
+  padding: 14px clamp(22px, 4vw, 58px);
+  border-bottom-color: rgba(32, 43, 39, 0.07);
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(14px);
+}
+
+@media (max-width: 768px) {
+  .page-toolbar {
+    min-height: 58px;
+    padding: 12px 18px;
+  }
+}
+
+.form-card {
+  max-width: 760px;
+  margin: 38px auto 64px;
+  padding: clamp(24px, 4vw, 42px);
+}
+
+.form-card h2 {
+  margin: 0 0 26px;
+  color: var(--ink);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+}
+
+.form-card form > .button-primary,
+.form-card form > .button-secondary {
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 12px;
+}
+
+.profile-shell {
+  padding-top: clamp(24px, 4vw, 44px);
+  padding-bottom: 64px;
+}
+
+.profile-summary {
+  margin-bottom: 0;
+}
+
+.profile-card {
+  padding: clamp(18px, 3vw, 24px);
+}
+
+.profile-info-list {
+  gap: 12px;
+}
+
+.profile-info-list div {
+  gap: 5px;
+  padding-bottom: 12px;
+}
+
+.profile-card .mini-card {
+  margin-bottom: 8px;
+  padding: 13px 15px;
+}
+
+.sidebar-avatar {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+  border: 2px solid rgba(211, 236, 139, 0.32);
+  background: #356858;
+  color: var(--lime);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid #356858;
+  outline-offset: 2px;
+}
+
+.profile-upload:focus-within {
+  outline: 3px solid #356858;
+  outline-offset: 2px;
+}
+
+.sidebar a:focus-visible,
+.sidebar button:focus-visible {
+  outline-color: #d3ec8b;
+  outline-offset: -3px;
+}
+
+.form-card .address-suggestion:focus-visible {
+  outline-offset: -3px;
 }

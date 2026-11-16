@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import {
   fetchEvents,
@@ -21,6 +21,10 @@ export default function EventList() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState("")
   const [message, setMessage] = useState(null)
+  const [pendingRegistrations, setPendingRegistrations] = useState(() => new Set())
+  const pendingRegistrationsRef = useRef(new Set())
+  const [pendingDeletes, setPendingDeletes] = useState(() => new Set())
+  const pendingDeletesRef = useRef(new Set())
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("all")
   const [dateFilter, setDateFilter] = useState("all")
@@ -35,8 +39,8 @@ export default function EventList() {
       setEvents(data || [])
       setLoadError("")
     } catch (err) {
-      console.error("Kunne ikke hente arrangementer", err)
       setLoadError("Arrangementene kunne ikke oppdateres akkurat nå. Viser tidligere data.")
+      console.error("Kunne ikke hente arrangementer", err)
     }
 
     setLoading(false)
@@ -76,6 +80,10 @@ export default function EventList() {
   }, [loadEvents, user])
 
   const handleRegisterToggle = async (ev) => {
+    if (pendingRegistrationsRef.current.has(ev._id)) return
+
+    pendingRegistrationsRef.current.add(ev._id)
+    setPendingRegistrations((current) => new Set(current).add(ev._id))
     try {
       const isRegistered = ev.attendees?.some(
         (a) => a._id === user?._id || a === user?._id
@@ -89,23 +97,41 @@ export default function EventList() {
         setMessage({ type: "success", text: "Registrert" })
       }
 
-      loadEvents()
+      await loadEvents()
     } catch {
       setMessage({ type: "error", text: "Noe gikk galt" })
+    } finally {
+      pendingRegistrationsRef.current.delete(ev._id)
+      setPendingRegistrations((current) => {
+        const next = new Set(current)
+        next.delete(ev._id)
+        return next
+      })
     }
   }
 
   const handleDelete = async (id) => {
+    if (pendingDeletesRef.current.has(id)) return
+
     if (!window.confirm("Er du sikker på at du vil slette dette arrangementet?")) {
       return
     }
 
+    pendingDeletesRef.current.add(id)
+    setPendingDeletes((current) => new Set(current).add(id))
     try {
       await deleteEvent(id)
       setMessage({ type: "success", text: "Arrangementet er slettet" })
-      loadEvents()
+      await loadEvents()
     } catch {
       setMessage({ type: "error", text: "Kunne ikke slette" })
+    } finally {
+      pendingDeletesRef.current.delete(id)
+      setPendingDeletes((current) => {
+        const next = new Set(current)
+        next.delete(id)
+        return next
+      })
     }
   }
 
@@ -139,7 +165,13 @@ export default function EventList() {
     page * pageSize
   )
 
-  if (loading) {
+  useEffect(() => {
+    if (page > pageCount) {
+      setPage(pageCount)
+    }
+  }, [page, pageCount])
+
+  if (loading && events.length === 0) {
     return (
       <div className="center-page">
         <div className="loading-header">
@@ -221,9 +253,10 @@ export default function EventList() {
           type="button"
           className="button-secondary filter-action"
           onClick={loadEvents}
+          disabled={loading}
         >
           <ArrowPathIcon className="button-icon" aria-hidden="true" />
-          Oppdater
+          {loading ? "Oppdaterer..." : "Oppdater"}
         </button>
       </div>
 
@@ -238,12 +271,13 @@ export default function EventList() {
               ? "message-success"
               : "message-error"
           }
+          role={message.type === "success" ? "status" : "alert"}
         >
           {message.text}
         </div>
       )}
 
-      {loadError && <div className="message-error">{loadError}</div>}
+      {loadError && <div className="message-error" role="alert">{loadError}</div>}
 
       {!loadError && events.length === 0 && (
         <div className="empty-panel">
@@ -329,8 +363,11 @@ export default function EventList() {
                 <button
                   className="button-primary"
                   onClick={() => handleRegisterToggle(ev)}
+                  disabled={pendingRegistrations.has(ev._id)}
                 >
-                  {isRegistered ? "Avregistrer" : "Registrer"}
+                  {pendingRegistrations.has(ev._id)
+                    ? "Behandler..."
+                    : isRegistered ? "Avregistrer" : "Registrer"}
                 </button>
               )}
 
@@ -338,8 +375,9 @@ export default function EventList() {
                 <button
                   className="button-danger"
                   onClick={() => handleDelete(ev._id)}
+                  disabled={pendingDeletes.has(ev._id)}
                 >
-                  Slett
+                  {pendingDeletes.has(ev._id) ? "Sletter..." : "Slett"}
                 </button>
               )}
             </div>
@@ -348,7 +386,7 @@ export default function EventList() {
       })}
 
       {pageCount > 1 && (
-        <div className="pagination" aria-label="Sideinndeling">
+        <nav className="pagination" aria-label="Sideinndeling">
           <button
             className="button-secondary"
             disabled={page === 1}
@@ -356,7 +394,7 @@ export default function EventList() {
           >
             Forrige
           </button>
-          <span>Side {page} av {pageCount}</span>
+          <span aria-current="page">Side {page} av {pageCount}</span>
           <button
             className="button-secondary"
             disabled={page === pageCount}
@@ -364,7 +402,7 @@ export default function EventList() {
           >
             Neste
           </button>
-        </div>
+        </nav>
       )}
       </div>
     </div>

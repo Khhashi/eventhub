@@ -226,6 +226,8 @@ describe("EventList", () => {
     render(<MemoryRouter><EventList /></MemoryRouter>)
 
     await screen.findByText("Arrangement 0")
+    expect(screen.getByRole("navigation", { name: "Sideinndeling" })).toBeInTheDocument()
+    expect(screen.getByText("Side 1 av 2")).toHaveAttribute("aria-current", "page")
     expect(screen.getByRole("button", { name: "Forrige" })).toBeDisabled()
     await user.click(screen.getByRole("button", { name: "Neste" }))
     expect(screen.getByText("Arrangement 5")).toBeInTheDocument()

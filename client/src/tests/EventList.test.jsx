@@ -8,13 +8,14 @@ import EventList from "../pages/EventList.jsx"
 vi.mock("../api/events", () => ({
   fetchEvents: vi.fn(),
   registerForEvent: vi.fn(),
+  deleteEvent: vi.fn(),
 }))
 
 vi.mock("../api/auth", () => ({
   getMe: vi.fn(),
 }))
 
-import { fetchEvents, registerForEvent } from "../api/events"
+import { fetchEvents, registerForEvent, deleteEvent } from "../api/events"
 import { getMe } from "../api/auth"
 
 describe("EventList", () => {
@@ -132,6 +133,77 @@ describe("EventList", () => {
     expect(await screen.findByRole("button", { name: "Avregistrer" })).toBeEnabled()
   })
 
+  it("prevents duplicate delete requests while a deletion is pending", async () => {
+    getMe.mockResolvedValueOnce({ _id: "admin-1", role: "admin" })
+    const event = {
+      _id: "delete-1",
+      title: "Arrangement som slettes",
+      description: "",
+      location: "Oslo",
+      date: "2026-02-14",
+      createdBy: "organizer-1",
+    }
+    fetchEvents.mockResolvedValueOnce([event])
+    let resolveDeletion
+    deleteEvent.mockReturnValueOnce(new Promise((resolve) => {
+      resolveDeletion = resolve
+    }))
+    fetchEvents.mockResolvedValueOnce([])
+    vi.spyOn(window, "confirm").mockReturnValue(true)
+    const user = userEvent.setup()
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    await screen.findByText("Arrangement som slettes")
+    await user.click(screen.getByRole("button", { name: "Slett" }))
+    const deleteButton = screen.getByRole("button", { name: "Sletter..." })
+
+    expect(deleteButton).toBeDisabled()
+    expect(window.confirm).toHaveBeenCalledTimes(1)
+    expect(deleteEvent).toHaveBeenCalledTimes(1)
+    await user.click(deleteButton)
+    expect(deleteEvent).toHaveBeenCalledTimes(1)
+
+    resolveDeletion()
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Arrangementet er slettet"
+    )
+    expect(await screen.findByRole("heading", { name: "Ingen arrangementer ennå" }))
+      .toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Oppdater" })).toBeEnabled()
+  })
+
+  it("returns to the last available page when deleting its only event", async () => {
+    getMe.mockResolvedValueOnce({ _id: "admin-1", role: "admin" })
+    const events = Array.from({ length: 6 }, (_, index) => ({
+      _id: `event-${index}`,
+      title: `Arrangement ${index + 1}`,
+      description: "",
+      location: "Oslo",
+      date: "2026-02-14",
+      createdBy: "organizer-1",
+    }))
+    fetchEvents.mockResolvedValueOnce(events)
+    fetchEvents.mockResolvedValueOnce(events.slice(0, -1))
+    deleteEvent.mockResolvedValueOnce({})
+    vi.spyOn(window, "confirm").mockReturnValue(true)
+    const user = userEvent.setup()
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    await screen.findByText("Arrangement 1")
+    await user.click(screen.getByRole("button", { name: "Neste" }))
+    expect(screen.getByText("Arrangement 6")).toBeInTheDocument()
+
+    await user.click(screen.getByRole("button", { name: "Slett" }))
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Arrangementet er slettet"
+    )
+    expect(await screen.findByText("Arrangement 1")).toBeInTheDocument()
+    expect(screen.getByText("Arrangement 5")).toBeInTheDocument()
+    expect(screen.queryByText("Arrangement 6")).not.toBeInTheDocument()
+    expect(screen.queryByRole("navigation", { name: "Sideinndeling" })).not.toBeInTheDocument()
+  })
+
   it("shows no results for a search and restores events after reset", async () => {
     fetchEvents.mockResolvedValueOnce([
       { _id: "3", title: "Konsert", description: "", location: "", date: "2026-02-14" },
@@ -154,6 +226,8 @@ describe("EventList", () => {
     render(<MemoryRouter><EventList /></MemoryRouter>)
 
     await screen.findByText("Arrangement 0")
+    expect(screen.getByRole("navigation", { name: "Sideinndeling" })).toBeInTheDocument()
+    expect(screen.getByText("Side 1 av 2")).toHaveAttribute("aria-current", "page")
     expect(screen.getByRole("button", { name: "Forrige" })).toBeDisabled()
     await user.click(screen.getByRole("button", { name: "Neste" }))
     expect(screen.getByText("Arrangement 5")).toBeInTheDocument()

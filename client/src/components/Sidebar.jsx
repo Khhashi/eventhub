@@ -35,6 +35,16 @@ export default function Sidebar({ user, onLogout }) {
           <CalendarDaysIcon className="nav-icon" aria-hidden="true" />
           <span className="nav-label">Arrangementer</span>
         </Link>
+        {!user && (
+          <Link
+            className={`sidebar-login-link ${isActive("/login") ? "active" : ""}`}
+            to="/login"
+            title="Logg inn"
+          >
+            <ArrowLeftOnRectangleIcon className="nav-icon" aria-hidden="true" />
+            <span className="nav-label">Logg inn</span>
+          </Link>
+        )}
         <Link
           className={isActive("/profile") ? "active" : ""}
           to="/profile"
@@ -53,9 +63,8 @@ export default function Sidebar({ user, onLogout }) {
         </Link>
       </nav>
 
-      <div className="sidebar-footer">
-        {user ? (
-          <>
+      {user && (
+        <div className="sidebar-footer">
             <div className="sidebar-user" title={user.name}>
               <div className="sidebar-avatar">
                 {user.name?.charAt(0)?.toUpperCase() || "U"}
@@ -69,14 +78,8 @@ export default function Sidebar({ user, onLogout }) {
               <ArrowRightOnRectangleIcon className="nav-icon" aria-hidden="true" />
               <span className="nav-label">Logg ut</span>
             </button>
-          </>
-        ) : (
-          <Link to="/login" className="button-primary sidebar-login" title="Logg inn">
-            <ArrowLeftOnRectangleIcon className="nav-icon" aria-hidden="true" />
-            <span className="nav-label">Logg inn</span>
-          </Link>
-        )}
-      </div>
+        </div>
+      )}
     </aside>
   )
 }

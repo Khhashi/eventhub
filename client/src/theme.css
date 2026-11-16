@@ -364,6 +364,10 @@ button,
   color: var(--green);
 }
 
+.profile-picture-message--error {
+  color: #a84c38;
+}
+
 .profile-summary {
   gap: 14px;
 }

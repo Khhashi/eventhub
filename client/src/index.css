@@ -587,6 +587,31 @@ a {
   z-index: 0;
 }
 
+.map-preview__status {
+  display: grid;
+  min-height: 190px;
+  padding: 16px;
+  place-items: center;
+  background: #edf1ed;
+  color: #435149;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.detail-map-panel .map-preview__map,
+.detail-map-panel .map-preview__status {
+  height: clamp(230px, 42vh, 330px);
+}
+
+@media (max-width: 620px) {
+  .detail-map-panel .map-preview__map,
+  .detail-map-panel .map-preview__status {
+    height: 220px;
+  }
+}
+
 .map-marker-wrap {
   border: 0;
   background: transparent;

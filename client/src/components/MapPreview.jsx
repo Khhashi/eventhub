@@ -79,7 +79,7 @@ export default function MapPreview({ location }) {
   return (
     <div className="map-preview">
       {resolvedCoordinates && (
-        <Suspense fallback={<span role="status">Laster kart...</span>}>
+        <Suspense fallback={<span className="map-preview__status" role="status">Laster kart...</span>}>
           <LeafletMap coordinates={resolvedCoordinates} location={safeLocation} />
         </Suspense>
       )}

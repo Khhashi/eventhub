@@ -6,13 +6,16 @@ Dette dokumentet beskriver hvordan Møteplass er bygget, og hvorfor. Det er ment
 
 Bildene og videoen viser den offentlige demoen slik den så ut 16. november 2026, uten innlogging. Omvisningen demonstrerer søk og nullstilling i arrangementslisten, navigasjon til en detaljside og videre til innloggingssiden.
 
-| Arrangementsoversikt | Arrangementsdetaljer |
-|---|---|
-| ![Arrangementsoversikt med søk, filtre og kart](media/arrangementer.png) | ![Detaljside med arrangementsinformasjon og kart](media/arrangementsdetaljer.png) |
-
-| Innlogging | Mobilvisning |
-|---|---|
-| ![Innloggingsside med Google-innlogging](media/innlogging.png) | ![Arrangementsoversikt på mobil](media/mobil.png) |
+<table>
+  <tr>
+    <td width="50%"><img src="media/arrangementer.png" alt="Arrangementsoversikt med søk, filtre og kart" /><br />Arrangementsoversikt</td>
+    <td width="50%"><img src="media/arrangementsdetaljer.png" alt="Detaljside med arrangementsinformasjon og kart" /><br />Arrangementsdetaljer</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="media/innlogging.png" alt="Innloggingsside med Google-innlogging" /><br />Innlogging</td>
+    <td width="50%"><img src="media/mobil.png" alt="Arrangementsoversikt på mobil" /><br />Mobilvisning</td>
+  </tr>
+</table>
 
 [Se omvisningen som video (MP4, ca. 30 sekunder)](media/omvisning.mp4).
 

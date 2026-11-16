@@ -34,7 +34,7 @@ Skjermbildene er tatt fra den offentlige demoen 16. november 2026 og viser arran
 
 ### Video
 
-[Se en kort omvisning av nettsiden (MP4, ca. 30 sekunder)](docs/media/omvisning.mp4). Videoen viser søk og nullstilling, åpning av et arrangement, innloggingssiden og navigasjon tilbake til oversikten. Den er tatt opp uten innlogging og uten å endre data.
+[Se hvordan Møteplass fungerer (MP4, ca. 50 sekunder)](docs/media/slik-fungerer-moteplass.mp4). Videoen viser søk, kategorier og datofilter, arrangementsdetaljer, kart og innlogging. Den har forklarende tekst uten lyd og er tatt opp uten innlogging eller endring av data.
 
 ## Funksjoner
 

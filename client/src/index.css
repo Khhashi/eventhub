@@ -600,6 +600,18 @@ a {
   overflow-wrap: anywhere;
 }
 
+.detail-map-panel .map-preview__map,
+.detail-map-panel .map-preview__status {
+  height: clamp(230px, 42vh, 330px);
+}
+
+@media (max-width: 620px) {
+  .detail-map-panel .map-preview__map,
+  .detail-map-panel .map-preview__status {
+    height: 220px;
+  }
+}
+
 .map-marker-wrap {
   border: 0;
   background: transparent;

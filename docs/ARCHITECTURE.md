@@ -2,6 +2,20 @@
 
 Dette dokumentet beskriver hvordan Møteplass er bygget, og hvorfor. Det er ment for utviklere som vil forstå systemet før de leser koden.
 
+## Grensesnitt og demonstrasjon
+
+Bildene og videoen viser den offentlige demoen slik den så ut 16. november 2026, uten innlogging. Omvisningen demonstrerer søk og nullstilling i arrangementslisten, navigasjon til en detaljside og videre til innloggingssiden.
+
+| Arrangementsoversikt | Arrangementsdetaljer |
+|---|---|
+| ![Arrangementsoversikt med søk, filtre og kart](media/arrangementer.png) | ![Detaljside med arrangementsinformasjon og kart](media/arrangementsdetaljer.png) |
+
+| Innlogging | Mobilvisning |
+|---|---|
+| ![Innloggingsside med Google-innlogging](media/innlogging.png) | ![Arrangementsoversikt på mobil](media/mobil.png) |
+
+[Se omvisningen som video (MP4, ca. 30 sekunder)](media/omvisning.mp4).
+
 ## 1. Kontekst og mål
 
 Møteplass er et sted der folk kan finne arrangementer og samles. Arrangører lager arrangementer, og andre kan melde seg på. Endringer vises med en gang hos alle som har siden åpen.
@@ -38,10 +52,14 @@ flowchart LR
     App -->|Mongoose| DB[(MongoDB)]
     App -->|OAuth 2.0| Google[Google-innlogging]
     App <-->|Socket.IO| Bruker
+    Bruker -->|adresseforslag| Kartverket[Kartverket]
+    Bruker -->|kart og stedsoppslag| OSM[OpenStreetMap]
     Cron[cron-job.org] -->|ping| App
 ```
 
 Express serverer både API-et (`/api/*`) og den bygde React-appen (`client/dist`) fra samme tjeneste. Alle andre stier returnerer `index.html`, slik at React Router tar over.
+
+Klienten henter adresseforslag fra Kartverket. Kartforhåndsvisningen bruker OpenStreetMap/Nominatim for stedsoppslag og et innebygd OpenStreetMap-kart. Disse forespørslene gjøres fra nettleseren, separat fra appens API.
 
 ## 4. Komponenter og lag
 
@@ -76,6 +94,7 @@ flowchart TB
 | **models** | Mongoose-skjemaer, validering og passord-hashing |
 | **socket.js** | Verifiserer JWT ved tilkobling og sender hendelser til klientene |
 | **client/api** | All kommunikasjon med serveren er samlet her, så sidene ikke kjenner til URL-er |
+| **client/components** | Gjenbrukbare grensesnittdeler, blant annet sidefelt, adresseforslag og kartforhåndsvisning |
 
 ## 5. Tilgangsstyring
 

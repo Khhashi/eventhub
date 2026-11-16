@@ -67,7 +67,90 @@ https://github.com/user-attachments/assets/c33b3628-4bef-4278-a8a3-cb156aff92ce
 
 ## UML og arkitektur
 
-Se de lesbare [UML-diagrammene for datamodellen, påmelding og sanntid](docs/ARCHITECTURE.md#uml-diagrammer). [Arkitekturdokumentet](docs/ARCHITECTURE.md) beskriver også systemoversikt, tilgangsstyring og designbeslutninger.
+Diagrammene viser datamodellen og påmeldingsflyten. Bruk forstørrelsesknappen ved et diagram for å zoome inn. [Arkitekturdokumentet](docs/ARCHITECTURE.md#uml-diagrammer) inneholder også systemoversikt, tilgangsstyring og designbeslutninger.
+
+### Klassediagram: bruker og arrangement
+
+Hvert arrangement har én arrangør (`createdBy`) og kan ha flere påmeldte (`attendees`). En bruker kan arrangere og delta på flere arrangementer.
+
+```mermaid
+classDiagram
+    direction LR
+    class User {
+        ObjectId _id
+        String name
+        String email
+        String password
+        String role
+        String googleId
+        String picture
+        Date createdAt
+        Date updatedAt
+        matchPassword(enteredPassword)
+    }
+    class Event {
+        ObjectId _id
+        String title
+        String description
+        Date date
+        String location
+        String category
+        ObjectId createdBy
+        ObjectId[] attendees
+        Date createdAt
+        Date updatedAt
+    }
+    User "1" <-- "0..*" Event : createdBy
+    User "0..*" <-- "0..*" Event : attendees
+```
+
+### Sekvensdiagram 1: påmelding
+
+Innlogging kontrolleres før påmeldingen lagres. Feil vises dersom brukeren ikke er innlogget, arrangementet ikke finnes eller brukeren allerede er påmeldt.
+
+```mermaid
+sequenceDiagram
+    participant Klient as React
+    participant API as Express
+    participant DB as MongoDB
+
+    Klient->>API: POST /api/events/:id/register (JWT)
+    API->>API: Kontroller innlogging
+    alt Manglende eller ugyldig innlogging
+        API-->>Klient: 401 – logg inn
+    else Innlogget
+        API->>DB: Hent arrangement
+        alt Arrangementet finnes ikke
+            API-->>Klient: 404 – ikke funnet
+        else Brukeren er allerede påmeldt
+            API-->>Klient: 400 – allerede påmeldt
+        else Gyldig påmelding
+            API->>DB: Lagre bruker i attendees
+            API->>DB: Hent oppdaterte brukerdata
+            Note over API: Send sanntidsvarsel (se diagram 2)
+            API-->>Klient: 200 – oppdatert arrangement
+        end
+    end
+```
+
+### Sekvensdiagram 2: sanntidsoppdatering
+
+Når påmeldingen er lagret og Socket.IO er tilgjengelig, varsles tilkoblede, innloggede klienter. De som viser arrangementslisten, henter listen på nytt.
+
+```mermaid
+sequenceDiagram
+    participant API as Express
+    participant Socket as Socket.IO
+    participant Klient as Innlogget klient
+    participant DB as MongoDB
+
+    API->>Socket: eventRegistrationUpdated
+    Socket-->>Klient: eventRegistrationUpdated
+    Klient->>API: GET /api/events
+    API->>DB: Hent arrangementer
+    DB-->>API: Arrangementsdata
+    API-->>Klient: Oppdatert liste
+```
 
 ## Tester og CI
 

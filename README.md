@@ -65,7 +65,9 @@ https://github.com/user-attachments/assets/c33b3628-4bef-4278-a8a3-cb156aff92ce
 - **Sanntid med innlogging:** Socket.IO-tilkoblinger krever gyldig innlogging, så bare innloggede brukere får sanntidsoppdateringer.
 - **Robust kartvisning:** Hvis en adresse ikke kan finnes, vises en tydelig melding i stedet for at siden krasjer.
 
-Se [arkitekturdokumentet](docs/ARCHITECTURE.md) for systemoversikt, [UML-diagrammer](docs/ARCHITECTURE.md#uml-diagrammer), sanntidsflyt, tilgangsstyring og designbeslutninger.
+## UML og arkitektur
+
+Se de lesbare [UML-diagrammene for datamodellen, påmelding og sanntid](docs/ARCHITECTURE.md#uml-diagrammer). [Arkitekturdokumentet](docs/ARCHITECTURE.md) beskriver også systemoversikt, tilgangsstyring og designbeslutninger.
 
 ## Tester og CI
 

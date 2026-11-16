@@ -101,7 +101,7 @@ flowchart TB
 
 ## UML-diagrammer
 
-Diagrammene er laget i Mermaid slik at de kan vises direkte på GitHub. De beskriver datamodellen og påmeldingsflyten, ikke et komplett klassediagram for alle komponentene.
+Diagrammene er laget i Mermaid slik at de kan vises direkte på GitHub. De beskriver datamodellen og påmeldingsflyten, ikke alle komponentene. Bruk forstørrelsesknappen ved et diagram for å zoome inn.
 
 ### Klassediagram: bruker og arrangement
 
@@ -109,6 +109,7 @@ Mongoose lagrer referansen til arrangøren i `createdBy` og referanser til påme
 
 ```mermaid
 classDiagram
+    direction LR
     class User {
         ObjectId _id
         String name
@@ -137,45 +138,52 @@ classDiagram
     User "0..*" <-- "0..*" Event : attendees
 ```
 
-### Sekvensdiagram: påmelding til arrangement
+### Sekvensdiagram 1: påmelding til arrangement
 
-Kun innloggede brukere kan melde seg på. Socket.IO varsler tilkoblede, innloggede klienter; arrangementslisten henter deretter oppdaterte data via API-et.
+Påmeldingen er delt i to diagrammer for å gjøre teksten lettere å lese. Først kontrolleres og lagres påmeldingen. Bare innloggede brukere kan melde seg på.
 
 ```mermaid
 sequenceDiagram
-    actor Bruker
-    participant Klient as React-klient
-    participant API as Express API
+    participant Klient as React
+    participant API as Express
     participant DB as MongoDB
-    participant Socket as Socket.IO
-    participant Andre as Andre innloggede klienter
 
-    Bruker->>Klient: Velger påmelding
     Klient->>API: POST /api/events/:id/register (JWT)
-    API->>API: protect verifiserer innlogging
-    alt Innlogging mangler eller er ugyldig
-        API-->>Klient: 401
-        Klient-->>Bruker: Vis feilmelding
-    else Brukeren er innlogget
+    API->>API: Kontroller innlogging
+    alt Manglende eller ugyldig innlogging
+        API-->>Klient: 401 – logg inn
+    else Innlogget
         API->>DB: Hent arrangement
-        alt Arrangementet finnes ikke eller bruker er allerede påmeldt
-            API-->>Klient: 404 eller 400
-            Klient-->>Bruker: Vis feilmelding
-        else Påmelding er gyldig
-            API->>DB: Legg bruker-ID til i attendees og lagre
+        alt Arrangementet finnes ikke
+            API-->>Klient: 404 – ikke funnet
+        else Brukeren er allerede påmeldt
+            API-->>Klient: 400 – allerede påmeldt
+        else Gyldig påmelding
+            API->>DB: Lagre bruker i attendees
             API->>DB: Hent oppdaterte brukerdata
-            opt Socket.IO er tilgjengelig
-                API->>Socket: emit eventRegistrationUpdated
-                Socket-->>Andre: eventRegistrationUpdated
-                Andre->>API: GET /api/events
-                API->>DB: Hent arrangementer
-                DB-->>API: Arrangementsdata
-                API-->>Andre: Oppdatert liste
-            end
-            API-->>Klient: 200 med oppdatert arrangement
-            Klient-->>Bruker: Vis bekreftelse
+            Note over API: Send sanntidsvarsel (se diagram 2)
+            API-->>Klient: 200 – oppdatert arrangement
         end
     end
+```
+
+### Sekvensdiagram 2: sanntidsoppdatering
+
+Når påmeldingen er lagret og Socket.IO er tilgjengelig, sender serveren et varsel før API-svaret. Tilkoblede, innloggede klienter som viser arrangementslisten, henter listen på nytt.
+
+```mermaid
+sequenceDiagram
+    participant API as Express
+    participant Socket as Socket.IO
+    participant Klient as Innlogget klient
+    participant DB as MongoDB
+
+    API->>Socket: eventRegistrationUpdated
+    Socket-->>Klient: eventRegistrationUpdated
+    Klient->>API: GET /api/events
+    API->>DB: Hent arrangementer
+    DB-->>API: Arrangementsdata
+    API-->>Klient: Oppdatert liste
 ```
 
 ## 5. Tilgangsstyring

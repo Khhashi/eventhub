@@ -43,6 +43,22 @@ describe("EventList", () => {
     expect(screen.getByText("Konsert")).toBeInTheDocument()
   })
 
+  it("navigates between pages and resets the page when searching", async () => {
+    fetchEvents.mockResolvedValueOnce(Array.from({ length: 6 }, (_, index) => ({
+      _id: String(index), title: `Arrangement ${index}`, description: "", location: "", date: "2026-02-14",
+    })))
+    const user = userEvent.setup()
+    render(<MemoryRouter><EventList /></MemoryRouter>)
+
+    await screen.findByText("Arrangement 0")
+    expect(screen.getByRole("button", { name: "Forrige" })).toBeDisabled()
+    await user.click(screen.getByRole("button", { name: "Neste" }))
+    expect(screen.getByText("Arrangement 5")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Neste" })).toBeDisabled()
+    await user.type(screen.getByRole("searchbox", { name: "Søk etter arrangement" }), "Arrangement 0")
+    expect(screen.getByText("Arrangement 0")).toBeInTheDocument()
+  })
+
   it("renders events from API and shows edit link", async () => {
     fetchEvents.mockResolvedValueOnce([
       {

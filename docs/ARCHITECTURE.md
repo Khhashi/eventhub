@@ -13,7 +13,7 @@ Bildene og videoen viser den offentlige demoen slik den så ut 16. november 2026
   </tr>
   <tr>
     <td width="50%"><img src="media/innlogging.png" alt="Innloggingsside med Google-innlogging" /><br />Innlogging</td>
-    <td width="50%"><img src="media/mobil.png" alt="Arrangementsoversikt på mobil" /><br />Mobilvisning</td>
+    <td width="50%"><img src="media/mobil-oversikt.png" alt="Arrangementsoversikt på mobil" /><br />Mobilvisning</td>
   </tr>
 </table>
 

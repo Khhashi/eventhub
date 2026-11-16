@@ -28,7 +28,7 @@ Skjermbildene er tatt fra den offentlige demoen 16. november 2026 og viser arran
   </tr>
   <tr>
     <td width="50%"><img src="docs/media/innlogging.png" alt="Innloggingsside med knapp for Google-innlogging" /><br />Innlogging</td>
-    <td width="50%"><img src="docs/media/mobil.png" alt="Arrangementsoversikten på mobil med navigasjon nederst" width="390" /><br />Mobilvisning</td>
+    <td width="50%"><img src="docs/media/mobil.png" alt="Arrangementsoversikten på mobil med navigasjon nederst" /><br />Mobilvisning</td>
   </tr>
 </table>
 

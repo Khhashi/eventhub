@@ -153,23 +153,28 @@ sequenceDiagram
     Bruker->>Klient: Velger påmelding
     Klient->>API: POST /api/events/:id/register (JWT)
     API->>API: protect verifiserer innlogging
-    API->>DB: Hent arrangement
-    alt Arrangementet finnes ikke eller bruker er allerede påmeldt
-        API-->>Klient: 404 eller 400
+    alt Innlogging mangler eller er ugyldig
+        API-->>Klient: 401
         Klient-->>Bruker: Vis feilmelding
-    else Påmelding er gyldig
-        API->>DB: Legg bruker-ID til i attendees og lagre
-        API->>DB: Hent oppdaterte brukerdata
-        opt Socket.IO er tilgjengelig
-            API->>Socket: emit eventRegistrationUpdated
-            Socket-->>Andre: eventRegistrationUpdated
-            Andre->>API: GET /api/events
-            API->>DB: Hent arrangementer
-            DB-->>API: Arrangementsdata
-            API-->>Andre: Oppdatert liste
+    else Brukeren er innlogget
+        API->>DB: Hent arrangement
+        alt Arrangementet finnes ikke eller bruker er allerede påmeldt
+            API-->>Klient: 404 eller 400
+            Klient-->>Bruker: Vis feilmelding
+        else Påmelding er gyldig
+            API->>DB: Legg bruker-ID til i attendees og lagre
+            API->>DB: Hent oppdaterte brukerdata
+            opt Socket.IO er tilgjengelig
+                API->>Socket: emit eventRegistrationUpdated
+                Socket-->>Andre: eventRegistrationUpdated
+                Andre->>API: GET /api/events
+                API->>DB: Hent arrangementer
+                DB-->>API: Arrangementsdata
+                API-->>Andre: Oppdatert liste
+            end
+            API-->>Klient: 200 med oppdatert arrangement
+            Klient-->>Bruker: Vis bekreftelse
         end
-        API-->>Klient: 200 med oppdatert arrangement
-        Klient-->>Bruker: Vis bekreftelse
     end
 ```
 

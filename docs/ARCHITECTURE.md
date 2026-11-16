@@ -99,6 +99,80 @@ flowchart TB
 | **client/api** | All kommunikasjon med serveren er samlet her, så sidene ikke kjenner til URL-er |
 | **client/components** | Gjenbrukbare grensesnittdeler, blant annet sidefelt, adresseforslag og kartforhåndsvisning |
 
+## UML-diagrammer
+
+Diagrammene er laget i Mermaid slik at de kan vises direkte på GitHub. De beskriver datamodellen og påmeldingsflyten, ikke et komplett klassediagram for alle komponentene.
+
+### Klassediagram: bruker og arrangement
+
+Mongoose lagrer referansen til arrangøren i `createdBy` og referanser til påmeldte brukere i `attendees`. En bruker kan arrangere og delta på flere arrangementer.
+
+```mermaid
+classDiagram
+    class User {
+        ObjectId _id
+        String name
+        String email
+        String password
+        String role
+        String googleId
+        String picture
+        Date createdAt
+        Date updatedAt
+        matchPassword(enteredPassword)
+    }
+    class Event {
+        ObjectId _id
+        String title
+        String description
+        Date date
+        String location
+        String category
+        ObjectId createdBy
+        ObjectId[] attendees
+        Date createdAt
+        Date updatedAt
+    }
+    User "1" <-- "0..*" Event : createdBy
+    User "0..*" <-- "0..*" Event : attendees
+```
+
+### Sekvensdiagram: påmelding til arrangement
+
+Kun innloggede brukere kan melde seg på. Socket.IO varsler tilkoblede, innloggede klienter; arrangementslisten henter deretter oppdaterte data via API-et.
+
+```mermaid
+sequenceDiagram
+    actor Bruker
+    participant Klient as React-klient
+    participant API as Express API
+    participant DB as MongoDB
+    participant Socket as Socket.IO
+    participant Andre as Andre innloggede klienter
+
+    Bruker->>Klient: Velger påmelding
+    Klient->>API: POST /api/events/:id/register (JWT)
+    API->>API: protect verifiserer innlogging
+    API->>DB: Hent arrangement
+    alt Arrangementet finnes ikke eller bruker er allerede påmeldt
+        API-->>Klient: 404 eller 400
+        Klient-->>Bruker: Vis feilmelding
+    else Påmelding er gyldig
+        API->>DB: Legg bruker-ID til i attendees og lagre
+        API->>DB: Hent oppdaterte brukerdata
+        opt Socket.IO er tilgjengelig
+            API->>Socket: emit eventRegistrationUpdated
+            Socket-->>Andre: eventRegistrationUpdated
+            Andre->>API: GET /api/events
+            API->>DB: Hent arrangementer
+            DB-->>API: Arrangementsdata
+            API-->>Andre: Oppdatert liste
+        end
+        API-->>Klient: 200 med oppdatert arrangement
+        Klient-->>Bruker: Vis bekreftelse
+    end
+```
+
 ## 5. Tilgangsstyring
 
 | Handling | Krever |

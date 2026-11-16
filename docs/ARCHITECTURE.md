@@ -4,7 +4,7 @@ Dette dokumentet beskriver hvordan Møteplass er bygget, og hvorfor. Det er ment
 
 ## Grensesnitt og demonstrasjon
 
-Bildene og videoen viser den offentlige demoen slik den så ut 16. november 2026, uten innlogging. Omvisningen demonstrerer søk og nullstilling i arrangementslisten, navigasjon til en detaljside og videre til innloggingssiden.
+Bildene og videoen viser den offentlige demoen slik den så ut 16. november 2026, uten innlogging. Omvisningen demonstrerer søk, filtrering, arrangementsdetaljer og innlogging.
 
 <table>
   <tr>
@@ -17,7 +17,7 @@ Bildene og videoen viser den offentlige demoen slik den så ut 16. november 2026
   </tr>
 </table>
 
-[Se omvisningen som video (MP4, ca. 30 sekunder)](media/omvisning.mp4).
+[Se hvordan Møteplass fungerer (MP4, ca. 50 sekunder)](media/slik-fungerer-moteplass.mp4). Videoen har forklarende tekst uten lyd og viser den offentlige delen av nettsiden.
 
 ## 1. Kontekst og mål
 

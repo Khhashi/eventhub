@@ -13,6 +13,23 @@ Fullstack-applikasjon for å opprette, finne og delta på arrangementer. Bygget 
 
 **[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)** | **[Arkitektur](docs/ARCHITECTURE.md)**
 
+## Grensesnitt
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/media/arrangementer.png" alt="Arrangementsoversikten med søk, filtre og kart" /><br />Arrangementsoversikt</td>
+    <td width="50%"><img src="docs/media/arrangementsdetaljer.png" alt="Detaljside med informasjon om arrangementet og kart" /><br />Arrangementsdetaljer</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/media/innlogging.png" alt="Innloggingsside med knapp for Google-innlogging" /><br />Innlogging</td>
+    <td width="50%"><img src="docs/media/mobil-oversikt.png" alt="Arrangementsoversikten på mobil med navigasjon nederst" /><br />Mobilvisning</td>
+  </tr>
+</table>
+
+### Video
+
+https://github.com/user-attachments/assets/c33b3628-4bef-4278-a8a3-cb156aff92ce
+
 ## Funksjoner
 
 **For alle**

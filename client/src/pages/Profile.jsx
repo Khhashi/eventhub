@@ -9,8 +9,10 @@ export default function Profile() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const [isLoggedOut, setIsLoggedOut] = useState(false)
   const [pictureMessage, setPictureMessage] = useState(null)
   const [pictureLoading, setPictureLoading] = useState(false)
+  const [pictureError, setPictureError] = useState(false)
 
   useEffect(() => {
     load()
@@ -20,8 +22,17 @@ export default function Profile() {
     try {
       const res = await request("/auth/profile")
       setData(res)
-    } catch {
-      setError("Kunne ikke hente profil.")
+      setError("")
+      setIsLoggedOut(false)
+    } catch (err) {
+      // Check if error is 401 (unauthorized)
+      if (err.response?.status === 401) {
+        setIsLoggedOut(true)
+        setError("")
+      } else {
+        setError("Kunne ikke hente profil. Prøv igjen senere.")
+        setIsLoggedOut(false)
+      }
     } finally {
       setLoading(false)
     }
@@ -31,7 +42,7 @@ export default function Profile() {
     return <div className="center-page"><div className="skeleton skeleton-card" /></div>
   }
 
-  if (error) {
+  if (isLoggedOut) {
     return (
       <div className="center-page auth-page">
         <div className="auth-card">
@@ -42,6 +53,24 @@ export default function Profile() {
           </p>
           <Link to="/login" className="button-primary auth-button">
             Gå til innlogging
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="center-page auth-page">
+        <div className="auth-card">
+          <p className="eyebrow">Profil</p>
+          <h2>En feil oppstod</h2>
+          <p className="auth-subtitle">{error}</p>
+          <button onClick={() => load()} className="button-primary auth-button">
+            Prøv igjen
+          </button>
+          <Link to="/events" className="button-secondary">
+            Tilbake til arrangementer
           </Link>
         </div>
       </div>
@@ -73,6 +102,7 @@ export default function Profile() {
     reader.onload = async () => {
       setPictureLoading(true)
       setPictureMessage("")
+      setPictureError(false)
       try {
         const result = await request("/auth/profile/picture", {
           method: "PUT",
@@ -115,8 +145,12 @@ export default function Profile() {
         <div className="profile-header">
           <div className="profile-avatar-wrap">
             <div className="profile-avatar">
-            {user.picture ? (
-              <img src={user.picture} alt="Profilbilde" />
+            {user.picture && !pictureError ? (
+              <img
+                src={user.picture}
+                alt="Profilbilde"
+                onError={() => setPictureError(true)}
+              />
             ) : (
               user.name?.charAt(0)?.toUpperCase() || "U"
             )}

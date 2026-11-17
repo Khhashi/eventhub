@@ -19,18 +19,26 @@ Jeg ville lage et sted der folk kan finne hverandre og samles rundt noe de bryr 
 
 ## Grensesnitt
 
-Her er grensesnittet til nettsiden, fra oversikten over arrangementer og detaljsiden med kart til skjemaet for nye arrangementer og profilsiden.
+Skjermbildene er tatt fra den offentlige demoen 16. november 2026 og viser arrangementsoversikten, detaljsiden, innlogging og mobilvisningen.
 
 <table>
   <tr>
-    <td width="50%"><img src="https://github.com/user-attachments/assets/4f964660-76b5-4377-8cd2-a1496416da05" alt="Oversikt over arrangementer med søk, filtre og kart" /></td>
-    <td width="50%"><img src="https://github.com/user-attachments/assets/500ad7ab-1d2b-46f3-ad47-d7ef5f30019e" alt="Detaljside for et arrangement med kart, påmelding og deling" /></td>
+    <td width="50%"><img src="docs/media/arrangementer.png" alt="Arrangementsoversikten med søk, filtre og kart" /><br />Arrangementsoversikt</td>
+    <td width="50%"><img src="docs/media/arrangementsdetaljer.png" alt="Detaljside med informasjon om arrangementet og kart" /><br />Arrangementsdetaljer</td>
   </tr>
   <tr>
-    <td width="50%"><img src="https://github.com/user-attachments/assets/e9299d04-965d-43da-90dc-54d154394664" alt="Skjema for å opprette et nytt arrangement" /></td>
-    <td width="50%"><img src="https://github.com/user-attachments/assets/d0fe9742-11d4-4c91-8cc0-51df48495a68" alt="Profilside med egne arrangementer og påmeldinger" /></td>
+    <td width="50%"><img src="docs/media/innlogging.png" alt="Innloggingsside med knapp for Google-innlogging" /><br />Innlogging</td>
+    <td width="50%"><img src="docs/media/mobil-oversikt.png" alt="Arrangementsoversikten på mobil med navigasjon nederst" /><br />Mobilvisning</td>
   </tr>
 </table>
+
+### Video
+
+Videoen viser søk, kategorier og datofilter, arrangementsdetaljer, kart og innlogging. Den varer ca. 50 sekunder, har forklarende tekst uten lyd og er tatt opp uten innlogging eller endring av data.
+
+https://github.com/user-attachments/assets/c33b3628-4bef-4278-a8a3-cb156aff92ce
+
+[Last ned videoen (MP4)](docs/media/slik-fungerer-moteplass.mp4).
 
 ## Funksjoner
 
@@ -40,7 +48,7 @@ Her er grensesnittet til nettsiden, fra oversikten over arrangementer og detaljs
 
 **Med innlogging**
 - Melde seg på og av arrangementer
-- Opprette arrangementer med adressesøk via OpenStreetMap
+- Opprette arrangementer med adresseforslag fra Kartverket
 - Redigere og slette egne arrangementer
 - Dele arrangementer og legge dem til i kalenderen
 - Profilside med egne arrangementer, påmeldinger og profilbilde
@@ -57,7 +65,92 @@ Her er grensesnittet til nettsiden, fra oversikten over arrangementer og detaljs
 - **Sanntid med innlogging:** Socket.IO-tilkoblinger krever gyldig innlogging, så bare innloggede brukere får sanntidsoppdateringer.
 - **Robust kartvisning:** Hvis en adresse ikke kan finnes, vises en tydelig melding i stedet for at siden krasjer.
 
-Se [arkitekturdokumentet](docs/ARCHITECTURE.md) for diagrammer, sanntidsflyt, tilgangsstyring og designbeslutninger.
+## UML og arkitektur
+
+Diagrammene viser datamodellen og påmeldingsflyten. Bruk forstørrelsesknappen ved et diagram for å zoome inn. [Arkitekturdokumentet](docs/ARCHITECTURE.md#uml-diagrammer) inneholder også systemoversikt, tilgangsstyring og designbeslutninger.
+
+### Klassediagram: bruker og arrangement
+
+Hvert arrangement har én arrangør (`createdBy`) og kan ha flere påmeldte (`attendees`). En bruker kan arrangere og delta på flere arrangementer.
+
+```mermaid
+classDiagram
+    direction LR
+    class User {
+        ObjectId _id
+        String name
+        String email
+        String password
+        String role
+        String googleId
+        String picture
+        Date createdAt
+        Date updatedAt
+        matchPassword(enteredPassword)
+    }
+    class Event {
+        ObjectId _id
+        String title
+        String description
+        Date date
+        String location
+        String category
+        ObjectId createdBy
+        ObjectId[] attendees
+        Date createdAt
+        Date updatedAt
+    }
+    User "1" <-- "0..*" Event : createdBy
+    User "0..*" <-- "0..*" Event : attendees
+```
+
+### Sekvensdiagram 1: påmelding
+
+Innlogging kontrolleres før påmeldingen lagres. Feil vises dersom brukeren ikke er innlogget, arrangementet ikke finnes eller brukeren allerede er påmeldt.
+
+```mermaid
+sequenceDiagram
+    participant Klient as React
+    participant API as Express
+    participant DB as MongoDB
+
+    Klient->>API: POST /api/events/:id/register (JWT)
+    API->>API: Kontroller innlogging
+    alt Manglende eller ugyldig innlogging
+        API-->>Klient: 401 – logg inn
+    else Innlogget
+        API->>DB: Hent arrangement
+        alt Arrangementet finnes ikke
+            API-->>Klient: 404 – ikke funnet
+        else Brukeren er allerede påmeldt
+            API-->>Klient: 400 – allerede påmeldt
+        else Gyldig påmelding
+            API->>DB: Lagre bruker i attendees
+            API->>DB: Hent oppdaterte brukerdata
+            Note over API: Send sanntidsvarsel (se diagram 2)
+            API-->>Klient: 200 – oppdatert arrangement
+        end
+    end
+```
+
+### Sekvensdiagram 2: sanntidsoppdatering
+
+Når påmeldingen er lagret og Socket.IO er tilgjengelig, varsles tilkoblede, innloggede klienter. De som viser arrangementslisten, henter listen på nytt.
+
+```mermaid
+sequenceDiagram
+    participant API as Express
+    participant Socket as Socket.IO
+    participant Klient as Innlogget klient
+    participant DB as MongoDB
+
+    API->>Socket: eventRegistrationUpdated
+    Socket-->>Klient: eventRegistrationUpdated
+    Klient->>API: GET /api/events
+    API->>DB: Hent arrangementer
+    DB-->>API: Arrangementsdata
+    API-->>Klient: Oppdatert liste
+```
 
 ## Tester og CI
 

@@ -1,6 +1,7 @@
 # Møteplass
 
 [![CI](https://github.com/Khhashi/eventhub/actions/workflows/ci.yml/badge.svg)](https://github.com/Khhashi/eventhub/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Khhashi/eventhub?include_prereleases)](https://github.com/Khhashi/eventhub/releases)
 ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=nodedotjs&logoColor=white)
@@ -12,6 +13,17 @@ Fullstack-applikasjon for å opprette, finne og delta på arrangementer. Bygget 
 
 **[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)**<br>
 <sub>Åpner med en gang på hverdager kl. 07–20. Ellers kan første besøk ta opptil ett minutt.</sub>
+
+## 🎉 v2.0.0 – Bugs Fixed
+
+Denne versjonen fokuserer på **stabilitet, tilgjengelighet og brukerkvalitet**:
+
+- **30 issues lukket** – alle rapporterte bugs og forbedringer er implementert
+- **44 automatiserte tester** – dekker innlogging, sikkerhet, brukergrensesnitt og API
+- **Forbedret tilgjengelighet** – ARIA-labels, keyboard-navigering, feilmeldinger
+- **Bedre feilhåndtering** – tydelige meldinger og graceful degradation
+- **Profiltilpasning** – brukere kan nå tilpasse tema, språk og preferanser
+- **Sikkerhet** – rollen kan ikke overstyres, JWT-validering, XSS-beskyttelse
 
 ## Hvorfor jeg bygde det
 
@@ -154,7 +166,7 @@ sequenceDiagram
 
 ## Tester og CI
 
-25 automatiserte tester dekker innlogging, roller, tilgangskontroll, arrangementer, påmelding, profil og feilhåndtering i backend (Vitest og Supertest), og innlasting, kart, oppretting, redigering, beskyttede ruter og 404 i frontend (Vitest og Testing Library). GitHub Actions kjører testene på hver pull request og push til `main`.
+44 automatiserte tester dekker innlogging, roller, tilgangskontroll, arrangementer, påmelding, profil, tilgjengelighet og feilhåndtering i backend (Vitest og Supertest), og innlasting, kart, oppretting, redigering, beskyttede ruter, tema-tilpasning og 404 i frontend (Vitest og Testing Library). GitHub Actions kjører testene på hver pull request og push til `main`.
 
 ## Arbeidsflyt
 

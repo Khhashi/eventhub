@@ -140,11 +140,13 @@ export default function MapPreview({ location }) {
           </div>
         )}
       </div>
-      <div className="map-preview__footer">
+      <div className="map-preview__location-info">
         <span className="map-preview__location" title={safeLocation || undefined}>
           <MapPinIcon aria-hidden="true" />
           {safeLocation || "Sted mangler"}
         </span>
+      </div>
+      <div className="map-preview__footer">
         <div className="map-preview__actions">
           {directionsUrl && (
             <a

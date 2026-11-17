@@ -164,6 +164,11 @@ export default function EventList() {
     page * pageSize
   )
 
+  // Auto-adjust page if it becomes empty after filtering or deletion
+  if (page > pageCount) {
+    setPage(pageCount)
+  }
+
   if (loading) {
     return (
       <div className="center-page">
@@ -381,23 +386,25 @@ export default function EventList() {
       })}
 
       {pageCount > 1 && (
-        <div className="pagination" aria-label="Sideinndeling">
+        <nav className="pagination" aria-label="Sideinndeling for arrangementer">
           <button
             className="button-secondary"
             disabled={page === 1}
             onClick={() => setPage((current) => current - 1)}
+            aria-label={`Gå til forrige side (side ${page - 1} av ${pageCount})`}
           >
             Forrige
           </button>
-          <span>Side {page} av {pageCount}</span>
+          <span aria-current="page">Side {page} av {pageCount}</span>
           <button
             className="button-secondary"
             disabled={page === pageCount}
             onClick={() => setPage((current) => current + 1)}
+            aria-label={`Gå til neste side (side ${page + 1} av ${pageCount})`}
           >
             Neste
           </button>
-        </div>
+        </nav>
       )}
       </div>
     </div>

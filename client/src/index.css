@@ -353,12 +353,13 @@ a {
 
 .events-hero {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
   gap: 24px;
   margin-bottom: 24px;
   padding: 10px 0 24px;
   border-bottom: 1px solid #dbe2ea;
+  text-align: center;
 }
 
 .events-hero h1 {
@@ -369,7 +370,7 @@ a {
 
 .hero-description {
   max-width: 580px;
-  margin: 12px 0 0;
+  margin: 12px auto 0;
   color: #475569;
   line-height: 1.6;
 }
@@ -588,10 +589,16 @@ a {
   border: 0;
 }
 
-.map-preview__link {
+.map-preview__links {
   position: absolute;
   right: 10px;
   bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.map-preview__link {
   padding: 7px 10px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.94);
@@ -1086,6 +1093,24 @@ select {
   }
 }
 
+@media (min-width: 681px) and (max-width: 1024px) {
+  .sidebar {
+    width: 204px;
+    flex-basis: 204px;
+  }
+
+  .sidebar .nav-label {
+    display: block;
+  }
+
+  .sidebar-nav a,
+  .sidebar-logout,
+  .sidebar-login {
+    justify-content: flex-start;
+    padding: 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .page-toolbar {
     min-height: 58px;
@@ -1114,7 +1139,7 @@ select {
   }
 
   .events-hero {
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
     padding: 24px;
   }
@@ -1126,5 +1151,65 @@ select {
 
   .event-details-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .app-layout {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom));
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: stretch;
+    padding: 8px 8px max(8px, env(safe-area-inset-bottom));
+  }
+
+  .sidebar-brand,
+  .sidebar-user {
+    display: none;
+  }
+
+  .sidebar-nav {
+    flex: 3;
+    flex-direction: row;
+  }
+
+  .sidebar-footer {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sidebar-nav a.sidebar-create {
+    margin: 0;
+  }
+
+  .sidebar-nav a,
+  .sidebar-logout,
+  .sidebar-login {
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 8px 3px;
+    text-align: center;
+  }
+
+  .sidebar .nav-label {
+    display: block;
+    font-size: 0.65rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .sidebar-login,
+  .sidebar-logout {
+    height: 100%;
   }
 }

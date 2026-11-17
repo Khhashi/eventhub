@@ -2,6 +2,23 @@
 
 Dette dokumentet beskriver hvordan Møteplass er bygget, og hvorfor. Det er ment for utviklere som vil forstå systemet før de leser koden.
 
+## Grensesnitt og demonstrasjon
+
+Bildene og videoen viser den offentlige demoen slik den så ut 16. november 2026, uten innlogging. Omvisningen demonstrerer søk, filtrering, arrangementsdetaljer og innlogging.
+
+<table>
+  <tr>
+    <td width="50%"><img src="media/arrangementer.png" alt="Arrangementsoversikt med søk, filtre og kart" /><br />Arrangementsoversikt</td>
+    <td width="50%"><img src="media/arrangementsdetaljer.png" alt="Detaljside med arrangementsinformasjon og kart" /><br />Arrangementsdetaljer</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="media/innlogging.png" alt="Innloggingsside med Google-innlogging" /><br />Innlogging</td>
+    <td width="50%"><img src="media/mobil-oversikt.png" alt="Arrangementsoversikt på mobil" /><br />Mobilvisning</td>
+  </tr>
+</table>
+
+[Se hvordan Møteplass fungerer (MP4, ca. 50 sekunder)](media/slik-fungerer-moteplass.mp4). Videoen har forklarende tekst uten lyd og viser den offentlige delen av nettsiden.
+
 ## 1. Kontekst og mål
 
 Møteplass er et sted der folk kan finne arrangementer og samles. Arrangører lager arrangementer, og andre kan melde seg på. Endringer vises med en gang hos alle som har siden åpen.
@@ -38,10 +55,14 @@ flowchart LR
     App -->|Mongoose| DB[(MongoDB)]
     App -->|OAuth 2.0| Google[Google-innlogging]
     App <-->|Socket.IO| Bruker
+    Bruker -->|adresseforslag| Kartverket[Kartverket]
+    Bruker -->|kart og stedsoppslag| OSM[OpenStreetMap]
     Cron[cron-job.org] -->|ping| App
 ```
 
 Express serverer både API-et (`/api/*`) og den bygde React-appen (`client/dist`) fra samme tjeneste. Alle andre stier returnerer `index.html`, slik at React Router tar over.
+
+Klienten henter adresseforslag fra Kartverket. Kartforhåndsvisningen bruker OpenStreetMap/Nominatim for stedsoppslag og et innebygd OpenStreetMap-kart. Disse forespørslene gjøres fra nettleseren, separat fra appens API.
 
 ## 4. Komponenter og lag
 
@@ -76,6 +97,94 @@ flowchart TB
 | **models** | Mongoose-skjemaer, validering og passord-hashing |
 | **socket.js** | Verifiserer JWT ved tilkobling og sender hendelser til klientene |
 | **client/api** | All kommunikasjon med serveren er samlet her, så sidene ikke kjenner til URL-er |
+| **client/components** | Gjenbrukbare grensesnittdeler, blant annet sidefelt, adresseforslag og kartforhåndsvisning |
+
+## UML-diagrammer
+
+Diagrammene er laget i Mermaid slik at de kan vises direkte på GitHub. De beskriver datamodellen og påmeldingsflyten, ikke alle komponentene. Bruk forstørrelsesknappen ved et diagram for å zoome inn.
+
+### Klassediagram: bruker og arrangement
+
+Mongoose lagrer referansen til arrangøren i `createdBy` og referanser til påmeldte brukere i `attendees`. En bruker kan arrangere og delta på flere arrangementer.
+
+```mermaid
+classDiagram
+    direction LR
+    class User {
+        ObjectId _id
+        String name
+        String email
+        String password
+        String role
+        String googleId
+        String picture
+        Date createdAt
+        Date updatedAt
+        matchPassword(enteredPassword)
+    }
+    class Event {
+        ObjectId _id
+        String title
+        String description
+        Date date
+        String location
+        String category
+        ObjectId createdBy
+        ObjectId[] attendees
+        Date createdAt
+        Date updatedAt
+    }
+    User "1" <-- "0..*" Event : createdBy
+    User "0..*" <-- "0..*" Event : attendees
+```
+
+### Sekvensdiagram 1: påmelding til arrangement
+
+Påmeldingen er delt i to diagrammer for å gjøre teksten lettere å lese. Først kontrolleres og lagres påmeldingen. Bare innloggede brukere kan melde seg på.
+
+```mermaid
+sequenceDiagram
+    participant Klient as React
+    participant API as Express
+    participant DB as MongoDB
+
+    Klient->>API: POST /api/events/:id/register (JWT)
+    API->>API: Kontroller innlogging
+    alt Manglende eller ugyldig innlogging
+        API-->>Klient: 401 – logg inn
+    else Innlogget
+        API->>DB: Hent arrangement
+        alt Arrangementet finnes ikke
+            API-->>Klient: 404 – ikke funnet
+        else Brukeren er allerede påmeldt
+            API-->>Klient: 400 – allerede påmeldt
+        else Gyldig påmelding
+            API->>DB: Lagre bruker i attendees
+            API->>DB: Hent oppdaterte brukerdata
+            Note over API: Send sanntidsvarsel (se diagram 2)
+            API-->>Klient: 200 – oppdatert arrangement
+        end
+    end
+```
+
+### Sekvensdiagram 2: sanntidsoppdatering
+
+Når påmeldingen er lagret og Socket.IO er tilgjengelig, sender serveren et varsel før API-svaret. Tilkoblede, innloggede klienter som viser arrangementslisten, henter listen på nytt.
+
+```mermaid
+sequenceDiagram
+    participant API as Express
+    participant Socket as Socket.IO
+    participant Klient as Innlogget klient
+    participant DB as MongoDB
+
+    API->>Socket: eventRegistrationUpdated
+    Socket-->>Klient: eventRegistrationUpdated
+    Klient->>API: GET /api/events
+    API->>DB: Hent arrangementer
+    DB-->>API: Arrangementsdata
+    API-->>Klient: Oppdatert liste
+```
 
 ## 5. Tilgangsstyring
 

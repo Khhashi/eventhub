@@ -63,6 +63,13 @@ describe("EventList", () => {
     )
 
     expect(await screen.findByText("Møte i Bergen")).toBeInTheDocument()
-    expect(screen.getByTitle(/Kart for Bergen/i)).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "Større kart" })).toHaveAttribute(
+      "href",
+      expect.stringContaining("openstreetmap.org")
+    )
+    expect(screen.getByRole("link", { name: "Veibeskrivelse" })).toHaveAttribute(
+      "href",
+      expect.stringContaining("google.com/maps/dir")
+    )
   })
 })

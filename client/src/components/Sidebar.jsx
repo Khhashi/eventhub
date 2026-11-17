@@ -34,7 +34,19 @@ export default function Sidebar({ user, onLogout }) {
         >
           <CalendarDaysIcon className="nav-icon" aria-hidden="true" />
           <span className="nav-label">Arrangementer</span>
+          <span className="nav-label-compact" aria-hidden="true">Arrangement</span>
         </Link>
+        {!user && (
+          <Link
+            className={`sidebar-login-link ${isActive("/login") ? "active" : ""}`}
+            to="/login"
+            title="Logg inn"
+          >
+            <ArrowLeftOnRectangleIcon className="nav-icon" aria-hidden="true" />
+            <span className="nav-label">Logg inn</span>
+            <span className="nav-label-compact" aria-hidden="true">Logg inn</span>
+          </Link>
+        )}
         <Link
           className={isActive("/profile") ? "active" : ""}
           to="/profile"
@@ -42,6 +54,7 @@ export default function Sidebar({ user, onLogout }) {
         >
           <UserCircleIcon className="nav-icon" aria-hidden="true" />
           <span className="nav-label">Profil</span>
+          <span className="nav-label-compact" aria-hidden="true">Profil</span>
         </Link>
         <Link
           className={`sidebar-create ${isActive("/create") ? "active" : ""}`}
@@ -50,12 +63,12 @@ export default function Sidebar({ user, onLogout }) {
         >
           <PlusIcon className="nav-icon" aria-hidden="true" />
           <span className="nav-label">Opprett arrangement</span>
+          <span className="nav-label-compact" aria-hidden="true">Nytt arrangement</span>
         </Link>
       </nav>
 
-      <div className="sidebar-footer">
-        {user ? (
-          <>
+      {user && (
+        <div className="sidebar-footer">
             <div className="sidebar-user" title={user.name}>
               <div className="sidebar-avatar">
                 {user.name?.charAt(0)?.toUpperCase() || "U"}
@@ -69,14 +82,8 @@ export default function Sidebar({ user, onLogout }) {
               <ArrowRightOnRectangleIcon className="nav-icon" aria-hidden="true" />
               <span className="nav-label">Logg ut</span>
             </button>
-          </>
-        ) : (
-          <Link to="/login" className="button-primary sidebar-login" title="Logg inn">
-            <ArrowLeftOnRectangleIcon className="nav-icon" aria-hidden="true" />
-            <span className="nav-label">Logg inn</span>
-          </Link>
-        )}
-      </div>
+        </div>
+      )}
     </aside>
   )
 }

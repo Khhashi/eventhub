@@ -27,4 +27,20 @@ describe("Sidebar", () => {
 
     expect(screen.getByText("Bruker")).toBeInTheDocument()
   })
+
+  it("shows login in the main navigation when signed out", () => {
+    renderSidebar(null)
+
+    expect(screen.getByRole("link", { name: "Logg inn" })).toHaveAttribute(
+      "href",
+      "/login"
+    )
+  })
+
+  it("provides compact labels for the mobile navigation", () => {
+    renderSidebar(null)
+
+    expect(screen.getByText("Arrangement")).toBeInTheDocument()
+    expect(screen.getByText("Nytt arrangement")).toBeInTheDocument()
+  })
 })

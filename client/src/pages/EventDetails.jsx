@@ -15,6 +15,7 @@ export default function EventDetails() {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [error, setError] = useState("")
+  const [isRegisterLoading, setIsRegisterLoading] = useState(false)
 
   const load = useCallback(async () => {
     try {
@@ -56,6 +57,8 @@ const isRegistered = event.attendees?.some(
 )
 
   const handleRegister = async () => {
+    if (isRegisterLoading) return
+    setIsRegisterLoading(true)
     try {
       if (isRegistered) {
         await unregisterFromEvent(event._id)
@@ -77,6 +80,8 @@ const isRegistered = event.attendees?.some(
         type: "error",
         text: "Noe gikk galt.",
       })
+    } finally {
+      setIsRegisterLoading(false)
     }
   }
 
@@ -198,8 +203,18 @@ const isRegistered = event.attendees?.some(
           </div>
 
           {user ? (
-            <button className="button-primary" onClick={handleRegister}>
-              {isRegistered ? "Avregistrer" : "Registrer deg"}
+            <button
+              className="button-primary"
+              onClick={handleRegister}
+              disabled={isRegisterLoading}
+            >
+              {isRegisterLoading
+                ? isRegistered
+                  ? "Avregistrerer..."
+                  : "Registrerer..."
+                : isRegistered
+                  ? "Avregistrer"
+                  : "Registrer deg"}
             </button>
           ) : (
             <Link to="/login" className="button-primary">

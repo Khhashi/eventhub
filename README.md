@@ -14,7 +14,7 @@ Fullstack-applikasjon for å opprette, finne og delta på arrangementer. Bygget 
 **[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)**<br>
 <sub>Åpner med en gang på hverdager kl. 07–20. Ellers kan første besøk ta opptil ett minutt.</sub>
 
-## 🎉 v2.0.0 – Bugs Fixed
+## 🎉 v2.0.0 – Bugfiks
 
 Denne versjonen fokuserer på **stabilitet, tilgjengelighet og brukerkvalitet**:
 

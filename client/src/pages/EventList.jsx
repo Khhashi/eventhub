@@ -28,8 +28,10 @@ export default function EventList() {
   const [pendingActions, setPendingActions] = useState(new Set())
   const pageSize = 5
 
-  const loadEvents = useCallback(async () => {
-    setLoading(true)
+  const loadEvents = useCallback(async (isInitialLoad = true) => {
+    if (isInitialLoad) {
+      setLoading(true)
+    }
 
     try {
       const data = await fetchEvents()
@@ -40,7 +42,9 @@ export default function EventList() {
       setLoadError("Arrangementene kunne ikke oppdateres akkurat nå. Viser tidligere data.")
     }
 
-    setLoading(false)
+    if (isInitialLoad) {
+      setLoading(false)
+    }
   }, [])
 
   const loadUser = useCallback(async () => {
@@ -60,7 +64,7 @@ export default function EventList() {
     if (!user) return undefined
 
     const socket = createSocket()
-    const refreshEvents = () => void loadEvents()
+    const refreshEvents = () => void loadEvents(false)
 
     socket.on("eventCreated", refreshEvents)
     socket.on("eventUpdated", refreshEvents)
@@ -94,7 +98,7 @@ export default function EventList() {
         setMessage({ type: "success", text: "Registrert" })
       }
 
-      await loadEvents()
+      await loadEvents(false)
     } catch (err) {
       console.error("Registrering feilet", err)
       setMessage({ type: "error", text: "Noe gikk galt. Prøv igjen." })
@@ -120,7 +124,7 @@ export default function EventList() {
     try {
       await deleteEvent(id)
       setMessage({ type: "success", text: "Arrangementet er slettet" })
-      await loadEvents()
+      await loadEvents(false)
     } catch (err) {
       console.error("Sletting feilet", err)
       setMessage({ type: "error", text: "Kunne ikke slette arrangementet. Prøv igjen." })

@@ -71,13 +71,13 @@ export default function CreateEvent() {
         <h2>Opprett arrangement</h2>
 
         {success && (
-          <div className="message-success">
+          <div className="message-success" role="status" aria-live="polite">
             {success}
           </div>
         )}
 
         {error && (
-          <div className="message-error">
+          <div className="message-error" role="status" aria-live="polite">
             {error}
           </div>
         )}

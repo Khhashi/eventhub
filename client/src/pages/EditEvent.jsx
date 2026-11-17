@@ -118,7 +118,7 @@ export default function EditEvent() {
         <h2>Oppdater arrangement</h2>
 
         {error && (
-          <div className="message-error">
+          <div className="message-error" role="status" aria-live="polite">
             {error}
           </div>
         )}

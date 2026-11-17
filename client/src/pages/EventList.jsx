@@ -25,6 +25,7 @@ export default function EventList() {
   const [category, setCategory] = useState("all")
   const [dateFilter, setDateFilter] = useState("all")
   const [page, setPage] = useState(1)
+  const [pendingActions, setPendingActions] = useState(new Set())
   const pageSize = 5
 
   const loadEvents = useCallback(async () => {
@@ -76,6 +77,10 @@ export default function EventList() {
   }, [loadEvents, user])
 
   const handleRegisterToggle = async (ev) => {
+    if (pendingActions.has(ev._id)) return
+
+    setPendingActions((prev) => new Set([...prev, ev._id]))
+
     try {
       const isRegistered = ev.attendees?.some(
         (a) => a._id === user?._id || a === user?._id
@@ -89,9 +94,17 @@ export default function EventList() {
         setMessage({ type: "success", text: "Registrert" })
       }
 
-      loadEvents()
-    } catch {
-      setMessage({ type: "error", text: "Noe gikk galt" })
+      await loadEvents()
+    } catch (err) {
+      console.error("Registrering feilet", err)
+      setMessage({ type: "error", text: "Noe gikk galt. Prøv igjen." })
+      setLoadError("Kunne ikke lagre endringen. Viser tidligere data.")
+    } finally {
+      setPendingActions((prev) => {
+        const next = new Set(prev)
+        next.delete(ev._id)
+        return next
+      })
     }
   }
 
@@ -100,12 +113,24 @@ export default function EventList() {
       return
     }
 
+    if (pendingActions.has(id)) return
+
+    setPendingActions((prev) => new Set([...prev, id]))
+
     try {
       await deleteEvent(id)
       setMessage({ type: "success", text: "Arrangementet er slettet" })
-      loadEvents()
-    } catch {
-      setMessage({ type: "error", text: "Kunne ikke slette" })
+      await loadEvents()
+    } catch (err) {
+      console.error("Sletting feilet", err)
+      setMessage({ type: "error", text: "Kunne ikke slette arrangementet. Prøv igjen." })
+      setLoadError("Kunne ikke lagre endringen. Viser tidligere data.")
+    } finally {
+      setPendingActions((prev) => {
+        const next = new Set(prev)
+        next.delete(id)
+        return next
+      })
     }
   }
 
@@ -329,8 +354,15 @@ export default function EventList() {
                 <button
                   className="button-primary"
                   onClick={() => handleRegisterToggle(ev)}
+                  disabled={pendingActions.has(ev._id)}
                 >
-                  {isRegistered ? "Avregistrer" : "Registrer"}
+                  {pendingActions.has(ev._id)
+                    ? isRegistered
+                      ? "Avregistrerer..."
+                      : "Registrerer..."
+                    : isRegistered
+                      ? "Avregistrer"
+                      : "Registrer"}
                 </button>
               )}
 
@@ -338,8 +370,9 @@ export default function EventList() {
                 <button
                   className="button-danger"
                   onClick={() => handleDelete(ev._id)}
+                  disabled={pendingActions.has(ev._id)}
                 >
-                  Slett
+                  {pendingActions.has(ev._id) ? "Sletter..." : "Slett"}
                 </button>
               )}
             </div>

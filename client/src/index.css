@@ -174,11 +174,12 @@ a {
   height: 34px;
   flex: 0 0 34px;
   border-radius: 50%;
-  background: #2563eb;
+  background: var(--green);
   color: #fff;
   display: grid;
   place-items: center;
   font-weight: 800;
+  border: 2px solid var(--green-dark);
 }
 
 .sidebar-logout {
@@ -207,8 +208,8 @@ a {
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(33, 72, 61, 0.1);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .topbar {
@@ -480,7 +481,7 @@ a {
 
 .event-card {
   background: rgba(255, 255, 255, 0.96);
-  padding: 16px 18px;
+  padding: 24px 28px;
   border-radius: 10px;
   margin-bottom: 16px;
   box-shadow: 0 5px 16px rgba(15, 23, 42, 0.06);
@@ -573,7 +574,7 @@ a {
 
 .map-preview {
   width: 100%;
-  min-height: 150px;
+  min-height: 350px;
   border-radius: 14px;
   overflow: hidden;
   background: #dbeafe;
@@ -591,7 +592,7 @@ a {
 }
 
 .map-preview__canvas {
-  min-height: 150px;
+  min-height: 300px;
   flex-shrink: 0;
   position: relative;
 }
@@ -602,7 +603,7 @@ a {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  min-height: 150px;
+  min-height: 300px;
   color: #64748b;
   font-size: 0.95rem;
 }
@@ -734,7 +735,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline: 3px solid rgba(33, 72, 61, 0.35);
   outline-offset: 2px;
 }
 
@@ -906,7 +907,9 @@ button:disabled {
 }
 
 .form-card {
-  padding: 35px;
+  padding: 42px;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .auth-page {
@@ -1018,11 +1021,11 @@ button:disabled {
 .profile-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  gap: 32px;
 }
 
 .profile-card {
-  padding: 26px 22px;
+  padding: 32px 28px;
 }
 
 .profile-card h3 {
@@ -1113,7 +1116,11 @@ select {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin: 25px 0;
+  margin: 32px 0;
+  padding: 20px;
+  background: var(--green-soft);
+  border-radius: 12px;
+  border: 1px solid rgba(33, 72, 61, 0.1);
 }
 
 .avatar {
@@ -1131,7 +1138,11 @@ select {
 }
 
 .attendees-list {
-  margin-top: 30px;
+  margin-top: 32px;
+  padding: 20px;
+  background: rgba(33, 72, 61, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(33, 72, 61, 0.08);
 }
 
 .attendee-item {

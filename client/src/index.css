@@ -391,25 +391,25 @@ a {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 15px 16px;
-  border: 1px solid #dbe2ea;
-  border-radius: 8px;
-  background: #fff;
+  padding: 20px 18px;
+  border: 1px solid rgba(33, 72, 61, 0.15);
+  border-radius: 10px;
+  background: var(--green-soft);
 }
 
 .summary-card strong {
-  color: #0f172a;
+  color: var(--green-dark);
   font-size: 1.7rem;
   letter-spacing: -0.04em;
 }
 
 .summary-card > span:last-child {
-  color: #64748b;
+  color: rgba(33, 72, 61, 0.7);
   font-size: 0.82rem;
 }
 
 .summary-label {
-  color: #2563eb;
+  color: var(--green);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -946,13 +946,17 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 18px;
+  padding: 24px;
+  background: var(--green-soft);
+  border-radius: 12px;
+  border: 1px solid rgba(33, 72, 61, 0.1);
 }
 
 .profile-avatar {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
   color: white;
   display: grid;
   place-items: center;

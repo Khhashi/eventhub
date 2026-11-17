@@ -13,10 +13,6 @@ Fullstack-applikasjon for å opprette, finne og delta på arrangementer. Bygget 
 
 **[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)** | **[Arkitektur](docs/ARCHITECTURE.md)**
 
-## 🎉 v2.0.0 – Bugfiks
-
-**30 issues lukket** | **44 tester** | **Forbedret tilgjengelighet** | **Sikkerhet fokusert**
-
 ## Funksjoner
 
 **For alle**

@@ -11,7 +11,7 @@
 
 Fullstack-applikasjon for å opprette, finne og delta på arrangementer. Bygget med React og Vite i frontend, Express og MongoDB i backend, innlogging med Google OAuth og sanntidsoppdateringer med Socket.IO.
 
-**[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)** | **[Arkitektur](docs/ARCHITECTURE.md)**
+**[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)** | **[Arkitektur](docs/ARCHITECTURE.md)** | **[API-docs](docs/API.md)** | **[Bidrag](CONTRIBUTING.md)**
 
 ## Grensesnitt
 
@@ -50,31 +50,37 @@ React, React Router, Vite · Node.js, Express 5 · MongoDB, Mongoose · Google O
 
 Krever Node.js 20, MongoDB og Google OAuth-klient.
 
+### Med npm
+
 ```bash
 npm install
 npm install --prefix server
 npm install --prefix client
 ```
 
-Opprett `server/.env`:
+Opprett `server/.env` fra [.env.example](server/.env.example):
 
-```dotenv
-PORT=3000
-MONGO_URI=mongodb://127.0.0.1:27017/moteplass
-JWT_SECRET=velg-en-lang-tilfeldig-verdi
-CLIENT_URL=http://localhost:5173
-GOOGLE_CLIENT_ID=din-google-client-id
-GOOGLE_CLIENT_SECRET=din-google-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
+```bash
+cp server/.env.example server/.env
 ```
 
-Start appen:
+Rediger `server/.env` med dine Google OAuth-verdier, så start:
 
 ```bash
 npm run dev
 ```
 
 Frontend: `http://localhost:5173` | Backend: `http://localhost:3000` | Tester: `npm test`
+
+### Med Docker
+
+```bash
+docker-compose up
+```
+
+Samme som over, men MongoDB kjører i container. Se [docker-compose.yml](docker-compose.yml).
+
+Frontend: `http://localhost:5173` | Backend: `http://localhost:3000`
 
 ## Sikkerhet og arkitektur
 
@@ -84,3 +90,11 @@ Frontend: `http://localhost:5173` | Backend: `http://localhost:3000` | Tester: `
 - **Robust feilhåndtering** – Graceful degradation ved feil (f.eks. ukjent adresse)
 
 Se [arkitekturdokumentet](docs/ARCHITECTURE.md) for UML-diagrammer og designbeslutninger.
+
+## Ressurser
+
+- **[API-dokumentasjon](docs/API.md)** – Alle endepunkter og eksempler
+- **[Bidragsguide](CONTRIBUTING.md)** – Hvordan bidra til prosjektet
+- **[Sikkerhetspolicy](SECURITY.md)** – Rapporter sårbarheter
+- **[Endringslogg](CHANGELOG.md)** – Versjonhistorikk
+- **[Lisens](LICENSE)** – MIT

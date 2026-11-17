@@ -11,170 +11,31 @@
 
 Fullstack-applikasjon for å opprette, finne og delta på arrangementer. Bygget med React og Vite i frontend, Express og MongoDB i backend, innlogging med Google OAuth og sanntidsoppdateringer med Socket.IO.
 
-**[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)**<br>
-<sub>Åpner med en gang på hverdager kl. 07–20. Ellers kan første besøk ta opptil ett minutt.</sub>
+**[Live demo ↗](https://eventmeeting-f3eu.onrender.com/events)** | **[Arkitektur](docs/ARCHITECTURE.md)**
 
 ## 🎉 v2.0.0 – Bugfiks
 
-Denne versjonen fokuserer på **stabilitet, tilgjengelighet og brukerkvalitet**:
-
-- **30 issues lukket** – alle rapporterte bugs og forbedringer er implementert
-- **44 automatiserte tester** – dekker innlogging, sikkerhet, brukergrensesnitt og API
-- **Forbedret tilgjengelighet** – ARIA-labels, keyboard-navigering, feilmeldinger
-- **Bedre feilhåndtering** – tydelige meldinger og graceful degradation
-- **Profiltilpasning** – brukere kan nå tilpasse tema, språk og preferanser
-- **Sikkerhet** – rollen kan ikke overstyres, JWT-validering, XSS-beskyttelse
-
-## Hvorfor jeg bygde det
-
-Jeg ville lage et sted der folk kan finne hverandre og samles rundt noe de bryr seg om, enten det er en fotballkamp, en kodekveld eller en tur. Det krevde innlogging, tilgangskontroll og sanntidsoppdateringer, slik at alle ser med en gang når noen melder seg på. Jeg bygde det i React og Node for å bli bedre på fullstack i JavaScript.
-
-## Grensesnitt
-
-Skjermbildene er tatt fra den offentlige demoen 16. november 2026 og viser arrangementsoversikten, detaljsiden, innlogging og mobilvisningen.
-
-<table>
-  <tr>
-    <td width="50%"><img src="docs/media/arrangementer.png" alt="Arrangementsoversikten med søk, filtre og kart" /><br />Arrangementsoversikt</td>
-    <td width="50%"><img src="docs/media/arrangementsdetaljer.png" alt="Detaljside med informasjon om arrangementet og kart" /><br />Arrangementsdetaljer</td>
-  </tr>
-  <tr>
-    <td width="50%"><img src="docs/media/innlogging.png" alt="Innloggingsside med knapp for Google-innlogging" /><br />Innlogging</td>
-    <td width="50%"><img src="docs/media/mobil-oversikt.png" alt="Arrangementsoversikten på mobil med navigasjon nederst" /><br />Mobilvisning</td>
-  </tr>
-</table>
-
-### Video
-
-Videoen viser søk, kategorier og datofilter, arrangementsdetaljer, kart og innlogging. Den varer ca. 50 sekunder, har forklarende tekst uten lyd og er tatt opp uten innlogging eller endring av data.
-
-https://github.com/user-attachments/assets/c33b3628-4bef-4278-a8a3-cb156aff92ce
-
-[Last ned videoen (MP4)](docs/media/slik-fungerer-moteplass.mp4).
+**30 issues lukket** | **44 tester** | **Forbedret tilgjengelighet** | **Sikkerhet fokusert**
 
 ## Funksjoner
 
-**Uten innlogging**
-- Se, søke i og filtrere arrangementer på kategori og dato
-- Se detaljer, adresse og kart for hvert arrangement
+**For alle**
+- Se, søke i og filtrere arrangementer
+- Detaljer, adresse og kart for hvert arrangement
 
 **Med innlogging**
-- Melde seg på og av arrangementer
-- Opprette arrangementer med adresseforslag fra Kartverket
-- Redigere og slette egne arrangementer
-- Dele arrangementer og legge dem til i kalenderen
-- Profilside med egne arrangementer, påmeldinger og profilbilde
-- Listen oppdateres i sanntid når andre oppretter, endrer, sletter eller melder seg på
+- Melde seg på/av arrangementer
+- Opprette, redigere og slette arrangementer
+- Profil med egne arrangementer og påmeldinger
+- Sanntidsoppdateringer når noen melder seg på
 
 ## Teknologi
 
-**React, React Router, Vite · Node.js, Express 5 · MongoDB, Mongoose · Google OAuth 2.0, JWT · Socket.IO · Vitest, Testing Library, Supertest · GitHub Actions, Render**
-
-## Tekniske valg
-
-- **Sikker innlogging:** Etter innlogging med Google utsteder serveren en JWT som lagres i en `httpOnly`-cookie. Tokenet sendes aldri i URL-en og kan ikke leses av JavaScript i nettleseren.
-- **Tilgangskontroll på serveren:** Serveren sjekker eierskap, så bare arrangøren eller en admin kan endre eller slette et arrangement, også ved direkte API-kall. Rollen settes alltid på serveren: brukere som logger inn med Google får rollen `organizer` og kan opprette arrangementer, `admin` tildeles manuelt, og rollen kan aldri settes fra klienten. Bare redigerbare felt kan oppdateres.
-- **Sanntid med innlogging:** Socket.IO-tilkoblinger krever gyldig innlogging, så bare innloggede brukere får sanntidsoppdateringer.
-- **Robust kartvisning:** Hvis en adresse ikke kan finnes, vises en tydelig melding i stedet for at siden krasjer.
-
-## UML og arkitektur
-
-Diagrammene viser datamodellen og påmeldingsflyten. Bruk forstørrelsesknappen ved et diagram for å zoome inn. [Arkitekturdokumentet](docs/ARCHITECTURE.md#uml-diagrammer) inneholder også systemoversikt, tilgangsstyring og designbeslutninger.
-
-### Klassediagram: bruker og arrangement
-
-Hvert arrangement har én arrangør (`createdBy`) og kan ha flere påmeldte (`attendees`). En bruker kan arrangere og delta på flere arrangementer.
-
-```mermaid
-classDiagram
-    direction LR
-    class User {
-        ObjectId _id
-        String name
-        String email
-        String password
-        String role
-        String googleId
-        String picture
-        Date createdAt
-        Date updatedAt
-        matchPassword(enteredPassword)
-    }
-    class Event {
-        ObjectId _id
-        String title
-        String description
-        Date date
-        String location
-        String category
-        ObjectId createdBy
-        ObjectId[] attendees
-        Date createdAt
-        Date updatedAt
-    }
-    User "1" <-- "0..*" Event : createdBy
-    User "0..*" <-- "0..*" Event : attendees
-```
-
-### Sekvensdiagram 1: påmelding
-
-Innlogging kontrolleres før påmeldingen lagres. Feil vises dersom brukeren ikke er innlogget, arrangementet ikke finnes eller brukeren allerede er påmeldt.
-
-```mermaid
-sequenceDiagram
-    participant Klient as React
-    participant API as Express
-    participant DB as MongoDB
-
-    Klient->>API: POST /api/events/:id/register (JWT)
-    API->>API: Kontroller innlogging
-    alt Manglende eller ugyldig innlogging
-        API-->>Klient: 401 – logg inn
-    else Innlogget
-        API->>DB: Hent arrangement
-        alt Arrangementet finnes ikke
-            API-->>Klient: 404 – ikke funnet
-        else Brukeren er allerede påmeldt
-            API-->>Klient: 400 – allerede påmeldt
-        else Gyldig påmelding
-            API->>DB: Lagre bruker i attendees
-            API->>DB: Hent oppdaterte brukerdata
-            Note over API: Send sanntidsvarsel (se diagram 2)
-            API-->>Klient: 200 – oppdatert arrangement
-        end
-    end
-```
-
-### Sekvensdiagram 2: sanntidsoppdatering
-
-Når påmeldingen er lagret og Socket.IO er tilgjengelig, varsles tilkoblede, innloggede klienter. De som viser arrangementslisten, henter listen på nytt.
-
-```mermaid
-sequenceDiagram
-    participant API as Express
-    participant Socket as Socket.IO
-    participant Klient as Innlogget klient
-    participant DB as MongoDB
-
-    API->>Socket: eventRegistrationUpdated
-    Socket-->>Klient: eventRegistrationUpdated
-    Klient->>API: GET /api/events
-    API->>DB: Hent arrangementer
-    DB-->>API: Arrangementsdata
-    API-->>Klient: Oppdatert liste
-```
-
-## Tester og CI
-
-44 automatiserte tester dekker innlogging, roller, tilgangskontroll, arrangementer, påmelding, profil, tilgjengelighet og feilhåndtering i backend (Vitest og Supertest), og innlasting, kart, oppretting, redigering, beskyttede ruter, tema-tilpasning og 404 i frontend (Vitest og Testing Library). GitHub Actions kjører testene på hver pull request og push til `main`.
-
-## Arbeidsflyt
-
-Hver oppgave starter som et issue og utvikles på en egen feature-branch. Endringen går gjennom en pull request og merges til `main` når testene er grønne i GitHub Actions.
+React, React Router, Vite · Node.js, Express 5 · MongoDB, Mongoose · Google OAuth 2.0, JWT · Socket.IO · Vitest, Testing Library, Supertest · GitHub Actions, Render
 
 ## Kjør lokalt
 
-Krever Node.js 20, MongoDB og en Google OAuth-klient.
+Krever Node.js 20, MongoDB og Google OAuth-klient.
 
 ```bash
 npm install
@@ -182,7 +43,7 @@ npm install --prefix server
 npm install --prefix client
 ```
 
-Opprett filen `server/.env`:
+Opprett `server/.env`:
 
 ```dotenv
 PORT=3000
@@ -194,10 +55,19 @@ GOOGLE_CLIENT_SECRET=din-google-client-secret
 GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 ```
 
-Registrer redirect-adressen over i Google Cloud Console, og start appen:
+Start appen:
 
 ```bash
 npm run dev
 ```
 
-Frontend kjører på `http://localhost:5173`, og backend på `http://localhost:3000`. Kjør testene med `npm test`.
+Frontend: `http://localhost:5173` | Backend: `http://localhost:3000` | Tester: `npm test`
+
+## Sikkerhet og arkitektur
+
+- **JWT i httpOnly-cookie** – Tokenet kan ikke leses av JavaScript
+- **Tilgangskontroll på serveren** – Bare arrangøren eller admin kan endre arrangement
+- **Socket.IO krever innlogging** – Bare innloggede får sanntidsoppdateringer
+- **Robust feilhåndtering** – Graceful degradation ved feil (f.eks. ukjent adresse)
+
+Se [arkitekturdokumentet](docs/ARCHITECTURE.md) for UML-diagrammer og designbeslutninger.

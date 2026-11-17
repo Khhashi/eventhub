@@ -145,6 +145,8 @@ const isRegistered = event.attendees?.some(
               ? "message-success"
               : "message-error"
           }
+          role="status"
+          aria-live="polite"
         >
           {message.text}
         </div>

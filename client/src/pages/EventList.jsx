@@ -272,12 +272,18 @@ export default function EventList() {
               ? "message-success"
               : "message-error"
           }
+          role="status"
+          aria-live="polite"
         >
           {message.text}
         </div>
       )}
 
-      {loadError && <div className="message-error">{loadError}</div>}
+      {loadError && (
+        <div className="message-error" role="status" aria-live="polite">
+          {loadError}
+        </div>
+      )}
 
       {!loadError && events.length === 0 && (
         <div className="empty-panel">

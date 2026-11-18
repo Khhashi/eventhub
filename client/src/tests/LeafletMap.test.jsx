@@ -17,7 +17,7 @@ describe("LeafletMap", () => {
     vi.clearAllMocks()
   })
 
-  it("uses the CARTO basemap and credits its map data providers", () => {
+  it("uses OpenStreetMap.de tiles and credits OpenStreetMap contributors", () => {
     const mapInstance = {
       remove: vi.fn(),
       zoomControl: { setPosition: vi.fn() },
@@ -38,13 +38,13 @@ describe("LeafletMap", () => {
     )
 
     expect(leaflet.tileLayer).toHaveBeenCalledWith(
-      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+      "https://tile.openstreetmap.de/{z}/{x}/{y}.png",
       expect.objectContaining({
-        attribution: expect.stringContaining("CARTO"),
+        attribution: expect.stringContaining("OpenStreetMap"),
       })
     )
     expect(leaflet.tileLayer.mock.calls[0][1].attribution).toContain(
-      "OpenStreetMap"
+      "contributors"
     )
   })
 })

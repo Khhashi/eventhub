@@ -1,6 +1,5 @@
 # Møteplass
 
-[![CI](https://github.com/Khhashi/eventhub/actions/workflows/ci.yml/badge.svg)](https://github.com/Khhashi/eventhub/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Khhashi/eventhub?include_prereleases)](https://github.com/Khhashi/eventhub/releases)
 ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
@@ -44,7 +43,7 @@ https://github.com/user-attachments/assets/c33b3628-4bef-4278-a8a3-cb156aff92ce
 
 ## Teknologi
 
-React, React Router, Vite · Node.js, Express 5 · MongoDB, Mongoose · Google OAuth 2.0, JWT · Socket.IO · Vitest, Testing Library, Supertest · GitHub Actions, Render
+React, React Router, Vite · Node.js, Express 5 · MongoDB, Mongoose · Google OAuth 2.0, JWT · Socket.IO · Vitest, Testing Library, Supertest · Render
 
 ## Kjør lokalt
 

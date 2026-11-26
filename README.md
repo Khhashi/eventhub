@@ -25,9 +25,11 @@ Fullstack-applikasjon for å opprette, finne og delta på arrangementer. Bygget 
   </tr>
 </table>
 
-### Video
+### Omvisning på mobil
 
-https://github.com/user-attachments/assets/c33b3628-4bef-4278-a8a3-cb156aff92ce
+<p align="center">
+  <img src="docs/media/mobil-omvisning.gif" width="320" alt="Møteplass på mobil: blar i arrangementer, søker, filtrerer, åpner et arrangement med kart, og går til innlogging og profil" />
+</p>
 
 ## Funksjoner
 

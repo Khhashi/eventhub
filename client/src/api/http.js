@@ -25,7 +25,13 @@ export const request = async (path, options = {}) => {
   }
 
   if (!res.ok) {
-    throw data || { message: "Forespørselen kunne ikke gjennomføres." }
+    // Ta med statuskoden så sidene kan skille mellom f.eks. 401 (ikke innlogget) og 404.
+    throw {
+      message: "Forespørselen kunne ikke gjennomføres.",
+      ...data,
+      status: res.status,
+      response: { status: res.status },
+    }
   }
 
   return data

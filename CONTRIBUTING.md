@@ -55,7 +55,7 @@ npm run dev
 5. **Create a Pull Request**
    - Link to related issues
    - Describe what you changed and why
-   - Ensure tests pass in CI
+   - Ensure tests pass locally (`npm test`)
 
 ## Code Style
 
@@ -93,7 +93,7 @@ Ensure all tests pass before submitting a PR.
 
 1. Update README.md if needed
 2. Add tests for new features
-3. Ensure CI pipeline passes
+3. Ensure tests pass locally
 4. Request review from maintainers
 5. Respond to feedback promptly
 

@@ -33,4 +33,21 @@ describe("Profile", () => {
     expect(input).toHaveValue("")
     expect(request).toHaveBeenCalledTimes(1)
   })
+
+  it("asks logged-out users to log in instead of showing an error", async () => {
+    request.mockRejectedValueOnce({
+      message: "Du må logge inn først.",
+      status: 401,
+      response: { status: 401 },
+    })
+
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    )
+
+    expect(await screen.findByText("Logg inn for å se profilen din")).toBeInTheDocument()
+    expect(screen.queryByText("En feil oppstod")).not.toBeInTheDocument()
+  })
 })
